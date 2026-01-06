@@ -47,6 +47,13 @@
     }
 
     .small{font-size:13px;color:var(--muted)}
+    .booking-card{
+  background:#fff;
+  max-width:520px;
+  margin:0 auto;
+  padding:32px;
+  border-radius:16px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.1);}
   </style>
 </head>
 <body>
@@ -121,6 +128,7 @@ train station pick-ups, and private hire services across St Austell and surround
       <div class="container">
         <h2>Booking Form</h2>
         <p class="small">Complete the form below to request a booking. You will receive a confirmation once we respond. For urgent jobs call <strong>01726 806556</strong>.</p>
+        <div class="booking-card">
         <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
           <input type="hidden" name="_subject" value="New booking request - BD TAXI ST AUSTELL">
           <input type="hidden" name="_captcha" value="true">
