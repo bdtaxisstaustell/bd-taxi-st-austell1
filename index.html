@@ -171,8 +171,11 @@ train station pick-ups, and private hire services across St Austell and surround
           <label>Name</label><input name="Name" required>
           <label>Phone</label><input name="Phone" required>
           <label>Email</label><input name="Email" type="email">
-          <label>Pickup address</label><input name="Pickup" required>
-          <label>Drop-off address</label><input name="Dropoff" required>
+          <label>Pickup address</label>
+          <input id="pickup" name="Pickup" placeholder="Start typing address..." required>
+          <label>Drop-off address</label>
+          <input id="dropoff" name="Dropoff" placeholder="Start typing address..." required>
+
           <label>Date</label><input name="Date" type="date" required>
           <label>Time</label><input name="Time" type="time" required>
           <label>Passengers / Luggage</label><input name="Passengers" placeholder="e.g. 2 passengers, 2 suitcases">
@@ -260,7 +263,6 @@ train station pick-ups, and private hire services across St Austell and surround
       </div>
     </section>
   </main>
-
   <footer>
     <div class="container">
       <div>Call 01726 806556 • Email: booking@staustelltaxis.co.uk</div>
@@ -268,6 +270,23 @@ train station pick-ups, and private hire services across St Austell and surround
     </div>
   </footer>
   <a href="tel:01726806556" class="call-now">Call Now</a>
+    <script>
+function initAutocomplete() {
+  new google.maps.places.Autocomplete(
+    document.getElementById('pickup'),
+    { componentRestrictions: { country: 'uk' } }
+  );
+  new google.maps.places.Autocomplete(
+    document.getElementById('dropoff'),
+    { componentRestrictions: { country: 'uk' } }
+  );
+}
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDH8We05CGzFFmvcNJEOpEB-A4H39c7Gjc&libraries=places&callback=initAutocomplete"
+  async defer>
+</script>
 </body>
 </html>
 
