@@ -22,9 +22,15 @@
     .brand img{height:40px;width:auto;border-radius:6px}
     nav{float:right}
     nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:15px}
-    .hero{
-  padding:80px 0;
-  text-align:center;}
+  .hero{
+  padding:120px 20px;
+  text-align:center;
+  background-image: url("header.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: #fff;
+  position: relative;}
 .hero .left{
   max-width:100%;
   margin:0 auto;}
@@ -48,9 +54,7 @@
       .grid{grid-template-columns:1fr}
       nav{float:none;margin-top:8px}
       .hero{flex-direction:column;align-items:flex-start}
-      .hero .left{max-width:100%}
-    }
-
+      .hero .left{max-width:100%} }
     .small{font-size:13px;color:var(--muted)}
     .booking-card{
   background:#fff;
@@ -76,6 +80,21 @@
 
 @media (max-width:768px){
   .call-now{display:block;}}
+    .hero::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  background:rgba(0,0,0,0.6);
+  z-index:0;
+}
+
+.hero .container{
+  position:relative;
+  z-index:1;
+}
   </style>
   <script type="application/ld+json">
 {
