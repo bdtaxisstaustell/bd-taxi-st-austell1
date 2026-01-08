@@ -290,7 +290,7 @@ train station pick-ups, and private hire services across St Austell and surround
         View upcoming events →
       </a>
     </p>
-    <a href="#booking" class="btn">Book a taxi to this event</a>
+    <a href="#booking" class="btn"    onclick="setDestination('Eden Project, St Austell')">    Book a taxi to this event </a>
   </div>
 
   <div class="card">
@@ -303,7 +303,7 @@ train station pick-ups, and private hire services across St Austell and surround
         View upcoming events →
       </a>
     </p>
-    <a href="#booking" class="btn">Book a taxi to this event</a>
+    <a href="#booking" class="btn"    onclick="setDestination('Lost Gardens of Heligan, St Austell')">    Book a taxi to this event </a>
   </div>
 </div>
       </div>
@@ -414,6 +414,15 @@ function initAutocomplete() {
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
   async defer>
+</script>
+<script>
+  function setDestination(destination) {
+    const dropoff = document.getElementById("dropoff");
+    if (dropoff) {
+      dropoff.value = destination;
+      dropoff.scrollIntoView({ behavior: "smooth" });
+    }
+  }
 </script>
 
 </body>
