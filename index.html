@@ -140,6 +140,52 @@ h2 {
     grid-template-columns: 1fr;
   }
 }
+  /* Header booking buttons */
+.header-booking-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nav-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Button colours */
+.nav-btn.whatsapp {
+  background: #25D366;
+  color: white;
+}
+
+.nav-btn.email {
+  background: #FFC107;
+  color: #111;
+}
+
+.nav-btn.call {
+  background: #0f172a;
+  color: white;
+}
+
+/* Mobile friendly */
+@media (max-width: 600px) {
+  .header-booking-nav {
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px 0;
+  }
+}
   </style>
   <script type="application/ld+json">
 {
@@ -166,9 +212,20 @@ h2 {
   <img src="logo.png" alt="BD Taxi St Austell Logo" style="height:70px;">
   <span style="font-size:22px;">BD TAXI ST AUSTELL</span>
 </div>
-      <nav>
-  <a href="#booking">Book Now</a>
-  <a href="#contact">Contact Us</a>
+<nav class="header-booking-nav">
+
+  <a href="#booking" class="nav-btn whatsapp">
+    🟢 Book WhatsApp
+  </a>
+
+  <a href="#booking" class="nav-btn email">
+    ✉️ Email Booking
+  </a>
+
+  <a href="tel:01726806556" class="nav-btn call">
+    📞 Call Us
+  </a>
+
 </nav>
     </div>
   </header>
