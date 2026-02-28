@@ -522,6 +522,7 @@ function initAutocomplete() {
   }
 </script>
 <script>
+<script>
 function sendWhatsApp() {
   const phone = document.getElementById("waNumber").value;
 
@@ -546,6 +547,10 @@ Time: ${time}`;
 
   const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
   window.open(url, "_blank");
+
+  setTimeout(() => {
+    window.location.href = "thanks.html";
+  }, 1000);
 }
 </script>
 </body>
