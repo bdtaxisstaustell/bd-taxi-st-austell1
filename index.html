@@ -153,7 +153,14 @@ h2 {
 </nav>
     </div>
   </header>
-<section style="max-width:720px;margin:40px auto;padding:16px;font-family:Arial,sans-serif;">
+  <section id="booking" style="max-width:1000px;margin:40px auto;padding:16px;">
+  <h2 style="text-align:center;">Book Your Taxi</h2>
+  <p style="text-align:center;color:#64748b;">
+    Choose how you would like to book
+  </p>
+
+  <div class="booking-grid">
+  <div class="booking-card-ui">
   <h2>Book a Taxi on WhatsApp</h2>
 
   <!-- YOUR WHATSAPP NUMBER (NO +, NO SPACES) -->
@@ -183,12 +190,11 @@ h2 {
   style="background:#25D366;color:white;padding:14px;width:100%;font-size:18px;border:none;border-radius:8px;">
   Book via WhatsApp
 </button>
-</section>
-  <div style="text-align:center;margin:20px 0;font-weight:700;">
-  — OR —
-</div>
+  </div>
 
-<section style="max-width:720px;margin:0 auto 40px auto;padding:24px;background:#fafafa;border-radius:16px;">
+<div class="booking-card-ui">
+  <h3 style="text-align:center;">📧 Booking Request Form</h3>
+
   <h2>Send a Booking Request</h2>
 
   <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
@@ -226,8 +232,6 @@ h2 {
 
     <button class="btn" type="submit">Send booking request</button>
   </form>
-
-</section>
   <main>
     <section id="airport-transfers" class="hero">
       <div class="container">
