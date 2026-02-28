@@ -163,10 +163,12 @@ h2 {
   <input id="name" placeholder="Your name" style="width:100%;padding:10px;margin-bottom:10px">
 
   <label>Pick-up location</label>
-  <input id="pickup" placeholder="Pick-up address" style="width:100%;padding:10px;margin-bottom:10px">
+<input id="pickupAddress" placeholder="Pick-up address"
+  style="width:100%;padding:10px;margin-bottom:10px">
 
   <label>Drop-off location</label>
-  <input id="dropoff" placeholder="Drop-off address" style="width:100%;padding:10px;margin-bottom:10px">
+  <input id="dropoffAddress" placeholder="Drop-off address"
+  style="width:100%;padding:10px;margin-bottom:10px">
 
   <label>Date</label>
   <input id="date" type="date" style="width:100%;padding:10px;margin-bottom:10px">
@@ -310,7 +312,7 @@ train station pick-ups, and private hire services across St Austell and surround
     <input name="Email" type="email" placeholder="Email address (optional)">
 
     <label>Pickup address</label>
-    <input id="pickup" name="Pickup" placeholder="Enter pickup location" required>
+   <input id="pickupAddress" name="Pickup" placeholder="Enter pickup location" required>
 
     <label>Drop-off address</label>
     <input id="dropoff" name="Dropoff" placeholder="Enter destination" required>
@@ -499,21 +501,29 @@ train station pick-ups, and private hire services across St Austell and surround
     </div>
   </footer>
   <a href="tel:01726806556" class="call-now">Call Now</a>
-    <script>
+<script>
 function initAutocomplete() {
-  new google.maps.places.Autocomplete(
-    document.getElementById('pickup'),
-    { componentRestrictions: { country: 'gb' } }
-  );
-  new google.maps.places.Autocomplete(
-    document.getElementById('dropoff'),
-    { componentRestrictions: { country: 'gb' } }
-  );
+  const pickupInput = document.getElementById('pickupAddress');
+  const dropoffInput = document.getElementById('dropoffAddress');
+
+  if (pickupInput) {
+    new google.maps.places.Autocomplete(pickupInput, {
+      componentRestrictions: { country: 'gb' }
+    });
+  }
+
+  if (dropoffInput) {
+    new google.maps.places.Autocomplete(dropoffInput, {
+      componentRestrictions: { country: 'gb' }
+    });
+  }
 }
 </script>
+
 <script
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
-  async defer>
+  async
+  defer>
 </script>
 <script>
   function setDestination(destination) {
@@ -531,8 +541,8 @@ function sendWhatsApp() {
   const phone = "441726806556";
 
   const name = document.getElementById("name")?.value.trim();
-  const pickup = document.getElementById("pickup")?.value.trim();
-  const dropoff = document.getElementById("dropoff")?.value.trim();
+  const pickup = document.getElementById("pickupAddress")?.value.trim();
+const dropoff = document.getElementById("dropoffAddress")?.value.trim();
   const date = document.getElementById("date")?.value;
   const time = document.getElementById("time")?.value;
   const passengers = document.getElementById("passengers")?.value;
