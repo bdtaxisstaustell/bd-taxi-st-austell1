@@ -173,11 +173,14 @@ h2 {
 
   <label>Time</label>
   <input id="time" type="time" style="width:100%;padding:10px;margin-bottom:15px">
+  <label>Number of passengers</label>
+<input id="passengers" type="number" min="1" max="8" placeholder="e.g. 1–4"
+  style="width:100%;padding:10px;margin-bottom:15px">
 
-  <button onclick="sendWhatsApp()"
-    style="background:#25D366;color:white;padding:14px;width:100%;font-size:18px;border:none;border-radius:8px;">
-    Book via WhatsApp
-  </button>
+  <button type="button" onclick="sendWhatsApp()"
+  style="background:#25D366;color:white;padding:14px;width:100%;font-size:18px;border:none;border-radius:8px;">
+  Book via WhatsApp
+</button>
 </section>
   <main>
     <section id="airport-transfers" class="hero">
@@ -532,19 +535,21 @@ function sendWhatsApp() {
   const dropoff = document.getElementById("dropoff")?.value.trim();
   const date = document.getElementById("date")?.value;
   const time = document.getElementById("time")?.value;
+  const passengers = document.getElementById("passengers")?.value;
 
-  if (!name || !pickup || !dropoff || !date || !time) {
+  if (!name || !pickup || !dropoff || !date || !time || !passengers) {
     alert("Please fill in all fields");
     return;
   }
 
-  const message =
+ const message =
 `🚕 Taxi Booking Request
 Name: ${name}
 Pick-up: ${pickup}
 Drop-off: ${dropoff}
 Date: ${date}
-Time: ${time}`;
+Time: ${time}
+Passengers: ${passengers}`;
 
   const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 
