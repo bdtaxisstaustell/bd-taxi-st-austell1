@@ -120,7 +120,26 @@ h2 {
   margin-top: 24px;
   margin-bottom: 10px;
 }
+/* Booking forms side-by-side */
+.booking-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
 
+.booking-card-ui {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Mobile: stack */
+@media (max-width: 768px) {
+  .booking-grid {
+    grid-template-columns: 1fr;
+  }
+}
   </style>
   <script type="application/ld+json">
 {
