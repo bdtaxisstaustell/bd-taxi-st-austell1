@@ -501,48 +501,42 @@ train station pick-ups, and private hire services across St Austell and surround
     </div>
   </footer>
   <a href="tel:01726806556" class="call-now">Call Now</a>
-<script>
+  <script>
+/* Google Places Autocomplete */
 function initAutocomplete() {
   const pickupInput = document.getElementById('pickupAddress');
   const dropoffInput = document.getElementById('dropoffAddress');
 
-  if (pickupInput) {
+  if (pickupInput && window.google) {
     new google.maps.places.Autocomplete(pickupInput, {
       componentRestrictions: { country: 'gb' }
     });
   }
 
-  if (dropoffInput) {
+  if (dropoffInput && window.google) {
     new google.maps.places.Autocomplete(dropoffInput, {
       componentRestrictions: { country: 'gb' }
     });
   }
 }
-</script>
 
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
-  async
-  defer>
-</script>
-<script>
-  function setDestination(destination) {
-    const dropoff = document.getElementById("dropoff");
-    if (dropoff) {
-      dropoff.value = destination;
-      dropoff.scrollIntoView({ behavior: "smooth" });
-    }
+/* Used by “Book taxi to event” buttons */
+function setDestination(destination) {
+  const dropoff = document.getElementById("dropoffAddress");
+  if (dropoff) {
+    dropoff.value = destination;
+    dropoff.scrollIntoView({ behavior: "smooth" });
   }
-</script>
-<script>
-<script>
+}
+
+/* WhatsApp booking */
 function sendWhatsApp() {
 
   const phone = "441726806556";
 
   const name = document.getElementById("name")?.value.trim();
   const pickup = document.getElementById("pickupAddress")?.value.trim();
-const dropoff = document.getElementById("dropoffAddress")?.value.trim();
+  const dropoff = document.getElementById("dropoffAddress")?.value.trim();
   const date = document.getElementById("date")?.value;
   const time = document.getElementById("time")?.value;
   const passengers = document.getElementById("passengers")?.value;
@@ -552,7 +546,7 @@ const dropoff = document.getElementById("dropoffAddress")?.value.trim();
     return;
   }
 
- const message =
+  const message =
 `🚕 Taxi Booking Request
 Name: ${name}
 Pick-up: ${pickup}
@@ -562,13 +556,18 @@ Time: ${time}
 Passengers: ${passengers}`;
 
   const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-
   window.open(url, "_blank");
 
   setTimeout(() => {
     window.location.href = "thanks.html";
   }, 1000);
 }
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
+  async
+  defer>
 </script>
 </body>
 </html>
