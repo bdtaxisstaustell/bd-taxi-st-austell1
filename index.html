@@ -184,6 +184,50 @@ h2 {
   Book via WhatsApp
 </button>
 </section>
+  <div style="text-align:center;margin:20px 0;font-weight:700;">
+  — OR —
+</div>
+
+<section style="max-width:720px;margin:0 auto 40px auto;padding:24px;background:#fafafa;border-radius:16px;">
+  <h2>Send a Booking Request</h2>
+
+  <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
+    
+    <input type="hidden" name="_subject" value="New booking request - BD TAXI ST AUSTELL">
+    <input type="hidden" name="_captcha" value="true">
+    <input type="hidden" name="_next" value="https://www.taxistaustell.co.uk/thanks.html">
+
+    <label>Name</label>
+    <input name="Name" placeholder="Your full name" required>
+
+    <label>Phone</label>
+    <input name="Phone" placeholder="Mobile number" required>
+
+    <label>Email</label>
+    <input name="Email" type="email" placeholder="Email address (optional)">
+
+    <label>Pickup address</label>
+    <input name="Pickup" placeholder="Enter pickup location" required>
+
+    <label>Drop-off address</label>
+    <input name="Dropoff" placeholder="Enter destination" required>
+
+    <label>Date</label>
+    <input name="Date" type="date" required>
+
+    <label>Time</label>
+    <input name="Time" type="time" required>
+
+    <label>Passengers / Luggage</label>
+    <input name="Passengers" placeholder="e.g. 2 passengers, 2 suitcases">
+
+    <label>Notes</label>
+    <textarea name="Notes" rows="3"></textarea>
+
+    <button class="btn" type="submit">Send booking request</button>
+  </form>
+
+</section>
   <main>
     <section id="airport-transfers" class="hero">
       <div class="container">
@@ -296,43 +340,7 @@ train station pick-ups, and private hire services across St Austell and surround
 </p>
 
 <div class="booking-card">
-  <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
-    
-    <input type="hidden" name="_subject" value="New booking request - BD TAXI ST AUSTELL">
-    <input type="hidden" name="_captcha" value="true">
-    <input type="hidden" name="_next" value="https://www.taxistaustell.co.uk/thanks.html">
-
-    <label>Name</label>
-    <input name="Name" placeholder="Your full name" required>
-
-    <label>Phone</label>
-    <input name="Phone" placeholder="Mobile number" required>
-
-    <label>Email</label>
-    <input name="Email" type="email" placeholder="Email address (optional)">
-
-    <label>Pickup address</label>
-  <input name="Pickup" placeholder="Enter pickup location" required>
-
-    <label>Drop-off address</label>
-    <input id="dropoff" name="Dropoff" placeholder="Enter destination" required>
-
-    <label>Date</label>
-    <input name="Date" type="date" required>
-
-    <label>Time</label>
-    <input name="Time" type="time" required>
-
-    <label>Passengers / Luggage</label>
-    <input name="Passengers" placeholder="e.g. 2 passengers, 2 suitcases">
-
-    <label>Notes</label>
-    <textarea name="Notes" rows="3"></textarea>
-
-    <button class="btn" type="submit">Send booking request</button>
-
-  </form>
-</div>
+  </div>
 
         </section>
 
