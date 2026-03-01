@@ -712,5 +712,57 @@ window.addEventListener("scroll", function() {
   }
 });
 </script>
+  <script>
+function shrinkHeaderOnClick() {
+  const header = document.querySelector("header");
+  if (header) {
+    header.classList.add("shrink");
+  }
+}
+
+// Select all booking buttons
+const bookingButtons = document.querySelectorAll(".header-booking-nav a, #booking button, .booking-card-ui button");
+
+bookingButtons.forEach(btn => {
+  btn.addEventListener("click", shrinkHeaderOnClick);
+});
+</script>
+  <script>
+window.addEventListener("scroll", function() {
+  const header = document.querySelector("header");
+  if (window.scrollY > 50) {           // when user scrolls 50px or more
+    header.classList.add("shrink");
+  } else {
+    header.classList.remove("shrink");
+  }
+});
+</script>
+  <script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  const header = document.querySelector("header");
+
+  // Shrink on scroll
+  window.addEventListener("scroll", function() {
+    if (window.scrollY > 50) {
+      header.classList.add("shrink");
+    } else {
+      header.classList.remove("shrink");
+    }
+  });
+
+  // Shrink immediately on any booking button click
+  const bookingButtons = document.querySelectorAll(
+    ".header-booking-nav a, #booking button, .booking-card-ui button"
+  );
+
+  bookingButtons.forEach(btn => {
+    btn.addEventListener("click", function() {
+      header.classList.add("shrink");
+    });
+  });
+
+});
+</script>
 </body>
 </html>
