@@ -202,6 +202,43 @@ header.shrink .brand img {
 header {
   transition: all 0.3s ease;
 }
+    /* MOBILE HEADER FIX */
+@media (max-width: 600px) {
+
+  header .container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px 12px;
+  }
+
+  .brand {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .brand img {
+    height: 48px;
+  }
+
+  .brand span {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .header-booking-nav {
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  .nav-btn {
+    flex: 1;
+    font-size: 14px;
+    padding: 10px 0;
+  }
+
+}
   </style>
   <script type="application/ld+json">
 {
