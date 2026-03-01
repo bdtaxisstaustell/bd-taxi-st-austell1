@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="icon" type="image/png" href="/favicon.png">
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+ 
   <title>Taxi St Austell | BD Taxi – Airport Transfers & Local Cabs PL24 PL25 PL26</title>
   <meta name="description" content="Taxi in St Austell providing local cabs, airport transfers and train station pick-ups across PL24, PL25 and PL26. Book via WhatsApp, call or email for fast and reliable service.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -393,6 +393,13 @@ BD Taxi St Austell is a trusted local taxi service based in St Austell, Cornwall
 We provide reliable local taxi journeys, airport transfers to Newquay and Exeter,
 train station pick-ups, and private hire services across St Austell and surrounding areas.
 </p>
+<h2>Reliable Taxi Service in St Austell Cornwall</h2>
+
+    <p>
+      BD Taxi St Austell provides a professional and reliable taxi service in
+      St Austell, Cornwall. We offer local taxi journeys, airport transfers,
+      train station pick-ups and private hire services across PL24, PL25 and PL26.
+    </p>
       </div>
     </section>
 
@@ -696,50 +703,12 @@ Passengers: ${passengers}`;
   }, 1000);
 }
 </script>
+<script 
+  src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY&libraries=places&callback=initAutocomplete"
+  async defer>
+</script>
 
-<script
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
-  async
-  defer>
-</script>
-  <script>
-window.addEventListener("scroll", function() {
-  const header = document.querySelector("header");
-  if (window.scrollY > 50) {
-    header.classList.add("shrink");
-  } else {
-    header.classList.remove("shrink");
-  }
-});
-</script>
-  <script>
-function shrinkHeaderOnClick() {
-  const header = document.querySelector("header");
-  if (header) {
-    header.classList.add("shrink");
-  }
-}
-
-// Select all booking buttons
-const bookingButtons = document.querySelectorAll(".header-booking-nav a, #booking button, .booking-card-ui button");
-
-bookingButtons.forEach(btn => {
-  btn.addEventListener("click", shrinkHeaderOnClick);
-});
-</script>
-  <script>
-window.addEventListener("scroll", function() {
-  const header = document.querySelector("header");
-  if (window.scrollY > 50) {           // when user scrolls 50px or more
-    header.classList.add("shrink");
-  } else {
-    header.classList.remove("shrink");
-  }
-});
-</script>
-  <script>
 document.addEventListener("DOMContentLoaded", function() {
-
   const header = document.querySelector("header");
 
   // Shrink on scroll
@@ -751,7 +720,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // Shrink immediately on any booking button click
+  // Shrink immediately when any booking button is clicked
   const bookingButtons = document.querySelectorAll(
     ".header-booking-nav a, #booking button, .booking-card-ui button"
   );
@@ -761,8 +730,7 @@ document.addEventListener("DOMContentLoaded", function() {
       header.classList.add("shrink");
     });
   });
-
 });
-</script>
+</script> 
 </body>
 </html>
