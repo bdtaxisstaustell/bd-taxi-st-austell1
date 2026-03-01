@@ -325,10 +325,10 @@ header {
     <input name="Email" type="email" placeholder="Email address (optional)">
 
     <label>Pickup address</label>
-    <input name="Pickup" placeholder="Enter pickup location" required>
+    <input id="pickupAddressEmail" name="Pickup" placeholder="Enter pickup location" required>
 
     <label>Drop-off address</label>
-    <input name="Dropoff" placeholder="Enter destination" required>
+    <input id="dropoffAddressEmail" name="Dropoff" placeholder="Enter destination" required>
 
     <label>Date</label>
     <input name="Date" type="date" required>
@@ -653,8 +653,35 @@ train station pick-ups, and private hire services across St Austell and surround
   <script>
 /* Google Places Autocomplete */
 function initAutocomplete() {
-  const pickupInput = document.getElementById('pickupAddress');
-  const dropoffInput = document.getElementById('dropoffAddress');
+ const pickupInput = document.getElementById('pickupAddress');
+const dropoffInput = document.getElementById('dropoffAddress');
+
+const pickupEmail = document.getElementById('pickupAddressEmail');
+const dropoffEmail = document.getElementById('dropoffAddressEmail');
+
+if (pickupInput && window.google) {
+  new google.maps.places.Autocomplete(pickupInput, {
+    componentRestrictions: { country: 'gb' }
+  });
+}
+
+if (dropoffInput && window.google) {
+  new google.maps.places.Autocomplete(dropoffInput, {
+    componentRestrictions: { country: 'gb' }
+  });
+}
+
+if (pickupEmail && window.google) {
+  new google.maps.places.Autocomplete(pickupEmail, {
+    componentRestrictions: { country: 'gb' }
+  });
+}
+
+if (dropoffEmail && window.google) {
+  new google.maps.places.Autocomplete(dropoffEmail, {
+    componentRestrictions: { country: 'gb' }
+  });
+}
 
   if (pickupInput && window.google) {
     new google.maps.places.Autocomplete(pickupInput, {
