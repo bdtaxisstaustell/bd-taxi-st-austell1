@@ -71,20 +71,20 @@
   border-radius:16px;
   box-shadow:0 20px 40px rgba(0,0,0,0.1);}
 
-    .call-now {
+.call-now {
   display: none;
   position: fixed;
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  background: #25D366; /* WhatsApp green for urgency */
-  color: #fff;
-  padding: 16px 34px;
+  background: var(--accent); /* original yellow */
+  color: #111;
+  padding: 16px 36px;
   border-radius: 999px;
   font-weight: 900;
   font-size: 18px;
   text-decoration: none;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
   z-index: 1000;
 }
 
@@ -177,6 +177,9 @@ h2 {
 .nav-btn.call {
   background: #0f172a;
   color: white;
+  font-weight: 800;
+  font-size: 15px;
+  padding: 10px 18px;
 }
 
 /* Mobile friendly */
@@ -191,6 +194,10 @@ h2 {
     text-align: center;
     padding: 10px 0;
   }
+  .nav-btn.call {
+  font-size: 16px;
+  padding: 12px 0;
+}
 }
   /* Header shrink effect */
 header.shrink {
