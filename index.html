@@ -253,19 +253,52 @@ header {
     padding: 8px 0;
   }
 }
+
+   /* Dropdown menu */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: white;
+  min-width: 220px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  top: 40px;
+  right: 0;
+  z-index: 999;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 12px 14px;
+  text-decoration: none;
+  color: #111;
+}
+
+.dropdown-content a:hover {
+  background: #f3f3f3;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+} 
   </style>
   <script type="application/ld+json">
 {
-  "@context": "https://schema.org",
-  "@type": "TaxiService",
-  "name": "BD Taxi St Austell",
-  "areaServed": {
-    "@type": "Place",
-    "name": "St Austell, Cornwall"
-  },
-  "telephone": "+441726806556",
-  "url": "https://www.taxistaustell.co.uk",
-  "sameAs": [
+    "@context": "https://schema.org",
+    "@type": "TaxiService",
+    "name": "BD Taxi St Austell",
+    "areaServed": {
+      "@type": "Place",
+      "name": "St Austell, Cornwall"
+    },
+    "telephone": "+441726806556",
+    "url": "https://www.taxistaustell.co.uk",
+    "sameAs": [
     "https://www.facebook.com/profile.php?id=61580625347334",
     "https://share.google/ViXyZL3N8Z51IjzLV"
   ]
@@ -359,6 +392,18 @@ gtag('config', 'G-0T3NNG0DZX');
     📞 Call Us
   </a>
 
+<div class="dropdown">
+  <button class="nav-btn" style="background:#333;color:white;">
+    📍 Routes ▼
+  </button>
+
+  <div class="dropdown-content">
+    <a href="taxi-mevagissey.html">Taxi to Mevagissey</a>
+    <a href="taxi-fowey.html">Taxi to Fowey</a>
+    <a href="taxi-par.html">Taxi to Par</a>
+  </div>
+</div>
+  
 </nav>
     </div>
   </header>
@@ -479,7 +524,7 @@ gtag('config', 'G-0T3NNG0DZX');
       </div>
     </section>
         <section>
-      <div class="container" style="text-align:center;padding-top:30px;">
+      <div class="container" ="text-align:center;padding-top:30px;">
         <p style="font-size:15px;font-weight:600;">
           ✔ Local St Austell taxi service &nbsp;•&nbsp;
           ✔ Fully insured &nbsp;•&nbsp;
