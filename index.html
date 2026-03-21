@@ -501,47 +501,55 @@ gtag('config', 'G-0T3NNG0DZX');
   <p class="booking-subtitle">
     Enter your journey details — takes 10 seconds
   </p>
+   <div class="uber-form">
 
-  <div class="uber-form">
+  <!-- DATE -->
+  <div class="input-group">
+    <label>📅 Date</label>
+    <input id="date" type="date">
+  </div>
 
-    <div class="input-group">
-      <label>📍 Pick-up</label>
-      <input id="pickupAddress" placeholder="Enter pickup location">
-    </div>
+  <!-- ASAP + LATER BUTTONS -->
+  <div style="display:flex;gap:10px;margin:12px 0;flex-wrap:wrap;">
 
-    <div class="input-group">
-      <label>🏁 Drop-off</label>
-      <input id="dropoffAddress" placeholder="Where are you going?">
-    </div>
+    <button type="button" onclick="setASAP()" 
+      style="background:#25D366;color:white;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;">
+      ⚡ ASAP (15 mins)
+    </button>
 
-    <div class="form-row">
-      <div class="input-group">
-        <label>📅 Date</label>
-        <input id="date" type="date">
-      </div>
-
-      <div class="input-group">
-        <label>⏰ Time</label>
-        <input id="time" type="time">
-      </div>
-    </div>
-
-    <div class="input-group">
-      <label>👥 Passengers</label>
-      <input id="passengers" type="number" min="1" max="8" placeholder="1–4 passengers">
-    </div>
-
-    <div class="input-group">
-      <label>👤 Your Name</label>
-      <input id="name" placeholder="Your name">
-    </div>
-
-    <button onclick="sendWhatsApp()" class="uber-btn">
-      <p id="priceEstimate" style="text-align:center;font-weight:700;margin-top:10px;color:#0f172a;"></p>
-      🚕 Get Taxi via WhatsApp
+    <button type="button" onclick="setLater()" 
+      style="background:#eee;color:#111;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;">
+      📅 Schedule later
     </button>
 
   </div>
+
+  <!-- TIME -->
+  <div id="timeWrapper" class="input-group">
+    <label>⏰ Time</label>
+    <input id="time" type="time">
+  </div>
+
+  <!-- PASSENGERS -->
+  <div class="input-group">
+    <label>👥 Passengers</label>
+    <input id="passengers" type="number" min="1" max="8" placeholder="1–4 passengers">
+  </div>
+
+  <!-- NAME -->
+  <div class="input-group">
+    <label>👤 Your Name</label>
+    <input id="name" placeholder="Your name">
+  </div>
+
+  <!-- PRICE -->
+  <p id="priceEstimate" style="text-align:center;font-weight:700;margin-top:10px;color:#0f172a;"></p>
+
+  <!-- BUTTON -->
+  <button type="button" onclick="sendWhatsApp()" class="uber-btn" style="width:100%;">
+    🚕 Get Taxi via WhatsApp
+  </button>
+
 </div>
 
 <div class="booking-card-ui" id="email-booking">
@@ -891,101 +899,87 @@ train station pick-ups, and private hire services across St Austell and surround
 </footer>
   
   <a href="tel:01726806556" class="call-now">Call Now</a>
- <script>
-/* Google Places Autocomplete */
+<script>
+
+/* GOOGLE AUTOCOMPLETE (SAFE + NO DUPLICATES) */
+let autocompleteInitialized = false;
+
 function initAutocomplete() {
-  const pickupInput = document.getElementById('pickupAddress');
-  const dropoffInput = document.getElementById('dropoffAddress');
-  const pickupEmail = document.getElementById('pickupAddressEmail');
-  const dropoffEmail = document.getElementById('dropoffAddressEmail');
+  if (!window.google || !google.maps || autocompleteInitialized) return;
 
-  if (pickupInput && window.google) {
-    new google.maps.places.Autocomplete(pickupInput, {
-      componentRestrictions: { country: 'gb' }
-    });
-  }
+  const fields = [
+    "pickupAddress",
+    "dropoffAddress",
+    "pickupAddressEmail",
+    "dropoffAddressEmail"
+  ];
 
-  if (dropoffInput && window.google) {
-    new google.maps.places.Autocomplete(dropoffInput, {
-      componentRestrictions: { country: 'gb' }
-    });
-  }
+  fields.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      new google.maps.places.Autocomplete(el, {
+        componentRestrictions: { country: "gb" }
+      });
+    }
+  });
 
-  if (pickupEmail && window.google) {
-    new google.maps.places.Autocomplete(pickupEmail, {
-      componentRestrictions: { country: 'gb' }
-    });
-  }
-
-  if (dropoffEmail && window.google) {
-    new google.maps.places.Autocomplete(dropoffEmail, {
-      componentRestrictions: { country: 'gb' }
-    });
-  }
+  autocompleteInitialized = true;
 }
 
-/* Used by “Book taxi to event” buttons */
+
+/* SET DESTINATION */
 function setDestination(destination) {
   const dropoff = document.getElementById("dropoffAddress");
   if (dropoff) {
     dropoff.value = destination;
     dropoff.scrollIntoView({ behavior: "smooth" });
+    calculatePrice();
   }
 }
- </script>
 
-/* PRICE ESTIMATOR (DAY + NIGHT RATES) */
+
+/* PRICE ESTIMATOR */
 function calculatePrice() {
 
   const pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || "";
   const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
   const output = document.getElementById("priceEstimate");
+  const btn = document.getElementById("bookBtn");
 
   if (!pickup || !dropoff || !output) {
     if (output) output.innerText = "";
+    if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
     return;
   }
 
-  // 🔥 USE SELECTED TIME (IMPORTANT)
   const selectedTime = document.getElementById("time")?.value;
-  let hour;
+  let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
 
-  if (selectedTime) {
-    hour = parseInt(selectedTime.split(":")[0]);
-  } else {
-    hour = new Date().getHours();
-  }
-
-  // DEFAULT = DAY RATE
   let ratePerMile = 2.7;
   let minimumFare = 5.5;
 
-  // NIGHT RATE (00:00–06:59)
-  if (hour >= 0 && hour < 7) {
+  if (hour < 7) {
     ratePerMile = 4.5;
     minimumFare = 7.5;
   }
 
   let miles = 0;
 
-  // MATCH FUNCTION
   function routeMatch(aList, bList, distance) {
     const matchA = aList.some(a => pickup.includes(a)) && bList.some(b => dropoff.includes(b));
     const matchB = aList.some(a => dropoff.includes(a)) && bList.some(b => pickup.includes(b));
     return (matchA || matchB) ? distance : null;
   }
 
-  // LOCATIONS
   const stAustell = ["st austell", "saint austell"];
   const mevagissey = ["mevagissey"];
   const fowey = ["fowey"];
   const par = ["par", "par station"];
-  const airport = ["newquay airport", "cornwall airport newquay"];
+  const airport = ["newquay airport", "cornwall airport"];
   const truro = ["truro"];
   const bodmin = ["bodmin"];
   const gorran = ["gorran haven"];
 
-  // DISTANCES
   miles =
     routeMatch(stAustell, mevagissey, 6) ||
     routeMatch(stAustell, fowey, 7) ||
@@ -996,26 +990,26 @@ function calculatePrice() {
     routeMatch(stAustell, gorran, 9) ||
     0;
 
-  // FALLBACK
   if (miles === 0) {
     output.innerText = "Estimated fare: local journey — please contact for quote";
+    if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
     return;
   }
 
-  // CALCULATE
   let fare = miles * ratePerMile;
+  if (fare < minimumFare) fare = minimumFare;
 
-  if (fare < minimumFare) {
-    fare = minimumFare;
-  }
-
-  // ROUND + RANGE
   const low = Math.round(fare);
   const high = Math.round(fare * 1.15);
 
-  const label = (hour >= 0 && hour < 7) ? " (night rate)" : "";
+  const label = (hour < 7) ? " (night rate)" : "";
+  const priceText = "£" + low + "–£" + high + label;
 
-  output.innerText = "Estimated fare: £" + low + "–£" + high + label;
+  output.innerText = "Estimated fare: " + priceText;
+
+  if (btn) {
+    btn.innerText = "🚕 Book Taxi – " + priceText;
+  }
 }
 
 
@@ -1049,8 +1043,7 @@ function sendWhatsApp() {
 
 Please confirm availability 👍`;
 
-  const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-  window.open(url, "_blank");
+  window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(message), "_blank");
 
   setTimeout(() => {
     window.location.href = "thanks.html";
@@ -1058,33 +1051,37 @@ Please confirm availability 👍`;
 }
 
 
-/* ASAP + SCHEDULE LOGIC */
+/* ASAP */
 function setASAP() {
   const timeInput = document.getElementById("time");
-
   if (!timeInput) return;
 
   const now = new Date();
   now.setMinutes(now.getMinutes() + 15);
 
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
+  timeInput.value =
+    String(now.getHours()).padStart(2, '0') + ":" +
+    String(now.getMinutes()).padStart(2, '0');
 
-  timeInput.value = h + ":" + m;
+  const wrapper = document.getElementById("timeWrapper");
+  if (wrapper) wrapper.style.display = "none";
 
   calculatePrice();
 }
 
+
+/* LATER */
 function setLater() {
-  const timeInput = document.getElementById("time");
-  if (timeInput) {
-    timeInput.focus();
-  }
+  const wrapper = document.getElementById("timeWrapper");
+  if (wrapper) wrapper.style.display = "block";
 }
 
 
-/* AUTO TRIGGER PRICE */
+/* AUTO INIT */
 document.addEventListener("DOMContentLoaded", function() {
+
+  // 🔥 DEFAULT TO ASAP
+  setASAP();
 
   const inputs = ["pickupAddress", "dropoffAddress", "time"];
 
@@ -1097,7 +1094,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 });
-
 </script>
 <script 
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
