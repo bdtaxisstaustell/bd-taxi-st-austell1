@@ -954,6 +954,30 @@ function getDistanceAndCalculate() {
   const btn = document.getElementById("bookBtn");
 
   if (!pickup || !dropoff || !output) {
+      const service = new google.maps.DistanceMatrixService();
+
+  service.getDistanceMatrix(
+    {
+      origins: [pickup],
+      destinations: [dropoff],
+      travelMode: "DRIVING",
+      unitSystem: google.maps.UnitSystem.IMPERIAL
+    },
+    function (response, status) {
+
+      if (status !== "OK") {
+        output.innerText = "Unable to calculate distance";
+        return;
+      }
+
+      const result = response.rows[0].elements[0];
+
+      if (result.status !== "OK") {
+        output.innerText = "Route not found";
+        return;
+      }
+
+      const miles = result.distance.value / 1609; // meters → miles
     if (output) output.innerText = "";
     if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
     return;
@@ -987,7 +1011,7 @@ function getDistanceAndCalculate() {
 
   const mevagissey = ["mevagissey"];
   const fowey = ["fowey"];
-  const par = ["par", "par station"];
+ const par = ["par ", "par station"];
   const airport = ["newquay airport", "cornwall airport"];
   const truro = ["truro"];
   const bodmin = ["bodmin"];
