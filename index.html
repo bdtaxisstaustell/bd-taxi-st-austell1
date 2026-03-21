@@ -537,6 +537,7 @@ gtag('config', 'G-0T3NNG0DZX');
     </div>
 
     <button onclick="sendWhatsApp()" class="uber-btn">
+      <p id="priceEstimate" style="text-align:center;font-weight:700;margin-top:10px;color:#0f172a;"></p>
       🚕 Get Taxi via WhatsApp
     </button>
 
@@ -890,38 +891,13 @@ train station pick-ups, and private hire services across St Austell and surround
 </footer>
   
   <a href="tel:01726806556" class="call-now">Call Now</a>
-  <script>
+ <script>
 /* Google Places Autocomplete */
 function initAutocomplete() {
- const pickupInput = document.getElementById('pickupAddress');
-const dropoffInput = document.getElementById('dropoffAddress');
-
-const pickupEmail = document.getElementById('pickupAddressEmail');
-const dropoffEmail = document.getElementById('dropoffAddressEmail');
-
-if (pickupInput && window.google) {
-  new google.maps.places.Autocomplete(pickupInput, {
-    componentRestrictions: { country: 'gb' }
-  });
-}
-
-if (dropoffInput && window.google) {
-  new google.maps.places.Autocomplete(dropoffInput, {
-    componentRestrictions: { country: 'gb' }
-  });
-}
-
-if (pickupEmail && window.google) {
-  new google.maps.places.Autocomplete(pickupEmail, {
-    componentRestrictions: { country: 'gb' }
-  });
-}
-
-if (dropoffEmail && window.google) {
-  new google.maps.places.Autocomplete(dropoffEmail, {
-    componentRestrictions: { country: 'gb' }
-  });
-}
+  const pickupInput = document.getElementById('pickupAddress');
+  const dropoffInput = document.getElementById('dropoffAddress');
+  const pickupEmail = document.getElementById('pickupAddressEmail');
+  const dropoffEmail = document.getElementById('dropoffAddressEmail');
 
   if (pickupInput && window.google) {
     new google.maps.places.Autocomplete(pickupInput, {
@@ -934,6 +910,18 @@ if (dropoffEmail && window.google) {
       componentRestrictions: { country: 'gb' }
     });
   }
+
+  if (pickupEmail && window.google) {
+    new google.maps.places.Autocomplete(pickupEmail, {
+      componentRestrictions: { country: 'gb' }
+    });
+  }
+
+  if (dropoffEmail && window.google) {
+    new google.maps.places.Autocomplete(dropoffEmail, {
+      componentRestrictions: { country: 'gb' }
+    });
+  }
 }
 
 /* Used by “Book taxi to event” buttons */
@@ -942,6 +930,35 @@ function setDestination(destination) {
   if (dropoff) {
     dropoff.value = destination;
     dropoff.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+/* PRICE ESTIMATOR */
+function calculatePrice() {
+
+  const pickup = document.getElementById("pickupAddress")?.value.toLowerCase();
+  const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase();
+
+  if (!pickup || !dropoff) return;
+
+  let price = "£10–£15";
+
+  if (pickup.includes("st austell") && dropoff.includes("mevagissey")) {
+    price = "£18–£22";
+  }
+  else if (pickup.includes("st austell") && dropoff.includes("fowey")) {
+    price = "£20–£25";
+  }
+  else if (pickup.includes("st austell") && dropoff.includes("par")) {
+    price = "£14–£16";
+  }
+  else if (dropoff.includes("airport")) {
+    price = "£35–£50";
+  }
+
+  const output = document.getElementById("priceEstimate");
+  if (output) {
+    output.innerText = "Estimated fare: " + price;
   }
 }
 
@@ -978,7 +995,22 @@ Passengers: ${passengers}`;
     window.location.href = "thanks.html";
   }, 1000);
 }
+
+/* AUTO TRIGGER PRICE */
+document.addEventListener("DOMContentLoaded", function() {
+
+  const inputs = ["pickupAddress", "dropoffAddress"];
+
+  inputs.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", calculatePrice);
+    }
+  });
+
+});
 </script>
+
 <script 
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
   async defer>
