@@ -501,7 +501,19 @@ gtag('config', 'G-0T3NNG0DZX');
   <p class="booking-subtitle">
     Enter your journey details — takes 10 seconds
   </p>
-   <div class="uber-form">
+<div class="uber-form">
+
+  <!-- PICKUP -->
+  <div class="input-group">
+    <label>📍 Pick-up</label>
+    <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
+  </div>
+
+  <!-- DROPOFF -->
+  <div class="input-group">
+    <label>🏁 Drop-off</label>
+    <input id="dropoffAddress" placeholder="Where are you going?" autocomplete="off">
+  </div>
 
   <!-- DATE -->
   <div class="input-group">
@@ -509,16 +521,16 @@ gtag('config', 'G-0T3NNG0DZX');
     <input id="date" type="date">
   </div>
 
-  <!-- ASAP + LATER BUTTONS -->
-  <div style="display:flex;gap:10px;margin:12px 0;flex-wrap:wrap;">
+  <!-- ASAP + LATER -->
+  <div style="display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;">
 
     <button type="button" onclick="setASAP()" 
-      style="background:#25D366;color:white;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;">
+      style="flex:1;background:#25D366;color:white;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;">
       ⚡ ASAP (15 mins)
     </button>
 
     <button type="button" onclick="setLater()" 
-      style="background:#eee;color:#111;border:none;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer;">
+      style="flex:1;background:#eee;color:#111;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;">
       📅 Schedule later
     </button>
 
@@ -533,7 +545,7 @@ gtag('config', 'G-0T3NNG0DZX');
   <!-- PASSENGERS -->
   <div class="input-group">
     <label>👥 Passengers</label>
-    <input id="passengers" type="number" min="1" max="8" placeholder="1–4 passengers">
+    <input id="passengers" type="number" min="1" max="8" placeholder="1–8 passengers">
   </div>
 
   <!-- NAME -->
@@ -543,10 +555,10 @@ gtag('config', 'G-0T3NNG0DZX');
   </div>
 
   <!-- PRICE -->
-  <p id="priceEstimate" style="text-align:center;font-weight:700;margin-top:10px;color:#0f172a;"></p>
+  <p id="priceEstimate" style="text-align:center;font-weight:700;margin-top:12px;color:#0f172a;"></p>
 
   <!-- BUTTON -->
-  <button type="button" onclick="sendWhatsApp()" class="uber-btn" style="width:100%;">
+  <button id="bookBtn" type="button" onclick="sendWhatsApp()" class="uber-btn" style="width:100%;margin-top:8px;">
     🚕 Get Taxi via WhatsApp
   </button>
 
@@ -952,9 +964,11 @@ function calculatePrice() {
     return;
   }
 
+  // USE SELECTED TIME OR CURRENT TIME
   const selectedTime = document.getElementById("time")?.value;
   let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
 
+  // DAY / NIGHT RATES
   let ratePerMile = 2.7;
   let minimumFare = 5.5;
 
@@ -1026,7 +1040,7 @@ function sendWhatsApp() {
   const passengers = document.getElementById("passengers")?.value;
 
   if (!name || !pickup || !dropoff || !date || !time || !passengers) {
-    alert("Please fill in all fields");
+    alert("Please complete all fields");
     return;
   }
 
@@ -1078,9 +1092,16 @@ function setLater() {
 
 
 /* AUTO INIT */
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
 
-  // 🔥 DEFAULT TO ASAP
+  // SET TODAY DATE
+  const dateInput = document.getElementById("date");
+  if (dateInput) {
+    const today = new Date().toISOString().split("T")[0];
+    dateInput.value = today;
+  }
+
+  // DEFAULT ASAP
   setASAP();
 
   const inputs = ["pickupAddress", "dropoffAddress", "time"];
@@ -1094,6 +1115,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
 });
+
 </script>
 <script 
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
