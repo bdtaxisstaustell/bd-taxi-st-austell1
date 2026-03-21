@@ -932,37 +932,94 @@ function setDestination(destination) {
     dropoff.scrollIntoView({ behavior: "smooth" });
   }
 }
+<script>
 
-/* PRICE ESTIMATOR */
+/* PRICE ESTIMATOR (DAY + NIGHT RATES) */
 function calculatePrice() {
 
-  const pickup = document.getElementById("pickupAddress")?.value.toLowerCase();
-  const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase();
-
-  if (!pickup || !dropoff) return;
-
-  let price = "£10–£15";
-
-  if (pickup.includes("st austell") && dropoff.includes("mevagissey")) {
-    price = "£18–£22";
-  }
-  else if (pickup.includes("st austell") && dropoff.includes("fowey")) {
-    price = "£20–£25";
-  }
-  else if (pickup.includes("st austell") && dropoff.includes("par")) {
-    price = "£14–£16";
-  }
-  else if (dropoff.includes("airport")) {
-    price = "£35–£50";
-  }
-
+  const pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || "";
+  const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
   const output = document.getElementById("priceEstimate");
-  if (output) {
-    output.innerText = "Estimated fare: " + price;
+
+  if (!pickup || !dropoff || !output) {
+    if (output) output.innerText = "";
+    return;
   }
+
+  // 🔥 USE SELECTED TIME (IMPORTANT)
+  const selectedTime = document.getElementById("time")?.value;
+  let hour;
+
+  if (selectedTime) {
+    hour = parseInt(selectedTime.split(":")[0]);
+  } else {
+    hour = new Date().getHours();
+  }
+
+  // DEFAULT = DAY RATE
+  let ratePerMile = 2.7;
+  let minimumFare = 5.5;
+
+  // NIGHT RATE (00:00–06:59)
+  if (hour >= 0 && hour < 7) {
+    ratePerMile = 4.5;
+    minimumFare = 7.5;
+  }
+
+  let miles = 0;
+
+  // MATCH FUNCTION
+  function routeMatch(aList, bList, distance) {
+    const matchA = aList.some(a => pickup.includes(a)) && bList.some(b => dropoff.includes(b));
+    const matchB = aList.some(a => dropoff.includes(a)) && bList.some(b => pickup.includes(b));
+    return (matchA || matchB) ? distance : null;
+  }
+
+  // LOCATIONS
+  const stAustell = ["st austell", "saint austell"];
+  const mevagissey = ["mevagissey"];
+  const fowey = ["fowey"];
+  const par = ["par", "par station"];
+  const airport = ["newquay airport", "cornwall airport newquay"];
+  const truro = ["truro"];
+  const bodmin = ["bodmin"];
+  const gorran = ["gorran haven"];
+
+  // DISTANCES
+  miles =
+    routeMatch(stAustell, mevagissey, 6) ||
+    routeMatch(stAustell, fowey, 7) ||
+    routeMatch(stAustell, par, 3) ||
+    routeMatch(stAustell, airport, 13) ||
+    routeMatch(stAustell, truro, 15) ||
+    routeMatch(stAustell, bodmin, 14) ||
+    routeMatch(stAustell, gorran, 9) ||
+    0;
+
+  // FALLBACK
+  if (miles === 0) {
+    output.innerText = "Estimated fare: local journey — please contact for quote";
+    return;
+  }
+
+  // CALCULATE
+  let fare = miles * ratePerMile;
+
+  if (fare < minimumFare) {
+    fare = minimumFare;
+  }
+
+  // ROUND + RANGE
+  const low = Math.round(fare);
+  const high = Math.round(fare * 1.15);
+
+  const label = (hour >= 0 && hour < 7) ? " (night rate)" : "";
+
+  output.innerText = "Estimated fare: £" + low + "–£" + high + label;
 }
 
-/* WhatsApp booking */
+
+/* WHATSAPP BOOKING */
 function sendWhatsApp() {
 
   const phone = "441726806556";
@@ -981,12 +1038,16 @@ function sendWhatsApp() {
 
   const message =
 `🚕 Taxi Booking Request
-Name: ${name}
-Pick-up: ${pickup}
-Drop-off: ${dropoff}
-Date: ${date}
-Time: ${time}
-Passengers: ${passengers}`;
+
+👤 Name: ${name}
+📍 Pick-up: ${pickup}
+🏁 Drop-off: ${dropoff}
+
+📅 Date: ${date}
+⏰ Time: ${time}
+👥 Passengers: ${passengers}
+
+Please confirm availability 👍`;
 
   const url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
   window.open(url, "_blank");
@@ -996,21 +1057,48 @@ Passengers: ${passengers}`;
   }, 1000);
 }
 
+
+/* ASAP + SCHEDULE LOGIC */
+function setASAP() {
+  const timeInput = document.getElementById("time");
+
+  if (!timeInput) return;
+
+  const now = new Date();
+  now.setMinutes(now.getMinutes() + 15);
+
+  const h = String(now.getHours()).padStart(2, '0');
+  const m = String(now.getMinutes()).padStart(2, '0');
+
+  timeInput.value = h + ":" + m;
+
+  calculatePrice();
+}
+
+function setLater() {
+  const timeInput = document.getElementById("time");
+  if (timeInput) {
+    timeInput.focus();
+  }
+}
+
+
 /* AUTO TRIGGER PRICE */
 document.addEventListener("DOMContentLoaded", function() {
 
-  const inputs = ["pickupAddress", "dropoffAddress"];
+  const inputs = ["pickupAddress", "dropoffAddress", "time"];
 
   inputs.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
       el.addEventListener("input", calculatePrice);
+      el.addEventListener("change", calculatePrice);
     }
   });
 
 });
-</script>
 
+</script>
 <script 
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
   async defer>
