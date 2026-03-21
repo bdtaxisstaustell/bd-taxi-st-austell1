@@ -1122,12 +1122,16 @@ document.addEventListener("DOMContentLoaded", function () {
   async defer>
 </script>
 
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
 
   const header = document.querySelector("header");
 
-  // Shrink on scroll (keep this)
+  if (!header) return;
+
+  /* =========================
+     SHRINK HEADER ON SCROLL
+  ========================== */
   window.addEventListener("scroll", function() {
     if (window.scrollY > 50) {
       header.classList.add("shrink");
@@ -1136,19 +1140,47 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // HIDE when booking starts
+
+  /* =========================
+     HIDE HEADER DURING BOOKING
+  ========================== */
+
   const bookingInputs = document.querySelectorAll(
     "#booking input, #booking textarea, #booking button"
   );
 
   bookingInputs.forEach(el => {
+
+    // Focus (desktop + mobile keyboard)
     el.addEventListener("focus", () => {
       header.classList.add("hide-header");
     });
 
+    // Click
     el.addEventListener("click", () => {
       header.classList.add("hide-header");
     });
+
+    // 🔥 MOBILE FIX (touch)
+    el.addEventListener("touchstart", () => {
+      header.classList.add("hide-header");
+    });
+
+  });
+
+
+  /* =========================
+     SHOW HEADER AGAIN
+  ========================== */
+
+  document.addEventListener("click", function(e) {
+
+    const isInsideBooking = e.target.closest("#booking");
+
+    if (!isInsideBooking) {
+      header.classList.remove("hide-header");
+    }
+
   });
 
 });
