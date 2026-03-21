@@ -8,11 +8,26 @@
   <meta name="description" content="Taxi in St Austell providing local cabs, airport transfers and train station pick-ups across PL24, PL25 and PL26. Book via WhatsApp, call or email for fast and reliable service.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="google-site-verification" content="ELEdWu0aS9oOm1B4TnLeswzmgkuIpU-RglBoxHDuiW8" />
-  <style>
-    :root{   --accent:#FFC107;   /* taxi yellow */   --dark:#0f172a;     /* deep navy */   --bg:#ffffff;   --text:#0f172a;   --muted:#64748b; }
-    *{box-sizing:border-box}
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;line-height:1.5;margin:0;color:var(--text);background:var(--bg)}
-   header {
+ <style>
+:root {
+  --accent:#FFC107;
+  --dark:#0f172a;
+  --bg:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+}
+
+*{box-sizing:border-box}
+
+body{
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+  margin:0;
+  color:var(--text);
+  background:var(--bg);
+}
+
+/* HEADER */
+header {
   background: rgba(15, 23, 42, 0.9);
   backdrop-filter: blur(8px);
   color: #fff;
@@ -24,320 +39,222 @@
   box-shadow: 0 6px 20px rgba(0,0,0,0.2);
 }
 
-/* Hide header when booking */
 header.hide-header {
   transform: translateY(-100%);
 }
-    .container{max-width:960px;margin:0 auto;padding:64px 20px}
-    .brand{font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:10px}
-    .brand img{height:40px;width:auto;border-radius:6px}
-    nav{float:right}
-    nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:15px}
-  .hero{
+
+header.shrink {
+  padding: 4px 10px;
+}
+
+/* LAYOUT */
+.container{
+  max-width:960px;
+  margin:0 auto;
+  padding:40px 20px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.brand img{
+  height:40px;
+}
+
+.brand span{
+  font-size:18px;
+  font-weight:700;
+}
+
+/* HERO */
+.hero{
   padding:120px 20px;
   text-align:center;
-  background-image: url("header.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  color: #fff;
-  position: relative;}
-.hero .left{
-  max-width:100%;
-  margin:0 auto;}
-    h1{margin:0 0 8px;font-size:28px}
-    p.lead{margin:0;color:var(--muted)}
-    .cta{display:inline-block;margin-top:14px;padding:10px 16px;background:var(--accent);color:#111;border-radius:6px;text-decoration:none;font-weight:600}
-
-    section{   padding:40px 0;   border-bottom:1px solid #eee; }
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-    .card{background:#fafafa;padding:16px;border-radius:8px}
-
-    ul.places{padding-left:18px;margin:8px 0;color:var(--muted)}
-    form input,
-form textarea,
-form select {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  margin-top: 6px;
-  font-size: 15px;
-  background: #fafafa;
-  transition: all 0.2s ease;
-}
-    form input:focus,
-form textarea:focus,
-form select:focus {
-  outline: none;
-  border-color: #FFC107;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255,193,7,0.2);
-}
-    form label{font-weight:600;font-size:14px}
-    .btn{display:inline-block;padding:14px 22px;background:var(--accent);color:#111;border-radius:10px;border:0;font-weight:700;cursor:pointer;margin-top:14px;font-size:16px;}
-    footer{padding:24px 0;text-align:center;color:var(--muted);font-size:14px}
-
-    .social-links a{color:var(--accent);margin:0 10px;text-decoration:none;font-weight:600}
-
-    @media (max-width:800px){
-      .grid{grid-template-columns:1fr}
-      nav{float:none;margin-top:8px}
-      .hero{flex-direction:column;align-items:flex-start}
-      .hero .left{max-width:100%}
-      section{padding:40px 0;}
-    }
-    .small{font-size:13px;color:var(--muted)}
-    .booking-card{
-  background:#fff;
-  max-width:600px;
-  margin:0 auto;
-  padding:32px;
-  border-radius:16px;
-  box-shadow:0 20px 40px rgba(0,0,0,0.1);}
-
-.call-now {
-  display: none;
-  position: fixed;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent); /* original yellow */
-  color: #111;
-  padding: 16px 36px;
-  border-radius: 999px;
-  font-weight: 900;
-  font-size: 18px;
-  text-decoration: none;
-  box-shadow: 0 14px 32px rgba(0,0,0,0.35);
-  z-index: 1000;
+  background:url("header.jpg") center/cover no-repeat;
+  color:#fff;
+  position:relative;
 }
 
-@media (max-width:768px){
-  .call-now{display:block;}}
-    .hero::before{
+.hero::before{
   content:"";
   position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
+  inset:0;
   background:rgba(0,0,0,0.6);
-  z-index:0;
 }
 
 .hero .container{
   position:relative;
-  z-index:1;
-}
-    /* Improve hero text visibility */
-.hero .lead {
-  font-size: 18px;
-  font-weight: 500;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.45);
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 6px;
-  margin-top: 14px;
-}
-    /* Tighten spacing between text sections */
-p {
-  margin-top: 0;
-  margin-bottom: 10px;
 }
 
-h2 {
-  margin-top: 24px;
-  margin-bottom: 10px;
-}
-/* Booking forms side-by-side */
-.booking-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
+.hero .lead{
+  background:rgba(0,0,0,0.45);
+  padding:10px;
+  border-radius:6px;
 }
 
-.booking-card-ui {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+/* SECTIONS */
+section{
+  padding:40px 0;
+  border-bottom:1px solid #eee;
 }
 
-/* Mobile: stack */
-@media (max-width: 768px) {
-  .booking-grid {
-    grid-template-columns: 1fr;
-  }
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
 }
-  /* Header booking buttons */
-.header-booking-nav {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.nav-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.nav-btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  white-space: nowrap;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media(max-width:768px){
+  .grid{grid-template-columns:1fr;}
+}
+
+/* CARDS */
+.card{
+  background:#fafafa;
+  padding:16px;
+  border-radius:8px;
+}
+
+/* PREMIUM FORM (FIXED) */
+#booking input,
+#booking textarea,
+#booking select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  margin-top: 6px;
+  font-size: 16px;
+  background: #fafafa;
   transition: all 0.2s ease;
 }
-.nav-btn:hover {
-  transform: translateY(-2px);
-  opacity: 0.9;
-}
-/* Button colours */
-.nav-btn.whatsapp {
-  background: #25D366;
-  color: white;
+
+#booking input:focus,
+#booking textarea:focus,
+#booking select:focus {
+  outline: none;
+  border-color: #FFC107;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(255,193,7,0.25);
 }
 
-.nav-btn.email {
-  background: #FFC107;
-  color: #111;
+/* BUTTON */
+.btn{
+  display:inline-block;
+  padding:14px 22px;
+  background:var(--accent);
+  color:#111;
+  border-radius:10px;
+  font-weight:700;
+  border:none;
+  cursor:pointer;
+  margin-top:14px;
 }
 
-.nav-btn.call {
-  background: #0f172a;
-  color: white;
-  font-weight: 800;
-  font-size: 15px;
-  padding: 10px 18px;
+/* NAV BUTTONS */
+.header-booking-nav{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
-/* Mobile friendly */
-@media (max-width: 600px) {
-  .header-booking-nav {
-    justify-content: center;
-    margin-top: 8px;
+.nav-btn{
+  padding:8px 14px;
+  border-radius:6px;
+  text-decoration:none;
+  font-weight:700;
+  font-size:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:0.2s;
+}
+
+.nav-btn:hover{
+  transform:translateY(-2px);
+}
+
+.nav-btn.whatsapp{
+  background:#25D366;
+  color:#fff;
+}
+
+.nav-btn.email{
+  background:#FFC107;
+  color:#111;
+}
+
+.nav-btn.call{
+  background:#0f172a;
+  color:#fff;
+  font-weight:800;
+}
+
+/* DROPDOWN */
+.dropdown{position:relative;}
+
+.dropdown-content{
+  display:none;
+  position:absolute;
+  background:#fff;
+  min-width:220px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  border-radius:8px;
+  top:40px;
+  right:0;
+}
+
+.dropdown-content a{
+  display:block;
+  padding:12px;
+  color:#111;
+  text-decoration:none;
+}
+
+.dropdown-content a:hover{
+  background:#f3f3f3;
+}
+
+.dropdown:hover .dropdown-content{
+  display:block;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+
+  header .container{
+    flex-direction:column;
+    text-align:center;
   }
 
-  .nav-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px 0;
-  }
-  .nav-btn.call {
-  font-size: 16px;
-  padding: 12px 0;
-}
-}
-  /* Header shrink effect */
-header.shrink {
-  padding: 6px 20px;
-}
-
-header.shrink .brand img {
-  height: 50px;
-  transition: 0.3s ease;
-}
-
-header {
-  transition: all 0.3s ease;
-}
-    /* MOBILE HEADER FIX – EXTRA COMPACT */
-@media (max-width: 600px) {
-
-  header {
-    padding: 6px 10px;
-  }
-
-  header .container {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 6px 10px;
-  }
-
-  .brand {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .brand img {
-    height: 42px;
-  }
-
-  .brand span {
-    font-size: 16px;
-    line-height: 1.1;
-  }
-
-  .header-booking-nav {
-    width: 100%;
-    justify-content: center;
-    margin-top: 6px;
-    gap: 6px;
-  }
-
-  .nav-btn {
-    flex: 1;
-    font-size: 13px;
-    padding: 8px 0;
+  .nav-btn{
+    flex:1;
+    padding:10px 0;
   }
 }
 
-   /* Dropdown menu */
-.dropdown {
-  position: relative;
+/* CALL BUTTON */
+.call-now{
+  display:none;
+  position:fixed;
+  bottom:16px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--accent);
+  padding:16px 36px;
+  border-radius:999px;
+  font-weight:900;
+  text-decoration:none;
+  box-shadow:0 14px 32px rgba(0,0,0,0.35);
 }
 
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background: white;
-  min-width: 220px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-  border-radius: 8px;
-  overflow: hidden;
-  top: 40px;
-  right: 0;
-  z-index: 999;
+@media(max-width:768px){
+  .call-now{display:block;}
 }
-
-.dropdown-content a {
-  display: block;
-  padding: 12px 14px;
-  text-decoration: none;
-  color: #111;
-}
-
-.dropdown-content a:hover {
-  background: #f3f3f3;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
-} 
-    .logo {
-  height: 40px;
-}
-
-.brand-text {
-  font-size: 18px;
-  font-weight: 700;
-}
-    .header-flex {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-  </style>
+</style>
   <script type="application/ld+json">
 {
     "@context": "https://schema.org",
