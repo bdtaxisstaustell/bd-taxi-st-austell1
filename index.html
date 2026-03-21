@@ -913,27 +913,30 @@ train station pick-ups, and private hire services across St Austell and surround
   <a href="tel:01726806556" class="call-now">Call Now</a>
 <script>
 
-/* GOOGLE AUTOCOMPLETE (SAFE + NO DUPLICATES) */
+/* GOOGLE AUTOCOMPLETE (FIXED + RELIABLE) */
 let autocompleteInitialized = false;
 
 function initAutocomplete() {
   if (!window.google || !google.maps || autocompleteInitialized) return;
 
-  const fields = [
-    "pickupAddress",
-    "dropoffAddress",
-    "pickupAddressEmail",
-    "dropoffAddressEmail"
-  ];
+  const setupAutocomplete = (id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
 
-  fields.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      new google.maps.places.Autocomplete(el, {
-        componentRestrictions: { country: "gb" }
-      });
-    }
-  });
+    const auto = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: "gb" }
+    });
+
+    // 🔥 CRITICAL FIX (fires when user selects suggestion)
+    auto.addListener("place_changed", function () {
+      setTimeout(calculatePrice, 200); // small delay = stable
+    });
+  };
+
+  setupAutocomplete("pickupAddress");
+  setupAutocomplete("dropoffAddress");
+  setupAutocomplete("pickupAddressEmail");
+  setupAutocomplete("dropoffAddressEmail");
 
   autocompleteInitialized = true;
 }
@@ -964,11 +967,9 @@ function calculatePrice() {
     return;
   }
 
-  // USE SELECTED TIME OR CURRENT TIME
   const selectedTime = document.getElementById("time")?.value;
   let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
 
-  // DAY / NIGHT RATES
   let ratePerMile = 2.7;
   let minimumFare = 5.5;
 
@@ -1094,14 +1095,14 @@ function setLater() {
 /* AUTO INIT */
 document.addEventListener("DOMContentLoaded", function () {
 
-  // SET TODAY DATE
+  // Set today's date
   const dateInput = document.getElementById("date");
   if (dateInput) {
     const today = new Date().toISOString().split("T")[0];
     dateInput.value = today;
   }
 
-  // DEFAULT ASAP
+  // Default ASAP
   setASAP();
 
   const inputs = ["pickupAddress", "dropoffAddress", "time"];
@@ -1111,6 +1112,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (el) {
       el.addEventListener("input", calculatePrice);
       el.addEventListener("change", calculatePrice);
+      el.addEventListener("blur", calculatePrice); // 🔥 mobile fix
     }
   });
 
