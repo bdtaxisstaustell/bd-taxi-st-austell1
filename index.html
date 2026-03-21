@@ -386,6 +386,24 @@ section{
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
+  "@type": "TaxiService",
+  "name": "BD Taxi St Austell",
+  "areaServed": {
+    "@type": "Place",
+    "name": "St Austell, Cornwall"
+  },
+  "serviceArea": [
+    "PL24",
+    "PL25",
+    "PL26"
+  ],
+  "url": "https://www.taxistaustell.co.uk",
+  "telephone": "+441726806556"
+}
+</script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
     {
@@ -459,9 +477,10 @@ gtag('config', 'G-0T3NNG0DZX');
   </button>
 
   <div class="dropdown-content">
-  <a href="/taxi-mevagissey.html">Taxi to Mevagissey</a>
-  <a href="/taxi-fowey.html">Taxi to Fowey</a>
-  <a href="/taxi-par.html">Taxi to Par</a>
+    <a href="taxi-mevagissey.html">Taxi to Mevagissey</a>
+    <a href="taxi-fowey.html">Taxi to Fowey</a>
+    <a href="taxi-par.html">Taxi to Par</a>
+  </div>
 </div>
   
 </nav>
@@ -611,7 +630,7 @@ gtag('config', 'G-0T3NNG0DZX');
       </div>
     </section>
         <section>
-      <div class="container" style="text-align:center;padding-top:30px;">
+      <div class="container" ="text-align:center;padding-top:30px;">
         <p style="font-size:15px;font-weight:600;">
           ✔ Local St Austell taxi service &nbsp;•&nbsp;
           ✔ Fully insured &nbsp;•&nbsp;
@@ -700,37 +719,23 @@ train station pick-ups, and private hire services across St Austell and surround
 
     </section>
 
-    <section id="book-info">
-  <div class="container">
-    
-    <h2>Book a Taxi in St Austell</h2>
+    <section id="booking">
+      <div class="container">
+        <h2>Book a Taxi in St Austell</h2> <p class="small">   Book a reliable local taxi in St Austell for airport transfers, local journeys,   train station pickups and private hire. Serving PL24, PL25 and PL26. </p>
+        <p class="small">Complete the form below to request a booking. You will receive a confirmation once we respond. For urgent jobs call <strong>01726 806556</strong>.</p>
+        <div class="booking-card">
+          <p class="small" style="text-align:center;">
+  For urgent bookings, call us now:
+</p>
 
-    <p class="small">
-      Book a reliable local taxi in St Austell for airport transfers, local journeys,
-      train station pickups and private hire. Serving PL24, PL25 and PL26.
-    </p>
+<p style="text-align:center; margin:20px 0;">
+  <a href="tel:01726806556" class="btn">Call Now for Instant Booking</a>
+</p>
 
-    <p class="small">
-      Complete the form above to request a booking. You will receive a confirmation once we respond.
-      For urgent jobs call <strong>01726 806556</strong>.
-    </p>
-
-    <div class="booking-card">
-
-      <p class="small" style="text-align:center;">
-        For urgent bookings, call us now:
-      </p>
-
-      <p style="text-align:center; margin:20px 0;">
-        <a href="tel:01726806556" class="btn">
-          Call Now for Instant Booking
-        </a>
-      </p>
-
-    </div>
-
+<div class="booking-card">
   </div>
-</section>
+
+        </section>
 
     <section id="events">
       <div class="container">
@@ -1115,7 +1120,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 <script 
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
+  src="https://maps.googleapis.com/maps/api/js?key= AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
   async defer>
 </script>
 
