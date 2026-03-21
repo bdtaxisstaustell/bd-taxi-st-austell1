@@ -997,8 +997,10 @@ function calculatePrice() {
   const truro = ["truro"];
   const bodmin = ["bodmin"];
   const gorran = ["gorran haven"];
+  const eden = ["eden project", "eden"];
 
   miles =
+    routeMatch(stAustell, eden, 5) ||   //
     routeMatch(stAustell, mevagissey, 6) ||
     routeMatch(stAustell, fowey, 7) ||
     routeMatch(stAustell, par, 3) ||
