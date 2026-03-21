@@ -917,10 +917,9 @@ train station pick-ups, and private hire services across St Austell and surround
 <script>
 
 /* GOOGLE AUTOCOMPLETE (FIXED + RELIABLE) */
-let autocompleteInitialized = false;
 
 function initAutocomplete() {
-  if (!window.google || !google.maps || autocompleteInitialized) return;
+  if (!window.google || !google.maps) return;
 
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
@@ -930,31 +929,20 @@ function initAutocomplete() {
       componentRestrictions: { country: "gb" }
     });
 
-    // 🔥 CRITICAL FIX (fires when user selects suggestion)
     auto.addListener("place_changed", function () {
-  setTimeout(getDistanceAndCalculate, 200);
-});
+      setTimeout(() => {
+        if (typeof getDistanceAndCalculate === "function") {
+          getDistanceAndCalculate();
+        }
+      }, 200);
+    });
+  };
 
   setupAutocomplete("pickupAddress");
   setupAutocomplete("dropoffAddress");
   setupAutocomplete("pickupAddressEmail");
   setupAutocomplete("dropoffAddressEmail");
-
-  autocompleteInitialized = true;
 }
-
-
-/* SET DESTINATION */
-function setDestination(destination) {
-  const dropoff = document.getElementById("dropoffAddress");
-  if (dropoff) {
-    dropoff.value = destination;
-    dropoff.scrollIntoView({ behavior: "smooth" });
-    getDistanceAndCalculate();
-  }
-}
-
-
 /* PRICE ESTIMATOR */
 function getDistanceAndCalculate() {
 
