@@ -307,6 +307,56 @@ section{
   border-radius: 999px;
   margin-left: 8px;
 }
+/* UBER STYLE FORM */
+
+.uber-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-group label {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #64748b;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.uber-btn {
+  background: linear-gradient(135deg, #FFC107, #ffb300);
+  color: #111;
+  border: none;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 800;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s ease;
+}
+
+.uber-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}  
 </style>
   <script type="application/ld+json">
 {
@@ -433,45 +483,57 @@ gtag('config', 'G-0T3NNG0DZX');
 <p style="text-align:center;color:#64748b;">
   Fast local taxi bookings in St Austell
 </p>
-  <div class="booking-grid">
-<div class="booking-card-ui" id="whatsapp-booking">
-  <h2 style="text-align:center;">
-  🚕 Instant Taxi Booking
-  <span style="background:#25D366;color:white;font-size:12px;padding:4px 8px;border-radius:999px;margin-left:8px;">
-    RECOMMENDED
-  </span>
-</h2>
-  <p style="text-align:center;color:#64748b;font-size:14px;margin-bottom:14px;">
-  Fastest way to book — ideal for mobile users
-</p>
-  <!-- YOUR WHATSAPP NUMBER (NO +, NO SPACES) -->
-  <input type="hidden" id="waNumber" value="441726806556">
+ <div class="booking-card-ui">
 
-  <label>Name</label>
-  <input id="name" placeholder="Your name" style="width:100%;padding:10px;margin-bottom:10px">
+  <h2 class="booking-title">
+    🚕 Instant Taxi Booking
+    <span class="badge">RECOMMENDED</span>
+  </h2>
 
-  <label>Pick-up location</label>
-<input id="pickupAddress" placeholder="Pick-up address"
-  style="width:100%;padding:10px;margin-bottom:10px">
+  <p class="booking-subtitle">
+    Enter your journey details — takes 10 seconds
+  </p>
 
-  <label>Drop-off location</label>
-  <input id="dropoffAddress" placeholder="Drop-off address"
-  style="width:100%;padding:10px;margin-bottom:10px">
+  <div class="uber-form">
 
-  <label>Date</label>
-  <input id="date" type="date" style="width:100%;padding:10px;margin-bottom:10px">
+    <div class="input-group">
+      <label>📍 Pick-up</label>
+      <input id="pickupAddress" placeholder="Enter pickup location">
+    </div>
 
-  <label>Time</label>
-  <input id="time" type="time" style="width:100%;padding:10px;margin-bottom:15px">
-  <label>Number of passengers</label>
-<input id="passengers" type="number" min="1" max="8" placeholder="e.g. 1–4"
-  style="width:100%;padding:10px;margin-bottom:15px">
+    <div class="input-group">
+      <label>🏁 Drop-off</label>
+      <input id="dropoffAddress" placeholder="Where are you going?">
+    </div>
 
-  <button type="button" onclick="sendWhatsApp()"
-  style="background:#25D366;color:white;padding:14px;width:100%;font-size:18px;border:none;border-radius:8px;">
-  Book instantly via WhatsApp
-</button>
+    <div class="form-row">
+      <div class="input-group">
+        <label>📅 Date</label>
+        <input id="date" type="date">
+      </div>
+
+      <div class="input-group">
+        <label>⏰ Time</label>
+        <input id="time" type="time">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>👥 Passengers</label>
+      <input id="passengers" type="number" min="1" max="8" placeholder="1–4 passengers">
+    </div>
+
+    <div class="input-group">
+      <label>👤 Your Name</label>
+      <input id="name" placeholder="Your name">
+    </div>
+
+    <button onclick="sendWhatsApp()" class="uber-btn">
+      🚕 Get Taxi via WhatsApp
+    </button>
+
   </div>
+</div>
 
 <div class="booking-card-ui" id="email-booking">
   <h3 style="text-align:center;">📧 Email Booking</h3>
