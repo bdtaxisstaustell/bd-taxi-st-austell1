@@ -39,6 +39,13 @@ header {
   box-shadow: 0 6px 20px rgba(0,0,0,0.2);
 }
 
+header .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+}
+
 header.hide-header {
   transform: translateY(-100%);
 }
@@ -61,12 +68,13 @@ header.shrink {
 }
 
 .brand img{
-  height:40px;
+  height:42px;
 }
 
 .brand span{
   font-size:18px;
   font-weight:700;
+  line-height:1;
 }
 
 /* HERO */
@@ -118,7 +126,7 @@ section{
   border-radius:8px;
 }
 
-/* BOOKING CARD (IMPROVED) */
+/* BOOKING CARD */
 .booking-card-ui {
   text-align: left;
   background: #ffffff;
@@ -127,7 +135,7 @@ section{
   box-shadow: 0 12px 30px rgba(0,0,0,0.08);
 }
 
-/* PREMIUM FORM */
+/* FORM */
 #booking input,
 #booking textarea,
 #booking select {
@@ -169,11 +177,12 @@ section{
   transform: translateY(-2px);
 }
 
-/* NAV BUTTONS */
+/* NAV */
 .header-booking-nav{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
+  align-items:center;
 }
 
 .nav-btn{
@@ -210,7 +219,9 @@ section{
 }
 
 /* DROPDOWN */
-.dropdown{position:relative;}
+.dropdown{
+  position:relative;
+}
 
 .dropdown-content{
   display:none;
@@ -219,7 +230,8 @@ section{
   min-width:220px;
   box-shadow:0 10px 30px rgba(0,0,0,0.2);
   border-radius:8px;
-  top:40px;
+  top:100%;
+  margin-top:6px;
   right:0;
   overflow:hidden;
 }
