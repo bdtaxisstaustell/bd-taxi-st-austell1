@@ -932,9 +932,8 @@ function initAutocomplete() {
 
     // 🔥 CRITICAL FIX (fires when user selects suggestion)
     auto.addListener("place_changed", function () {
-      setTimeout(calculatePrice, 200); // small delay = stable
-    });
-  };
+  setTimeout(getDistanceAndCalculate, 200);
+});
 
   setupAutocomplete("pickupAddress");
   setupAutocomplete("dropoffAddress");
@@ -951,13 +950,13 @@ function setDestination(destination) {
   if (dropoff) {
     dropoff.value = destination;
     dropoff.scrollIntoView({ behavior: "smooth" });
-    calculatePrice();
+    getDistanceAndCalculate();
   }
 }
 
 
 /* PRICE ESTIMATOR */
-function calculatePrice() {
+function getDistanceAndCalculate() {
 
   let pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || ""; let dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";  // FORCE St Austell to behave as station if (pickup.includes("st austell") && !pickup.includes("station")) {   pickup += " station"; }  if (dropoff.includes("st austell") && !dropoff.includes("station")) {   dropoff += " station"; }
   const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
@@ -1086,7 +1085,7 @@ function setASAP() {
   const wrapper = document.getElementById("timeWrapper");
   if (wrapper) wrapper.style.display = "none";
 
-  calculatePrice();
+  getDistanceAndCalculate();
 }
 
 
@@ -1115,9 +1114,9 @@ document.addEventListener("DOMContentLoaded", function () {
   inputs.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.addEventListener("input", calculatePrice);
-      el.addEventListener("change", calculatePrice);
-      el.addEventListener("blur", calculatePrice); // 🔥 mobile fix
+      el.addEventListener("input", getDistanceAndCalculate);
+      el.addEventListener("change", getDistanceAndCalculate);
+      el.addEventListener("blur", getDistanceAndCalculate); // 🔥 mobile fix
     }
   });
 
