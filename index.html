@@ -40,10 +40,11 @@ header {
 }
 
 header .container {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:10px 20px;
 }
 
 header.hide-header {
@@ -51,7 +52,7 @@ header.hide-header {
 }
 
 header.shrink {
-  padding: 4px 10px;
+  padding:4px 10px;
 }
 
 /* LAYOUT */
@@ -128,35 +129,36 @@ section{
 
 /* BOOKING CARD */
 .booking-card-ui {
-  text-align: left;
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+  text-align:left;
+  background:#ffffff;
+  padding:24px;
+  border-radius:16px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+  border:1px solid #f1f5f9;
 }
 
 /* FORM */
 #booking input,
 #booking textarea,
 #booking select {
-  width: 100%;
-  padding: 14px;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  margin-top: 6px;
-  margin-bottom: 12px;
-  font-size: 16px;
-  background: #fafafa;
-  transition: all 0.2s ease;
+  width:100%;
+  padding:14px;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  margin-top:6px;
+  margin-bottom:12px;
+  font-size:16px;
+  background:#fafafa;
+  transition:all 0.25s ease;
 }
 
 #booking input:focus,
 #booking textarea:focus,
 #booking select:focus {
-  outline: none;
-  border-color: #FFC107;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255,193,7,0.25);
+  outline:none;
+  border-color:#FFC107;
+  background:#ffffff;
+  box-shadow:0 0 0 3px rgba(255,193,7,0.25);
 }
 
 /* BUTTON */
@@ -174,7 +176,7 @@ section{
 }
 
 .btn:hover{
-  transform: translateY(-2px);
+  transform:translateY(-2px);
 }
 
 /* NAV */
@@ -186,7 +188,7 @@ section{
 }
 
 .nav-btn{
-  padding:8px 14px;
+  padding:10px 16px;
   border-radius:6px;
   text-decoration:none;
   font-weight:700;
@@ -195,6 +197,7 @@ section{
   align-items:center;
   justify-content:center;
   transition:0.2s;
+  height:40px;
 }
 
 .nav-btn:hover{
@@ -251,7 +254,7 @@ section{
   display:block;
 }
 
-/* MOBILE */
+/* MOBILE FIX */
 @media(max-width:600px){
 
   header .container{
@@ -262,6 +265,12 @@ section{
   .nav-btn{
     flex:1;
     padding:10px 0;
+  }
+
+  .dropdown-content{
+    position:static;
+    width:100%;
+    margin-top:6px;
   }
 }
 
@@ -286,77 +295,76 @@ section{
 
 /* BOOKING TITLE */
 .booking-title {
-  text-align: center;
-  font-size: 24px;
-  font-weight: 800;
-  margin-bottom: 6px;
+  text-align:center;
+  font-size:24px;
+  font-weight:800;
+  margin-bottom:6px;
 }
 
 .booking-subtitle {
-  text-align: center;
-  color: #64748b;
-  font-size: 14px;
-  margin-bottom: 20px;
+  text-align:center;
+  color:#64748b;
+  font-size:14px;
+  margin-bottom:20px;
 }
 
 .badge {
-  background: #25D366;
-  color: white;
-  font-size: 11px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  margin-left: 8px;
+  background:#25D366;
+  color:white;
+  font-size:11px;
+  padding:5px 10px;
+  border-radius:999px;
+  margin-left:8px;
 }
-/* UBER STYLE FORM */
 
+/* UBER FORM */
 .uber-form {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
 }
 
 .input-group {
-  display: flex;
-  flex-direction: column;
+  display:flex;
+  flex-direction:column;
 }
 
 .input-group label {
-  font-size: 13px;
-  font-weight: 600;
-  margin-bottom: 4px;
-  color: #64748b;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:4px;
+  color:#64748b;
 }
 
 .form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
 }
 
 .uber-btn {
-  background: linear-gradient(135deg, #FFC107, #ffb300);
-  color: #111;
-  border: none;
-  padding: 16px;
-  font-size: 17px;
-  font-weight: 800;
-  border-radius: 12px;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: all 0.2s ease;
+  background:linear-gradient(135deg, #FFC107, #ffb300);
+  color:#111;
+  border:none;
+  padding:16px;
+  font-size:17px;
+  font-weight:800;
+  border-radius:12px;
+  cursor:pointer;
+  margin-top:10px;
+  transition:all 0.2s ease;
 }
 
 .uber-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+  transform:translateY(-2px) scale(1.02);
+  box-shadow:0 12px 24px rgba(0,0,0,0.2);
 }
 
-/* MOBILE */
 @media(max-width:600px){
   .form-row {
-    grid-template-columns: 1fr;
+    grid-template-columns:1fr;
   }
-}  
+}
 </style>
   <script type="application/ld+json">
 {
