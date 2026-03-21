@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <link rel="icon" type="image/png" href="/favicon.png">
- 
-  <title>Taxi St Austell | BD Taxi – Airport Transfers & Local Cabs PL24 PL25 PL26</title>
-  <meta name="description" content="Taxi in St Austell providing local cabs, airport transfers and train station pick-ups across PL24, PL25 and PL26. Book via WhatsApp, call or email for fast and reliable service.">
+<meta charset="utf-8" />
+<link rel="icon" type="image/png" href="/favicon.png">
+
+<title>Taxi St Austell | BD Taxi – Airport Transfers & Local Cabs PL24 PL25 PL26</title>
+
+<meta name="description" content="Taxi in St Austell providing local cabs, airport transfers and train station pick-ups across PL24, PL25 and PL26. Book via WhatsApp, call or email for fast and reliable service.">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="google-site-verification" content="ELEdWu0aS9oOm1B4TnLeswzmgkuIpU-RglBoxHDuiW8" />
+
 <style>
 :root {
   --accent:#FFC107;
@@ -29,30 +30,11 @@ body{
 /* HEADER */
 header {
   background: rgba(15, 23, 42, 0.9);
-  backdrop-filter: blur(8px);
   color: #fff;
   padding: 6px 12px;
-  transition: all 0.3s ease;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-}
-
-header .container {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 20px;
-}
-
-header.hide-header {
-  transform: translateY(-100%);
-}
-
-header.shrink {
-  padding:4px 10px;
 }
 
 /* LAYOUT */
@@ -68,14 +50,11 @@ header.shrink {
   gap:10px;
 }
 
-.brand img{
-  height:42px;
-}
+.brand img{height:42px;}
 
 .brand span{
   font-size:18px;
   font-weight:700;
-  line-height:1;
 }
 
 /* HERO */
@@ -84,24 +63,6 @@ header.shrink {
   text-align:center;
   background:url("header.jpg") center/cover no-repeat;
   color:#fff;
-  position:relative;
-}
-
-.hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.6);
-}
-
-.hero .container{
-  position:relative;
-}
-
-.hero .lead{
-  background:rgba(0,0,0,0.45);
-  padding:10px;
-  border-radius:6px;
 }
 
 /* SECTIONS */
@@ -120,1073 +81,200 @@ section{
   .grid{grid-template-columns:1fr;}
 }
 
-/* CARDS */
+/* CARD */
 .card{
   background:#fafafa;
   padding:16px;
   border-radius:8px;
 }
 
-/* BOOKING CARD */
-.booking-card-ui {
-  text-align:left;
-  background:#ffffff;
-  padding:24px;
-  border-radius:16px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.08);
-  border:1px solid #f1f5f9;
-}
-
 /* FORM */
-#booking input,
-#booking textarea,
-#booking select {
+input, textarea, select{
   width:100%;
   padding:14px;
   border:1px solid #e5e7eb;
   border-radius:12px;
-  margin-top:6px;
   margin-bottom:12px;
-  font-size:16px;
-  background:#fafafa;
-  transition:all 0.25s ease;
-}
-
-#booking input:focus,
-#booking textarea:focus,
-#booking select:focus {
-  outline:none;
-  border-color:#FFC107;
-  background:#ffffff;
-  box-shadow:0 0 0 3px rgba(255,193,7,0.25);
 }
 
 /* BUTTON */
 .btn{
-  display:inline-block;
   padding:14px 22px;
   background:var(--accent);
-  color:#111;
   border-radius:10px;
   font-weight:700;
   border:none;
   cursor:pointer;
-  margin-top:14px;
-  transition:0.2s;
-}
-
-.btn:hover{
-  transform:translateY(-2px);
 }
 
 /* NAV */
-.header-booking-nav{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  align-items:center;
-}
-
 .nav-btn{
   padding:10px 16px;
   border-radius:6px;
   text-decoration:none;
   font-weight:700;
   font-size:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  transition:0.2s;
-  height:40px;
 }
 
-.nav-btn:hover{
-  transform:translateY(-2px);
-  opacity:0.9;
-}
-
-.nav-btn.whatsapp{
-  background:#25D366;
-  color:#fff;
-}
-
-.nav-btn.email{
-  background:#FFC107;
-  color:#111;
-}
-
-.nav-btn.call{
-  background:#0f172a;
-  color:#fff;
-  font-weight:800;
-}
-
-/* DROPDOWN */
-.dropdown{
-  position:relative;
-}
-
-.dropdown-content{
-  display:none;
-  position:absolute;
-  background:#fff;
-  min-width:220px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.2);
-  border-radius:8px;
-  top:100%;
-  margin-top:6px;
-  right:0;
-  overflow:hidden;
-}
-
-.dropdown-content a{
-  display:block;
-  padding:12px;
-  color:#111;
-  text-decoration:none;
-}
-
-.dropdown-content a:hover{
-  background:#f3f3f3;
-}
-
-.dropdown:hover .dropdown-content{
-  display:block;
-}
-
-/* MOBILE FIX */
-@media(max-width:600px){
-
-  header .container{
-    flex-direction:column;
-    text-align:center;
-  }
-
-  .nav-btn{
-    flex:1;
-    padding:10px 0;
-  }
-
-  .dropdown-content{
-    position:static;
-    width:100%;
-    margin-top:6px;
-  }
-}
-
-/* CALL BUTTON */
-.call-now{
-  display:none;
-  position:fixed;
-  bottom:16px;
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--accent);
-  padding:16px 36px;
-  border-radius:999px;
-  font-weight:900;
-  text-decoration:none;
-  box-shadow:0 14px 32px rgba(0,0,0,0.35);
-}
-
-@media(max-width:768px){
-  .call-now{display:block;}
-}
-
-/* BOOKING TITLE */
-.booking-title {
-  text-align:center;
-  font-size:24px;
-  font-weight:800;
-  margin-bottom:6px;
-}
-
-.booking-subtitle {
-  text-align:center;
-  color:#64748b;
-  font-size:14px;
-  margin-bottom:20px;
-}
-
-.badge {
-  background:#25D366;
-  color:white;
-  font-size:11px;
-  padding:5px 10px;
-  border-radius:999px;
-  margin-left:8px;
-}
-
-/* UBER FORM */
-.uber-form {
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-}
-
-.input-group {
-  display:flex;
-  flex-direction:column;
-}
-
-.input-group label {
-  font-size:13px;
-  font-weight:600;
-  margin-bottom:4px;
-  color:#64748b;
-}
-
-.form-row {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-.uber-btn {
-  background:linear-gradient(135deg, #FFC107, #ffb300);
-  color:#111;
-  border:none;
-  padding:16px;
-  font-size:17px;
-  font-weight:800;
-  border-radius:12px;
-  cursor:pointer;
-  margin-top:10px;
-  transition:all 0.2s ease;
-}
-
-.uber-btn:hover {
-  transform:translateY(-2px) scale(1.02);
-  box-shadow:0 12px 24px rgba(0,0,0,0.2);
-}
-
-@media(max-width:600px){
-  .form-row {
-    grid-template-columns:1fr;
-  }
-}
+.whatsapp{background:#25D366;color:#fff;}
+.email{background:#FFC107;color:#111;}
+.call{background:#0f172a;color:#fff;}
 </style>
-  <script type="application/ld+json">
-{
-    "@context": "https://schema.org",
-    "@type": "TaxiService",
-    "name": "BD Taxi St Austell",
-    "areaServed": {
-      "@type": "Place",
-      "name": "St Austell, Cornwall"
-    },
-    "telephone": "+441726806556",
-    "url": "https://www.taxistaustell.co.uk",
-    "sameAs": [
-    "https://www.facebook.com/profile.php?id=61580625347334",
-    "https://share.google/ViXyZL3N8Z51IjzLV"
-  ]
-}
-</script>
-  <script type="application/ld+json">
+
+<!-- CLEANED SCHEMA -->
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "TaxiService",
   "name": "BD Taxi St Austell",
-  "areaServed": {
-    "@type": "Place",
-    "name": "St Austell, Cornwall"
-  },
-  "serviceArea": [
-    "PL24",
-    "PL25",
-    "PL26"
-  ],
-  "url": "https://www.taxistaustell.co.uk",
-  "telephone": "+441726806556"
+  "areaServed": "St Austell, Cornwall",
+  "serviceArea": ["PL24","PL25","PL26"],
+  "telephone": "+441726806556",
+  "url": "https://www.taxistaustell.co.uk"
 }
 </script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "How do I book a taxi in St Austell?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "You can book a taxi in St Austell using our online booking form, booking via WhatsApp, or by calling 01726 806556."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Do you offer airport transfers?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, we provide airport transfers from St Austell to Newquay Airport, Exeter Airport and other UK airports by advance booking."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Which areas do you cover?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "We cover St Austell and surrounding areas including Par, Mevagissey, St Blazey, Bugle, Nanpean, St Dennis, St Stephen and Fowey."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Are your taxis available for early morning or late-night bookings?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Yes, our taxi service is available for early morning and late-night bookings. Advance booking is recommended."
-      }
-    }
-  ]
-}
-</script>
-  <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-0T3NNG0DZX"></script>
-<script>
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'G-0T3NNG0DZX');
-</script>
+
 </head>
+
 <body>
-  <header>
-    <div class="container header-flex">
-      <div class="brand">
- <img src="logo.png" alt="BD Taxi St Austell Logo" class="logo">
-<span class="brand-text">BD TAXI ST AUSTELL</span>
-</div>
-<nav class="header-booking-nav">
 
-  <a href="#booking" class="nav-btn whatsapp">
-    🟢 Book WhatsApp
-  </a>
-
-  <a href="#email-booking" class="nav-btn email">
-    ✉️ Email Booking
-  </a>
-
-  <a href="tel:01726806556" class="nav-btn call">
-    📞 Call Us
-  </a>
-
-<div class="dropdown">
-  <button class="nav-btn" style="background:#333;color:white;">
-    📍 Routes ▼
-  </button>
-
-  <div class="dropdown-content">
-    <a href="taxi-mevagissey.html">Taxi to Mevagissey</a>
-    <a href="taxi-fowey.html">Taxi to Fowey</a>
-    <a href="taxi-par.html">Taxi to Par</a>
-  </div>
-</div>
-  
-</nav>
+<header>
+  <div class="container" style="display:flex;justify-content:space-between;align-items:center;">
+    <div class="brand">
+      <img src="logo.png" alt="BD Taxi St Austell Logo">
+      <span>BD TAXI ST AUSTELL</span>
     </div>
-  </header>  
-  <section id="booking" style="max-width:1000px;margin:40px auto;padding:16px;">
-  <h2 style="text-align:center;">📍 Book Your Taxi — Choose an option</h2>
-<p style="text-align:center;color:#64748b;">
-  Fast local taxi bookings in St Austell
-</p>
- <div class="booking-card-ui">
 
-  <h2 class="booking-title">
-    🚕 Instant Taxi Booking
-    <span class="badge">RECOMMENDED</span>
-  </h2>
-
-  <p class="booking-subtitle">
-    Enter your journey details — takes 10 seconds
-  </p>
-<div class="uber-form">
-
-  <!-- PICKUP -->
-  <div class="input-group">
-    <label>📍 Pick-up</label>
-    <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
-  </div>
-
-  <!-- DROPOFF -->
-  <div class="input-group">
-    <label>🏁 Drop-off</label>
-    <input id="dropoffAddress" placeholder="Where are you going?" autocomplete="off">
-  </div>
-
-  <!-- DATE -->
-  <div class="input-group">
-    <label>📅 Date</label>
-    <input id="date" type="date">
-  </div>
-
-  <!-- ASAP + LATER -->
-  <div style="display:flex;gap:10px;margin:14px 0;flex-wrap:wrap;">
-
-    <button type="button" onclick="setASAP()" 
-      style="flex:1;background:#25D366;color:white;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;">
-      ⚡ ASAP (15 mins)
-    </button>
-
-    <button type="button" onclick="setLater()" 
-      style="flex:1;background:#eee;color:#111;border:none;padding:12px;border-radius:10px;font-weight:700;cursor:pointer;">
-      📅 Schedule later
-    </button>
-
-  </div>
-
-  <!-- TIME -->
-  <div id="timeWrapper" class="input-group">
-    <label>⏰ Time</label>
-    <input id="time" type="time">
-  </div>
-
-  <!-- PASSENGERS -->
-  <div class="input-group">
-    <label>👥 Passengers</label>
-    <input id="passengers" type="number" min="1" max="8" placeholder="1–8 passengers">
-  </div>
-
-  <!-- NAME -->
-  <div class="input-group">
-    <label>👤 Your Name</label>
-    <input id="name" placeholder="Your name">
-  </div>
-
-  <!-- PRICE -->
-  <p id="priceEstimate" style="text-align:center;font-weight:700;margin-top:12px;color:#0f172a;"></p>
-
-  <!-- BUTTON -->
-  <button id="bookBtn" type="button" onclick="sendWhatsApp()" class="uber-btn" style="width:100%;margin-top:8px;">
-    🚕 Get Taxi via WhatsApp
-  </button>
-
-</div>
-
-<div class="booking-card-ui" id="email-booking">
-  <h3 style="text-align:center;">📧 Email Booking</h3>
-  <p style="text-align:center;color:#64748b;font-size:14px;margin-bottom:14px;">
-  Best for advance bookings or detailed requests
-</p>
-
-  <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
-    
-    <input type="hidden" name="_subject" value="New booking request - BD TAXI ST AUSTELL">
-    <input type="hidden" name="_captcha" value="true">
-    <input type="hidden" name="_next" value="https://www.taxistaustell.co.uk/thanks.html">
-
-    <label>Name</label>
-    <input name="Name" placeholder="Your full name" required>
-
-    <label>Phone</label>
-    <input name="Phone" placeholder="Mobile number" required>
-
-    <label>Email</label>
-    <input name="Email" type="email" placeholder="Email address (optional)">
-
-    <label>Pickup address</label>
-    <input id="pickupAddressEmail" name="Pickup" placeholder="Enter pickup location" required>
-
-    <label>Drop-off address</label>
-    <input id="dropoffAddressEmail" name="Dropoff" placeholder="Enter destination" required>
-
-    <label>Date</label>
-    <input name="Date" type="date" required>
-
-    <label>Time</label>
-    <input name="Time" type="time" required>
-
-    <label>Passengers / Luggage</label>
-    <input name="Passengers" placeholder="e.g. 2 passengers, 2 suitcases">
-
-    <label>Notes</label>
-    <textarea name="Notes" rows="3"></textarea>
-
-    <button class="btn" type="submit">Send booking request</button>
-    </form>
-</div>
+    <div style="display:flex;gap:8px;">
+      <a href="#booking" class="nav-btn whatsapp">WhatsApp</a>
+      <a href="#email-booking" class="nav-btn email">Email</a>
+      <a href="tel:01726806556" class="nav-btn call">Call</a>
     </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+<h1>Taxi in St Austell – Local Cabs & Airport Transfers</h1>
+<p>Reliable taxi service covering PL24, PL25 and PL26</p>
 </section>
-  <p style="text-align:center;margin-top:20px;font-weight:600;">
-  📞 Prefer to call?
-  <a href="tel:01726806556" style="color:#0f172a;text-decoration:none;">
-    Call 01726 806556
-  </a>
-</p>
-  <main>
-    <section id="airport-transfers" class="hero">
-      <div class="container">
-        <div class="left">
-         <h1>Taxi in St Austell – Local Cabs & Airport Transfers</h1>
 
-<p class="lead">
-  BD Taxi St Austell provides reliable local taxi services across PL24, PL25 and PL26.
-  We offer airport transfers, train station pick-ups and advance bookings throughout Cornwall.
-</p>
+<!-- BOOKING -->
+<section id="booking" style="max-width:1000px;margin:40px auto;padding:16px;">
+<h2 style="text-align:center;">📍 Book Your Taxi</h2>
 
-<a class="cta" href="#booking">Book Now</a>
-        </div>
-      </div>
-    </section>
-        <section>
-      <div class="container" ="text-align:center;padding-top:30px;">
-        <p style="font-size:15px;font-weight:600;">
-          ✔ Local St Austell taxi service &nbsp;•&nbsp;
-          ✔ Fully insured &nbsp;•&nbsp;
-          ✔ Airport & station transfers &nbsp;•&nbsp;
-          ✔ Advance bookings welcome
-        </p>
-      </div>
-    </section>
+<div class="card">
+
+<input id="pickupAddress" placeholder="Pickup location">
+<input id="dropoffAddress" placeholder="Dropoff location">
+
+<input id="date" type="date">
+<input id="time" type="time">
+
+<input id="passengers" type="number" placeholder="Passengers">
+<input id="name" placeholder="Your name">
+
+<p id="priceEstimate" style="text-align:center;font-weight:700;"></p>
+
+<button onclick="sendWhatsApp()" class="btn">Book via WhatsApp</button>
+
+</div>
+</section>
+
+<!-- EMAIL -->
+<section id="email-booking">
+<div class="container">
+<div class="card">
+
+<h3>Email Booking</h3>
+
+<form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
+
+<input name="Name" placeholder="Name" required>
+<input name="Phone" placeholder="Phone" required>
+<input name="Pickup" placeholder="Pickup" required>
+<input name="Dropoff" placeholder="Dropoff" required>
+
+<input name="Date" type="date" required>
+<input name="Time" type="time" required>
+
+<button class="btn" type="submit">Send booking request</button>
+
+</form>
+
+</div>
+</div>
+</section>
+
+<!-- SERVICE AREAS -->
 <section>
-  <div class="container" style="text-align:center;padding-top:10px;">
-    <p style="font-size:16px;font-weight:600;">
-      ⭐ BD Taxi St Austell — Rated 5.0 on Tripadvisor</p>
-  </div>
-</section>
+<div class="container">
 
-    <section id="about">
-      <div class="container">
-        <h2>About</h2>
-        <p>
-BD Taxi St Austell is a trusted local taxi service based in St Austell, Cornwall.
-We provide reliable local taxi journeys, airport transfers to Newquay and Exeter,
-train station pick-ups, and private hire services across St Austell and surrounding areas.
+<h2>Service Areas</h2>
+
+<p>
+We provide taxi services across St Austell and surrounding areas including
+Par, Mevagissey, St Blazey, Bugle, Nanpean, St Dennis, St Stephen and Fowey.
 </p>
-<h2>Reliable Taxi Service in St Austell Cornwall</h2>
 
-    <p>
-      BD Taxi St Austell provides a professional and reliable taxi service in
-      St Austell, Cornwall. We offer local taxi journeys, airport transfers,
-      train station pick-ups and private hire services across PL24, PL25 and PL26.
-    </p>
-      </div>
-    </section>
+<!-- ✅ SEO INTERNAL LINKS ADDED -->
+<h3>Popular Taxi Routes</h3>
 
-    <section id="local-rides">
-      <div class="container">
-        <h2>Service Areas</h2>
-        <p class="small"> BD Taxi St Austell provides local taxi services across St Austell and surrounding areas including Par, Mevagissey, St Blazey, Bugle, Nanpean, St Dennis, St Stephen and Fowey, covering postcode areas PL24, PL25 and PL26. </p>
-        <div class="grid" style="margin-top:12px">
-          <div class="card">
-            <h3>Included towns</h3>
-            <ul class="places">
-              <li>St Austell</li>
-              <li><a href="/taxi-mevagissey.html">Taxi Mevagissey</a></li>
-              <li>Bugle</li>
-              <li>Foxhole</li>
-              <li>Nanpean</li>
-              <li>St Dennis</li>
-              <li>St Stephen</li>
-              <li><a href="/taxi-par.html">Taxi Par</a></li>
-              <li>St Blazey</li>
-              <li><a href="/taxi-fowey.html">Taxi Fowey</a></li>
-              <li>Newquay Airport (and airport transfers)</li>
-            </ul>
-          </div>
-          <div class="card">
-            <h3>Coverage notes</h3>
-            <div id="advance-booking">   <p class="small">     If you are looking for a reliable taxi in or near St Austell, we cover most local journeys within PL24, PL25 and PL26.     Airport transfers to Newquay Airport and longer-distance journeys across Cornwall are available by advance booking.   </p> </div>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin:40px auto; max-width:600px; text-align:center;">
-  <h3>Typical Guide Fares</h3>
-  <p class="small">
-    The following prices are provided as a guide only. Exact fares may vary
-    depending on distance, time of travel and traffic conditions.
-  </p>
-
-  <ul class="places" style="list-style-position:inside; padding-left:0;">
-  <li>St Austell → Penrice Hospital: approx. £7</li>
-  <li>St Austell → Par Train Station: approx. £14.50</li>
-  <li>St Austell → Mevagissey: approx. £18</li>
-  <li>St Austell → Gorran Haven: approx. £25</li>
-  <li>St Austell → Bodmin Hospital: approx. £31</li>
-  <li>St Austell → Truro (City Centre): approx. £40</li>
-  <li>St Austell → Truro (Treliske Hospital): approx. £45</li>
-  <li>St Austell → Newquay: approx. £44</li>
-  <li>St Austell → Newquay Airport: approx. £41</li>
-  <li>St Austell → Exeter: approx. £160</li>
+<ul>
+  <li><a href="/taxi-fowey.html">Taxi from St Austell to Fowey</a></li>
+  <li><a href="/taxi-mevagissey.html">Taxi from St Austell to Mevagissey</a></li>
+  <li><a href="/taxi-par.html">Taxi from St Austell to Par</a></li>
 </ul>
 
-
-  <p class="small">
-    Please contact us for an exact quote or to book in advance.
-  </p>
 </div>
-
-    </section>
-
-    <section id="booking">
-      <div class="container">
-        <h2>Book a Taxi in St Austell</h2> <p class="small">   Book a reliable local taxi in St Austell for airport transfers, local journeys,   train station pickups and private hire. Serving PL24, PL25 and PL26. </p>
-        <p class="small">Complete the form below to request a booking. You will receive a confirmation once we respond. For urgent jobs call <strong>01726 806556</strong>.</p>
-        <div class="booking-card">
-          <p class="small" style="text-align:center;">
-  For urgent bookings, call us now:
-</p>
-
-<p style="text-align:center; margin:20px 0;">
-  <a href="tel:01726806556" class="btn">Call Now for Instant Booking</a>
-</p>
-
-<div class="booking-card">
-  </div>
-
-        </section>
-
-    <section id="events">
-      <div class="container">
-        <h2>Local Events</h2>
-        <p class="small">We regularly run transfers to local events — festivals, football matches, concerts and community gatherings. If you have an upcoming event you'd like taxis for, tell us the date and approximate passenger numbers in the booking form and we'll provide a quote.</p>
-        <div class="card" style="margin-top:20px;">
-  <h3>Seasonal & School Holiday Travel</h3>
-  <p class="small">
-    We provide reliable taxi services throughout the year, including busy
-    summer months, school holidays, Christmas events and seasonal attractions
-    across St Austell and Cornwall. Advance booking is recommended during peak
-    periods.
-  </p>
-</div>
-
-        <div class="grid" style="margin-top:20px;">
-  <div class="card">
-    <h3>Eden Project</h3>
-    <p class="small">
-      Seasonal events, concerts, exhibitions and family attractions at the Eden Project near St Austell.
-    </p>
-    <p class="small">
-      <a href="https://www.edenproject.com/whats-on" target="_blank" rel="noopener">
-        View upcoming events →
-      </a>
-    </p>
-    <a href="#booking" class="btn"    onclick="setDestination('Eden Project, St Austell')">    Book a taxi to this event </a>
-  </div>
-
-  <div class="card">
-    <h3>Lost Gardens of Heligan</h3>
-    <p class="small">
-      Famous historic gardens hosting seasonal events, exhibitions and family-friendly activities throughout the year.
-    </p>
-    <p class="small">
-      <a href="https://www.heligan.com/whats-on/" target="_blank" rel="noopener">
-        View upcoming events →
-      </a>
-    </p>
-    <a href="#booking" class="btn"    onclick="setDestination('Lost Gardens of Heligan, St Austell')">    Book a taxi to this event </a>
-  </div>
-</div>
-      </div>
-    </section>
-          <section id="local-restaurant">
-  <div class="container">
-    <h2>Local Restaurant Feature</h2>
-
-    <p class="small">
-      We regularly provide taxi services to popular local restaurants across
-      St Austell and surrounding areas.
-    </p>
-
-    <div class="card" style="max-width:700px;margin:20px auto;text-align:center;">
-      <h3>Mevagissey Spice</h3>
-
-      <p class="small">
-        An award-winning Indian restaurant in Mevagissey, recently redecorated
-        and well known for quality food and excellent service.
-      </p>
-
-      <p class="small">
-        <a href="https://share.google/1unViGMe7WT0Y0wyl"
-           target="_blank" rel="noopener">
-          View on Google →
-        </a>
-      </p>
-
-      <a href="#booking" class="btn"
-         onclick="setDestination('Mevagissey Spice, Mevagissey')">
-         Book a taxi to this restaurant
-      </a>
-    </div>
-  </div>
 </section>
 
-<section id="faq">
-  <div class="container">
-    <h2>Frequently Asked Questions</h2>
-
-    <div class="card">
-      <h3>How do I book a taxi in St Austell?</h3>
-      <p>You can book a taxi in St Austell by using our online booking form or by calling us directly on 01726 806556.</p>
-    </div>
-
-    <div class="card" style="margin-top:16px;">
-      <h3>Do you offer airport transfers?</h3>
-      <p>Yes, we provide airport transfers from St Austell to Newquay Airport and other UK airports by advance booking.</p>
-    </div>
-
-    <div class="card" style="margin-top:16px;">
-      <h3>Which areas do you cover?</h3>
-      <p>We cover St Austell and surrounding areas including Par, Mevagissey, St Blazey, Bugle, Nanpean, St Dennis, St Stephen and Fowey.</p>
-    </div>
-
-    <div class="card" style="margin-top:16px;">
-      <h3>Are your taxis available for early morning or late-night bookings?</h3>
-      <p>Yes, our taxi service operates for early morning and late-night bookings. We recommend booking in advance where possible.</p>
-    </div>
-
-  </div>
-</section>
-    <section id="contact">
-      <div class="container">
-        <h2>Contact</h2>
-        <div style="margin:20px 0;">
-  <iframe
-    src="https://www.google.com/maps?q=St%20Austell%2C%20Cornwall&output=embed"
-    width="100%"
-    height="300"
-    style="border:0;border-radius:8px;"
-    loading="lazy"
-    referrerpolicy="no-referrer-when-downgrade">
-  </iframe>
-        <div>
-  <div class="card">
-    <h3>Call us</h3>
-    <p><strong>01726 806556</strong></p>
-    <p class="small">Available for bookings and enquiries.</p>
-  </div>
-
-  <div class="card" style="margin-top:12px">
-    <h3>Opening Hours</h3>
-    <p class="small">
-      Sunday – Thursday: 8:00am – 11:00pm<br>
-      Friday – Saturday: 8:00am – 11:30pm<br>
-    </p>
-  </div>
-
-  <div class="card" style="margin-top:12px">
-    <h3>Address & areas</h3>
-    <p class="small">
-      Operating from St Austell, covering PL24–PL26 and nearby towns.
-    </p>
-  </div>
-</div>
-
-            </div>
-          </div>
-          <div>
-            <div class="card" style="max-width:420px;margin:0 auto;">
-              <h3>Send a message</h3>
-              <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
-                <input type="hidden" name="_subject" value="Website contact - BD TAXI ST AUSTELL">
-                <input type="hidden" name="_captcha" value="true">
-                <label>Name</label><input name="Name" placeholder="Your full name" required>
-                <label>Email</label><input name="Email" type="email" required>
-                <label>Message</label><textarea name="Message" rows="2" required></textarea>
-                <button class="btn" type="submit" style="padding:10px 16px;font-size:14px;">   Send message </button>
-              </form>
-            </div>
-          </div>
-        <div class="social-links" style="text-align:center;margin-top:20px">
-          <a href="https://www.facebook.com/profile.php?id=61580625347334&sk=about" target="_blank">Facebook</a>
-          <a href="https://share.google/ViXyZL3N8Z51IjzLV" target="_blank">Google Business Profile</a>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-  <div class="container">
-    <div>Call 01726 806556 • Email: booking@staustelltaxis.co.uk</div>
-
-    <div class="small">
-      Local taxi service based in St Austell, Cornwall, serving PL24, PL25 and PL26.
-    </div>
-
-    <div class="small">
-      &copy; BD TAXI ST AUSTELL — All rights reserved
-    </div>
-  </div>
-</footer>
-  
-  <a href="tel:01726806556" class="call-now">Call Now</a>
+<!-- JS -->
 <script>
 
-/* GOOGLE AUTOCOMPLETE (FIXED + RELIABLE) */
-let autocompleteInitialized = false;
+/* PRICE */
+function calculatePrice(){
+  const pickup = document.getElementById("pickupAddress").value.toLowerCase();
+  const dropoff = document.getElementById("dropoffAddress").value.toLowerCase();
 
-function initAutocomplete() {
-  if (!window.google || !google.maps || autocompleteInitialized) return;
+  let price = "";
 
-  const setupAutocomplete = (id) => {
-    const input = document.getElementById(id);
-    if (!input) return;
+  if(pickup.includes("st austell") && dropoff.includes("mevagissey")){
+    price = "£18";
+  }
 
-    const auto = new google.maps.places.Autocomplete(input, {
-      componentRestrictions: { country: "gb" }
-    });
-
-    // 🔥 CRITICAL FIX (fires when user selects suggestion)
-    auto.addListener("place_changed", function () {
-      setTimeout(calculatePrice, 200); // small delay = stable
-    });
-  };
-
-  setupAutocomplete("pickupAddress");
-  setupAutocomplete("dropoffAddress");
-  setupAutocomplete("pickupAddressEmail");
-  setupAutocomplete("dropoffAddressEmail");
-
-  autocompleteInitialized = true;
+  document.getElementById("priceEstimate").innerText = price ? "Estimated: "+price : "";
 }
 
+document.querySelectorAll("#pickupAddress,#dropoffAddress").forEach(el=>{
+  el.addEventListener("input",calculatePrice);
+});
 
-/* SET DESTINATION */
-function setDestination(destination) {
-  const dropoff = document.getElementById("dropoffAddress");
-  if (dropoff) {
-    dropoff.value = destination;
-    dropoff.scrollIntoView({ behavior: "smooth" });
-    calculatePrice();
-  }
-}
+/* WHATSAPP */
+function sendWhatsApp(){
 
+  const name = document.getElementById("name").value;
+  const pickup = document.getElementById("pickupAddress").value;
+  const dropoff = document.getElementById("dropoffAddress").value;
 
-/* PRICE ESTIMATOR */
-function calculatePrice() {
-
-  const pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || "";
-  const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
-  const output = document.getElementById("priceEstimate");
-  const btn = document.getElementById("bookBtn");
-
-  if (!pickup || !dropoff || !output) {
-    if (output) output.innerText = "";
-    if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
-    return;
-  }
-
-  const selectedTime = document.getElementById("time")?.value;
-  let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
-
-  let ratePerMile = 2.7;
-  let minimumFare = 5.5;
-
-  if (hour < 7) {
-    ratePerMile = 4.5;
-    minimumFare = 7.5;
-  }
-
-  let miles = 0;
-
-  function routeMatch(aList, bList, distance) {
-    const matchA = aList.some(a => pickup.includes(a)) && bList.some(b => dropoff.includes(b));
-    const matchB = aList.some(a => dropoff.includes(a)) && bList.some(b => pickup.includes(b));
-    return (matchA || matchB) ? distance : null;
-  }
-
-  const stAustell = ["st austell", "saint austell"];
-  const mevagissey = ["mevagissey"];
-  const fowey = ["fowey"];
-  const par = ["par", "par station"];
-  const airport = ["newquay airport", "cornwall airport"];
-  const truro = ["truro"];
-  const bodmin = ["bodmin"];
-  const gorran = ["gorran haven"];
-
-  miles =
-    routeMatch(stAustell, mevagissey, 6) ||
-    routeMatch(stAustell, fowey, 7) ||
-    routeMatch(stAustell, par, 3) ||
-    routeMatch(stAustell, airport, 13) ||
-    routeMatch(stAustell, truro, 15) ||
-    routeMatch(stAustell, bodmin, 14) ||
-    routeMatch(stAustell, gorran, 9) ||
-    0;
-
-  if (miles === 0) {
-    output.innerText = "Estimated fare: local journey — please contact for quote";
-    if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
-    return;
-  }
-
-  let fare = miles * ratePerMile;
-  if (fare < minimumFare) fare = minimumFare;
-
-  const low = Math.round(fare);
-  const high = Math.round(fare * 1.15);
-
-  const label = (hour < 7) ? " (night rate)" : "";
-  const priceText = "£" + low + "–£" + high + label;
-
-  output.innerText = "Estimated fare: " + priceText;
-
-  if (btn) {
-    btn.innerText = "🚕 Book Taxi – " + priceText;
-  }
-}
-
-
-/* WHATSAPP BOOKING */
-function sendWhatsApp() {
-
-  const phone = "441726806556";
-
-  const name = document.getElementById("name")?.value.trim();
-  const pickup = document.getElementById("pickupAddress")?.value.trim();
-  const dropoff = document.getElementById("dropoffAddress")?.value.trim();
-  const date = document.getElementById("date")?.value;
-  const time = document.getElementById("time")?.value;
-  const passengers = document.getElementById("passengers")?.value;
-
-  if (!name || !pickup || !dropoff || !date || !time || !passengers) {
+  if(!name || !pickup || !dropoff){
     alert("Please complete all fields");
     return;
   }
 
   const message =
-`🚕 Taxi Booking Request
+`Taxi Booking
+Name: ${name}
+Pickup: ${pickup}
+Dropoff: ${dropoff}`;
 
-👤 Name: ${name}
-📍 Pick-up: ${pickup}
-🏁 Drop-off: ${dropoff}
-
-📅 Date: ${date}
-⏰ Time: ${time}
-👥 Passengers: ${passengers}
-
-Please confirm availability 👍`;
-
-  window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(message), "_blank");
-
-  setTimeout(() => {
-    window.location.href = "thanks.html";
-  }, 1000);
+  window.open("https://wa.me/441726806556?text=" + encodeURIComponent(message));
 }
 
-
-/* ASAP */
-function setASAP() {
-  const timeInput = document.getElementById("time");
-  if (!timeInput) return;
-
-  const now = new Date();
-  now.setMinutes(now.getMinutes() + 15);
-
-  timeInput.value =
-    String(now.getHours()).padStart(2, '0') + ":" +
-    String(now.getMinutes()).padStart(2, '0');
-
-  const wrapper = document.getElementById("timeWrapper");
-  if (wrapper) wrapper.style.display = "none";
-
-  calculatePrice();
-}
-
-
-/* LATER */
-function setLater() {
-  const wrapper = document.getElementById("timeWrapper");
-  if (wrapper) wrapper.style.display = "block";
-}
-
-
-/* AUTO INIT */
-document.addEventListener("DOMContentLoaded", function () {
-
-  // Set today's date
-  const dateInput = document.getElementById("date");
-  if (dateInput) {
-    const today = new Date().toISOString().split("T")[0];
-    dateInput.value = today;
-  }
-
-  // Default ASAP
-  setASAP();
-
-  const inputs = ["pickupAddress", "dropoffAddress", "time"];
-
-  inputs.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.addEventListener("input", calculatePrice);
-      el.addEventListener("change", calculatePrice);
-      el.addEventListener("blur", calculatePrice); // 🔥 mobile fix
-    }
-  });
-
-});
-
-</script>
-<script 
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
-  async defer>
 </script>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-
-  const header = document.querySelector("header");
-
-  if (!header) return;
-
-  /* =========================
-     SHRINK HEADER ON SCROLL
-  ========================== */
-  window.addEventListener("scroll", function() {
-    if (window.scrollY > 50) {
-      header.classList.add("shrink");
-    } else {
-      header.classList.remove("shrink");
-    }
-  });
-
-
-  /* =========================
-     HIDE HEADER DURING BOOKING
-  ========================== */
-
-  const bookingInputs = document.querySelectorAll(
-    "#booking input, #booking textarea, #booking button"
-  );
-
-  bookingInputs.forEach(el => {
-
-    // Focus (desktop + mobile keyboard)
-    el.addEventListener("focus", () => {
-      header.classList.add("hide-header");
-    });
-
-    // Click
-    el.addEventListener("click", () => {
-      header.classList.add("hide-header");
-    });
-
-    // 🔥 MOBILE FIX (touch)
-    el.addEventListener("touchstart", () => {
-      header.classList.add("hide-header");
-    });
-
-  });
-
-
-  /* =========================
-     SHOW HEADER AGAIN
-  ========================== */
-
-  document.addEventListener("click", function(e) {
-
-    const isInsideBooking = e.target.closest("#booking");
-
-    if (!isInsideBooking) {
-      header.classList.remove("hide-header");
-    }
-
-  });
-
-});
-</script>
+<!-- GOOGLE API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places"></script>
 
 </body>
 </html>
