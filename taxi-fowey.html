@@ -159,13 +159,22 @@
 </footer>
 
 </body>
-</html>  background:#fff;
+<style>
+
+/* your existing CSS */
+
+/* ADD THIS BELOW */
+
+.booking-card {
+  background:#fff;
   max-width:600px;
   margin:0 auto;
   padding:32px;
   border-radius:16px;
-  box-shadow:0 20px 40px rgba(0,0,0,0.1);}
-    .call-now{
+  box-shadow:0 20px 40px rgba(0,0,0,0.1);
+}
+
+.call-now{
   display:none;
   position:fixed;
   bottom:16px;
@@ -178,126 +187,16 @@
   font-weight:800;
   text-decoration:none;
   box-shadow:0 10px 30px rgba(0,0,0,0.2);
-  z-index:999;}
+  z-index:999;
+}
 
 @media (max-width:768px){
-  .call-now{display:block;}}
-    .hero::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-  background:rgba(0,0,0,0.6);
-  z-index:0;
+  .call-now{display:block;}
 }
 
-.hero .container{
-  position:relative;
-  z-index:1;
-}
-    /* Improve hero text visibility */
-.hero .lead {
-  font-size: 18px;
-  font-weight: 500;
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.45);
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 6px;
-  margin-top: 14px;
-}
-    /* Tighten spacing between text sections */
-p {
-  margin-top: 0;
-  margin-bottom: 10px;
-}
+/* (keep rest of your CSS here) */
 
-h2 {
-  margin-top: 24px;
-  margin-bottom: 10px;
-}
-/* Booking forms side-by-side */
-.booking-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-}
-
-.booking-card-ui {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-}
-
-/* Mobile: stack */
-@media (max-width: 768px) {
-  .booking-grid {
-    grid-template-columns: 1fr;
-  }
-}
-  /* Header booking buttons */
-.header-booking-nav {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.nav-btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 14px;
-  white-space: nowrap;
-}
-
-/* Button colours */
-.nav-btn.whatsapp {
-  background: #25D366;
-  color: white;
-}
-
-.nav-btn.email {
-  background: #FFC107;
-  color: #111;
-}
-
-.nav-btn.call {
-  background: #0f172a;
-  color: white;
-}
-
-/* Mobile friendly */
-@media (max-width: 600px) {
-  .header-booking-nav {
-    justify-content: center;
-    margin-top: 8px;
-  }
-
-  .nav-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px 0;
-  }
-}
-  /* Header shrink effect */
-header.shrink {
-  padding: 6px 20px;
-}
-
-header.shrink .brand img {
-  height: 50px;
-  transition: 0.3s ease;
-}
-
-header {
-  transition: all 0.3s ease;
-}
-  </style>
+</style>
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
