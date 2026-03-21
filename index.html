@@ -944,10 +944,21 @@ function initAutocomplete() {
   setupAutocomplete("dropoffAddressEmail");
 }
 /* PRICE ESTIMATOR */
+
 function getDistanceAndCalculate() {
 
-  let pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || ""; let dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";  // FORCE St Austell to behave as station if (pickup.includes("st austell") && !pickup.includes("station")) {   pickup += " station"; }  if (dropoff.includes("st austell") && !dropoff.includes("station")) {   dropoff += " station"; }
-  const dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
+  let pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || "";
+  let dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
+
+  // FORCE St Austell to behave as station
+  if (pickup.includes("st austell") && !pickup.includes("station")) {
+    pickup += " station";
+  }
+
+  if (dropoff.includes("st austell") && !dropoff.includes("station")) {
+    dropoff += " station";
+  }
+
   const output = document.getElementById("priceEstimate");
   const btn = document.getElementById("bookBtn");
 
@@ -976,7 +987,12 @@ function getDistanceAndCalculate() {
     return (matchA || matchB) ? distance : null;
   }
 
-  const stAustell = [   "st austell station",   "st austell railway station",   "st austell train station" ];
+  const stAustell = [
+    "st austell station",
+    "st austell railway station",
+    "st austell train station"
+  ];
+
   const mevagissey = ["mevagissey"];
   const fowey = ["fowey"];
   const par = ["par", "par station"];
@@ -987,7 +1003,7 @@ function getDistanceAndCalculate() {
   const eden = ["eden project", "eden"];
 
   miles =
-    routeMatch(stAustell, eden, 5) ||   //
+    routeMatch(stAustell, eden, 5) ||
     routeMatch(stAustell, mevagissey, 6) ||
     routeMatch(stAustell, fowey, 7) ||
     routeMatch(stAustell, par, 3) ||
