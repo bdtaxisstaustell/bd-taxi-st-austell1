@@ -382,24 +382,26 @@ section{
     grid-template-columns:1fr;
   }
 }
-  .quick-locations {
-  display:flex;
-  flex-wrap:wrap;
-  gap:6px;
-  margin-top:8px;
+.quick-locations {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
 }
 
 .quick-locations button {
-  background:#f1f5f9;
-  border:none;
-  padding:6px 10px;
-  border-radius:8px;
-  font-size:12px;
-  cursor:pointer;
+  background: #f1f5f9;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  font-weight: 600;
 }
 
 .quick-locations button:hover {
-  background:#e2e8f0;
+  background: #e2e8f0;
 }
 </style>
   <script type="application/ld+json">
