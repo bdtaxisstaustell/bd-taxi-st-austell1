@@ -988,6 +988,8 @@ function getDistanceAndCalculate() {
       }
 
       const miles = result.distance.value / 1609;
+      const distanceText = result.distance.text;
+const durationText = result.duration.text;
 
       const selectedTime = document.getElementById("time")?.value;
       let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
@@ -1009,7 +1011,7 @@ function getDistanceAndCalculate() {
       const label = (hour < 7) ? " (night rate)" : "";
       const priceText = "£" + low + "–£" + high + label;
 
-      output.innerText = "Estimated fare: " + priceText;
+      output.innerText =   "Estimated fare: " + priceText +   " • " + distanceText +   " • " + durationText;
       btn.innerText = "🚕 Book Taxi – " + priceText;
     }
   );
