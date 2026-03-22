@@ -365,6 +365,25 @@ section{
     grid-template-columns:1fr;
   }
 }
+  .quick-locations {
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:8px;
+}
+
+.quick-locations button {
+  background:#f1f5f9;
+  border:none;
+  padding:6px 10px;
+  border-radius:8px;
+  font-size:12px;
+  cursor:pointer;
+}
+
+.quick-locations button:hover {
+  background:#e2e8f0;
+}
 </style>
   <script type="application/ld+json">
 {
@@ -508,6 +527,31 @@ gtag('config', 'G-0T3NNG0DZX');
   <label>📍 Pick-up</label>
 
   <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
+    <div class="quick-locations">
+
+  <!-- TRANSPORT -->
+  <button type="button" onclick="setPickup('St Austell Train Station')">🚉 St Austell Station</button>
+  <button type="button" onclick="setPickup('Par Train Station')">🚉 Par Station</button>
+
+  <!-- SHOPS -->
+  <button type="button" onclick="setPickup('Asda St Austell')">🛒 Asda</button>
+  <button type="button" onclick="setPickup('Tesco St Austell')">🛒 Tesco</button>
+
+  <!-- TOURIST / HOTELS -->
+  <button type="button" onclick="setPickup('Eden Project, St Austell')">🌿 Eden Project</button>
+  <button type="button" onclick="setPickup('The Lost Gardens of Heligan')">🌸 Heligan</button>
+  <button type="button" onclick="setPickup('Rashleigh Arms, Charlestown')">🍺 Rashleigh Arms</button>
+  <button type="button" onclick="setPickup('Premier Inn St Austell')">🏨 Premier Inn</button>
+
+  <!-- BEACHES / AREAS -->
+  <button type="button" onclick="setPickup('Pentewan Sands')">🏖 Pentewan Sands</button>
+  <button type="button" onclick="setPickup('Par Sands Beach')">🏖 Par Sands</button>
+
+  <!-- TOWNS -->
+  <button type="button" onclick="setPickup('Mevagissey')">⚓ Mevagissey</button>
+  <button type="button" onclick="setPickup('Fowey')">⚓ Fowey</button>
+
+</div>
 
   <button type="button" onclick="useCurrentLocation()" 
     style="margin-top:6px;background:#eee;border:none;padding:10px;border-radius:8px;cursor:pointer;font-weight:600;">
@@ -930,11 +974,16 @@ function initAutocomplete() {
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
     if (!input) return;
-
-    const auto = new google.maps.places.Autocomplete(input, {
-      componentRestrictions: { country: "gb" }
-    });
-
+const auto = new google.maps.places.Autocomplete(input, {
+  componentRestrictions: { country: "gb" },
+  bounds: {
+    north: 50.38,
+    south: 50.30,
+    east: -4.70,
+    west: -4.85
+  },
+  strictBounds: false
+});
     auto.addListener("place_changed", function () {
 
   if (id === "pickupAddress") pickupSelected = true;
@@ -1160,7 +1209,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
   );
 }
-  
+  function setPickup(address) {
+  const input = document.getElementById("pickupAddress");
+  input.value = address;
+
+  pickupSelected = true;
+
+  localStorage.setItem("lastPickup", address);
+
+  getDistanceAndCalculate();
+}
 </script>
   <script>
 window.addEventListener("load", function () {
