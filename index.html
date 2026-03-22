@@ -551,10 +551,6 @@ gtag('config', 'G-0T3NNG0DZX');
 
 </select>
 
-  <button type="button" onclick="useCurrentLocation()" 
-    style="margin-top:6px;background:#eee;border:none;padding:10px;border-radius:8px;cursor:pointer;font-weight:600;">
-    📍 Use my location
-  </button>
 </div>
   <!-- DROPOFF -->
   <div class="input-group">
@@ -1274,46 +1270,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-  function useCurrentLocation() {
-
-  if (!navigator.geolocation) {
-    alert("Geolocation not supported");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-
-    // ✅ SUCCESS
-    function (position) {
-
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-
-      const geocoder = new google.maps.Geocoder();
-
-      geocoder.geocode(
-        { location: { lat: lat, lng: lng } },
-        function (results, status) {
-
-          const input = document.getElementById("pickupAddress");
-
-          if (status === "OK" && results && results.length > 0) {
-            input.value = results[0].formatted_address;
-          } else {
-            input.value = lat + ", " + lng;
-          }
-
-          getDistanceAndCalculate();
-        }
-      );
-    },
-
-    // ❌ ERROR (MUST BE HERE)
-    function () {
-      alert("Location access denied");
-    }
-  );
-}
   function setPickup(address) {
   const input = document.getElementById("pickupAddress");
   input.value = address;
