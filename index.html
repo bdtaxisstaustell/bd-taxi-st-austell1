@@ -947,87 +947,68 @@ function initAutocomplete() {
 
 function getDistanceAndCalculate() {
 
-  let pickup = document.getElementById("pickupAddress")?.value.toLowerCase().trim() || "";
-  let dropoff = document.getElementById("dropoffAddress")?.value.toLowerCase().trim() || "";
+  let pickup = document.getElementById("pickupAddress")?.value || "";
+  let dropoff = document.getElementById("dropoffAddress")?.value || "";
 
   const output = document.getElementById("priceEstimate");
   const btn = document.getElementById("bookBtn");
 
   if (!pickup || !dropoff || !output) {
-
     if (output) output.innerText = "";
     if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
     return;
   }
 
-  const selectedTime = document.getElementById("time")?.value;
-  let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
+  const service = new google.maps.DistanceMatrixService();
 
-  let ratePerMile = 2.7;
-  let minimumFare = 5.5;
+  service.getDistanceMatrix(
+    {
+      origins: [pickup],
+      destinations: [dropoff],
+      travelMode: "DRIVING",
+      unitSystem: google.maps.UnitSystem.IMPERIAL
+    },
+    function (response, status) {
 
-  if (hour < 7) {
-    ratePerMile = 4.5;
-    minimumFare = 7.5;
-  }
+      if (status !== "OK") {
+        output.innerText = "Unable to calculate distance";
+        return;
+      }
 
-  let miles = 0;
+      const result = response.rows[0].elements[0];
 
- function routeMatch(aList, bList, distance) {
-  const matchA = aList.some(a => pickup.includes(a));
-  const matchB = bList.some(b => dropoff.includes(b));
-  const matchReverseA = aList.some(a => dropoff.includes(a));
-  const matchReverseB = bList.some(b => pickup.includes(b));
+      if (result.status !== "OK") {
+        output.innerText = "Route not found";
+        return;
+      }
 
-  return (matchA && matchB) || (matchReverseA && matchReverseB)
-    ? distance
-    : null;
+      const miles = result.distance.value / 1609;
+
+      const selectedTime = document.getElementById("time")?.value;
+      let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
+
+      let ratePerMile = 2.7;
+      let minimumFare = 5.5;
+
+      if (hour < 7) {
+        ratePerMile = 4.5;
+        minimumFare = 7.5;
+      }
+
+      let fare = miles * ratePerMile;
+      if (fare < minimumFare) fare = minimumFare;
+
+      const low = Math.round(fare);
+      const high = Math.round(fare * 1.15);
+
+      const label = (hour < 7) ? " (night rate)" : "";
+      const priceText = "£" + low + "–£" + high + label;
+
+      output.innerText = "Estimated fare: " + priceText;
+      btn.innerText = "🚕 Book Taxi – " + priceText;
+    }
+  );
 }
-
- const stAustell = ["st austell"];
-
-  const mevagissey = ["mevagissey"];
-  const fowey = ["fowey"];
- const par = ["par ", "par station"];
-  const airport = ["newquay airport", "cornwall airport"];
-  const truro = ["truro"];
-  const bodmin = ["bodmin"];
-  const gorran = ["gorran haven"];
-  const eden = ["eden project", "eden"];
-
-  miles =
-    routeMatch(stAustell, eden, 5) ||
-    routeMatch(stAustell, mevagissey, 6) ||
-    routeMatch(stAustell, fowey, 7) ||
-    routeMatch(stAustell, par, 3) ||
-    routeMatch(stAustell, airport, 13) ||
-    routeMatch(stAustell, truro, 15) ||
-    routeMatch(stAustell, bodmin, 14) ||
-    routeMatch(stAustell, gorran, 9) ||
-    0;
-
-  if (miles === 0) {
-    output.innerText = "Estimated fare: local journey — please contact for quote";
-    if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
-    return;
-  }
-
-  let fare = miles * ratePerMile;
-  if (fare < minimumFare) fare = minimumFare;
-
-  const low = Math.round(fare);
-  const high = Math.round(fare * 1.15);
-
-  const label = (hour < 7) ? " (night rate)" : "";
-  const priceText = "£" + low + "–£" + high + label;
-
-  output.innerText = "Estimated fare: " + priceText;
-
-  if (btn) {
-    btn.innerText = "🚕 Book Taxi – " + priceText;
-  }
-}
-
 
 /* WHATSAPP BOOKING */
 function sendWhatsApp() {
