@@ -1206,16 +1206,20 @@ document.addEventListener("DOMContentLoaded", function () {
     function () {
       alert("Location access denied");
     }
-
   );
 }
   function setPickup(address) {
   const input = document.getElementById("pickupAddress");
   input.value = address;
-
   pickupSelected = true;
-
   localStorage.setItem("lastPickup", address);
+  getDistanceAndCalculate();
+}
+  function setDropoff(address) {
+  const input = document.getElementById("dropoffAddress");
+  input.value = address;
+
+  dropoffSelected = true;
 
   getDistanceAndCalculate();
 }
