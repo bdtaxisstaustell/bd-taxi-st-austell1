@@ -1097,6 +1097,7 @@ const useDeadMileageRule =
 
 // helper to finish fare calculation
 function renderFare(totalMiles, totalDurationText, extraNote = "") {
+  const dropoffText = (document.getElementById("dropoffAddress")?.value || "").toLowerCase();
   const selectedTime = document.getElementById("time")?.value;
   let hour = selectedTime
     ? parseInt(selectedTime.split(":")[0], 10)
