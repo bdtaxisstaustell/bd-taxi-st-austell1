@@ -1017,6 +1017,9 @@ auto.setBounds(new google.maps.LatLngBounds(
 /* PRICE ESTIMATOR */
 
 function getDistanceAndCalculate() {
+  if (!window.google || !google.maps) {
+  return;
+}
 if (!pickupSelected || !dropoffSelected) {
   const output = document.getElementById("priceEstimate");
   if (output) {
