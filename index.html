@@ -507,6 +507,11 @@ gtag('config', 'G-0T3NNG0DZX');
   <div class="input-group">
     <label>📍 Pick-up</label>
     <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
+
+    <button type="button" onclick="useCurrentLocation()" 
+style="margin-top:6px;background:#eee;border:none;padding:10px;border-radius:8px;cursor:pointer;font-weight:600;">
+📍 Use my location
+</button>
   </div>
 
   <!-- DROPOFF -->
@@ -1099,7 +1104,46 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
+function useCurrentLocation() {
 
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      const geocoder = new google.maps.Geocoder();
+
+      geocoder.geocode(
+        { location: { lat: lat, lng: lng } },
+        function (results, status) {
+
+          if (status === "OK" && results[0]) {
+
+            const address = results[0].formatted_address;
+
+            const input = document.getElementById("pickupAddress");
+            input.value = address;
+
+            getDistanceAndCalculate();
+
+          } else {
+            alert("Unable to get address");
+          }
+        }
+      );
+
+    },
+    function () {
+      alert("Location access denied");
+    }
+  );
+}
 </script>
 <script 
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
