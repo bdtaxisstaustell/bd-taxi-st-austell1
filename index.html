@@ -1029,7 +1029,7 @@ function getDistanceAndCalculate() {
   if (!window.google || !google.maps) {
   return;
 }
-if (!pickup || !dropoff) {   const output = document.getElementById("priceEstimate");   if (output) {     output.innerText = "⚠️ Enter valid pickup & drop-off";   }   return; }
+if (!pickupSelected || !dropoffSelected) {
   const output = document.getElementById("priceEstimate");
   if (output) {
     output.innerText = "Please select address from suggestions";
