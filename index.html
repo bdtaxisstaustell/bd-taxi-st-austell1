@@ -562,6 +562,18 @@ gtag('config', 'G-0T3NNG0DZX');
   <div class="input-group">
     <label>🏁 Drop-off</label>
     <input id="dropoffAddress" placeholder="Where are you going?" autocomplete="off">
+    <div class="quick-locations">
+
+  <button type="button" onclick="setDropoff('St Austell Train Station')">🚉 Station</button>
+  <button type="button" onclick="setDropoff('Par Train Station')">🚉 Par Station</button>
+
+  <button type="button" onclick="setDropoff('Eden Project, St Austell')">🌿 Eden</button>
+  <button type="button" onclick="setDropoff('The Lost Gardens of Heligan')">🌸 Heligan</button>
+
+  <button type="button" onclick="setDropoff('Mevagissey')">⚓ Mevagissey</button>
+  <button type="button" onclick="setDropoff('Fowey')">⚓ Fowey</button>
+
+</div>
   </div>
 
   <!-- DATE -->
@@ -1215,7 +1227,7 @@ document.addEventListener("DOMContentLoaded", function () {
   localStorage.setItem("lastPickup", address);
   getDistanceAndCalculate();
 }
-  function setDropoff(address) {
+function setDropoff(address) {
   const input = document.getElementById("dropoffAddress");
   input.value = address;
 
