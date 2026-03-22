@@ -1106,8 +1106,8 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 });
-function useCurrentLocation() {
-  console.log("location button clicked");
+
+  function useCurrentLocation() {
 
   if (!navigator.geolocation) {
     alert("Geolocation not supported");
@@ -1115,6 +1115,8 @@ function useCurrentLocation() {
   }
 
   navigator.geolocation.getCurrentPosition(
+
+    // ✅ SUCCESS
     function (position) {
 
       const lat = position.coords.latitude;
@@ -1126,27 +1128,27 @@ function useCurrentLocation() {
         { location: { lat: lat, lng: lng } },
         function (results, status) {
 
-          if (status === "OK" && results[0]) {
+          const input = document.getElementById("pickupAddress");
 
-            const address = results[0].formatted_address;
-
-            const input = document.getElementById("pickupAddress");
-            input.value = address;
-
-            getDistanceAndCalculate();
-
+          if (status === "OK" && results && results.length > 0) {
+            input.value = results[0].formatted_address;
           } else {
-            } else {    const input = document.getElementById("pickupAddress");    // fallback → use coordinates   input.value = lat + ", " + lng;    getDistanceAndCalculate(); }
+            input.value = lat + ", " + lng;
           }
+
+          getDistanceAndCalculate();
         }
       );
-
     },
+
+    // ❌ ERROR (MUST BE HERE)
     function () {
       alert("Location access denied");
     }
+
   );
 }
+  
 </script>
 <script 
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
