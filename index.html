@@ -1135,7 +1135,7 @@ function useCurrentLocation() {
             getDistanceAndCalculate();
 
           } else {
-            alert("Unable to get address");
+            } else {    const input = document.getElementById("pickupAddress");    // fallback → use coordinates   input.value = lat + ", " + lng;    getDistanceAndCalculate(); }
           }
         }
       );
