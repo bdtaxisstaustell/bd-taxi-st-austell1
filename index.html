@@ -1059,9 +1059,13 @@ if (!pickupSelected || !dropoffSelected) {
 
 const service = new google.maps.DistanceMatrixService();
 
-// ✅ SAFE STRINGS
+function getPostcodePrefixFromText(inputId) {
+  const text = document.getElementById(inputId)?.value || "";
 
-  function getPostcodePrefix(place, inputId) {
+  const match = text.match(/\b([A-Z]{1,2}[0-9]{1,2})/i);
+
+  return match ? match[1].toLowerCase() : "";
+}
 
   // 1. Try Google place (best)
   if (place && place.address_components) {
@@ -1081,8 +1085,8 @@ const service = new google.maps.DistanceMatrixService();
 
   return match ? match[0].toLowerCase() : "";
 }
-const pickupPostcode = getPostcodePrefix(window.pickupPlace, "pickupAddress");
-const dropoffPostcode = getPostcodePrefix(window.dropoffPlace, "dropoffAddress");
+const pickupPostcode = getPostcodePrefixFromText("pickupAddress");
+const dropoffPostcode = getPostcodePrefixFromText("dropoffAddress");
 // ✅ POSTCODE CHECKS
 const pickupPL24 = pickupPostcode.startsWith("pl24");
 const pickupPL26 = pickupPostcode.startsWith("pl26");
