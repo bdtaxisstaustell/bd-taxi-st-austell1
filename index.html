@@ -1054,13 +1054,28 @@ const service = new google.maps.DistanceMatrixService();
 const pickupText = (pickup || "").toLowerCase();
 const dropoffText = (dropoff || "").toLowerCase();
 
-// ✅ PL24 RULE
+// ✅ POSTCODE LOGIC (FIXED)
+
 let originAddress = pickup;
 
-if (pickupText.includes("pl24") && !dropoffText.includes("pl25")) {
+// detect areas
+const pickupPL24 = pickupText.includes("pl24");
+const pickupPL26 = pickupText.includes("pl26");
+const pickupPL25 = pickupText.includes("pl25");
+
+const dropPL24 = dropoffText.includes("pl24");
+const dropPL26 = dropoffText.includes("pl26");
+const dropPL25 = dropoffText.includes("pl25");
+
+// apply rule: PL24 or PL26 but NOT PL25
+const involvesOuterArea =
+  (pickupPL24 || pickupPL26 || dropPL24 || dropPL26) &&
+  !pickupPL25 &&
+  !dropPL25;
+
+if (involvesOuterArea) {
   originAddress = "PL25 4NB";
 }
-
 // ✅ API CALL
 service.getDistanceMatrix(
   {
