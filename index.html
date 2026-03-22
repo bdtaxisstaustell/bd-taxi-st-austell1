@@ -567,6 +567,53 @@ gtag('config', 'G-0T3NNG0DZX');
   <label>📍 Pick-up</label>
 
   <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
+    <select onchange="selectPickupFromDropdown(this.value)"
+  style="margin-top:8px;padding:12px;border-radius:10px;border:1px solid #e5e7eb;width:100%;font-size:14px;">
+
+  <option value="">Or select popular pickup</option>
+
+  <optgroup label="🌿 Popular Destinations">
+    <option>Eden Project</option>
+    <option>Lost Gardens of Heligan</option>
+    <option>Charlestown Harbour</option>
+    <option>Mevagissey Harbour</option>
+    <option>Fowey Town Centre</option>
+    <option>St Austell Railway Station</option>
+    <option>White River Place</option>
+  </optgroup>
+
+  <optgroup label="🏖 Beaches & Coastal">
+    <option>Polkerris Beach</option>
+    <option>Pentewan Beach</option>
+    <option>Porthpean Beach</option>
+    <option>Carlyon Bay Beach</option>
+  </optgroup>
+
+  <optgroup label="🏨 Hotels">
+    <option>Pier House Hotel Charlestown</option>
+    <option>Carlyon Bay Hotel</option>
+    <option>Premier Inn St Austell</option>
+    <option>Travelodge St Austell</option>
+    <option>Trenython Manor Hotel</option>
+  </optgroup>
+
+  <optgroup label="🏕 Campsites">
+    <option>Pentewan Sands Holiday Park</option>
+    <option>Meadow Lakes Holiday Park</option>
+    <option>Carlyon Bay Camping Park</option>
+    <option>Treveague Farm Campsite</option>
+    <option>Heligan Woods Camping</option>
+  </optgroup>
+
+  <optgroup label="🛒 Local Stops">
+    <option>White River Place</option>
+    <option>St Austell Market House</option>
+    <option>St Austell Town Centre</option>
+    <option>Asda St Austell</option>
+    <option>Tesco Daniel Lane</option>
+  </optgroup>
+
+</select>
     <select id="pickupDropdown" onchange="selectPickupFromDropdown(this.value)"
   style="margin-top:8px;padding:12px;border-radius:10px;border:1px solid #e5e7eb;width:100%;font-size:14px;">
   
@@ -613,6 +660,53 @@ gtag('config', 'G-0T3NNG0DZX');
   <div class="input-group">
     <label>🏁 Drop-off</label>
     <input id="dropoffAddress" placeholder="Where are you going?" autocomplete="off">
+    <select onchange="selectDropoffFromDropdown(this.value)"
+  style="margin-top:8px;padding:12px;border-radius:10px;border:1px solid #e5e7eb;width:100%;font-size:14px;">
+
+  <option value="">Or select popular drop-off</option>
+
+  <optgroup label="🌿 Popular Destinations">
+    <option>Eden Project</option>
+    <option>Lost Gardens of Heligan</option>
+    <option>Charlestown Harbour</option>
+    <option>Mevagissey Harbour</option>
+    <option>Fowey Town Centre</option>
+    <option>St Austell Railway Station</option>
+    <option>White River Place</option>
+  </optgroup>
+
+  <optgroup label="🏖 Beaches & Coastal">
+    <option>Polkerris Beach</option>
+    <option>Pentewan Beach</option>
+    <option>Porthpean Beach</option>
+    <option>Carlyon Bay Beach</option>
+  </optgroup>
+
+  <optgroup label="🏨 Hotels">
+    <option>Pier House Hotel Charlestown</option>
+    <option>Carlyon Bay Hotel</option>
+    <option>Premier Inn St Austell</option>
+    <option>Travelodge St Austell</option>
+    <option>Trenython Manor Hotel</option>
+  </optgroup>
+
+  <optgroup label="🏕 Campsites">
+    <option>Pentewan Sands Holiday Park</option>
+    <option>Meadow Lakes Holiday Park</option>
+    <option>Carlyon Bay Camping Park</option>
+    <option>Treveague Farm Campsite</option>
+    <option>Heligan Woods Camping</option>
+  </optgroup>
+
+  <optgroup label="🛒 Local Stops">
+    <option>White River Place</option>
+    <option>St Austell Market House</option>
+    <option>St Austell Town Centre</option>
+    <option>Asda St Austell</option>
+    <option>Tesco Daniel Lane</option>
+  </optgroup>
+
+</select>
     <div class="quick-locations">
 
   <button type="button" onclick="setDropoff('St Austell Train Station')">🚉 Station</button>
@@ -1475,6 +1569,16 @@ function setDropoff(address) {
   const input = document.getElementById("dropoffAddress");
   input.value = address;
   dropoffSelected = true;
+  getDistanceAndCalculate();
+}
+  function selectDropoffFromDropdown(value) {
+  if (!value) return;
+
+  const input = document.getElementById("dropoffAddress");
+  input.value = value;
+
+  dropoffSelected = true;
+
   getDistanceAndCalculate();
 }
   function selectPickupFromDropdown(value) {
