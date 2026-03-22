@@ -1047,6 +1047,8 @@ if (!pickupSelected || !dropoffSelected) {
 }
   let pickup = document.getElementById("pickupAddress")?.value || "";
   let dropoff = document.getElementById("dropoffAddress")?.value || "";
+  const pickupText = pickup.toLowerCase();
+const dropoffText = dropoff.toLowerCase();
 
   const output = document.getElementById("priceEstimate");
   const btn = document.getElementById("bookBtn");
@@ -1058,6 +1060,20 @@ if (!pickupSelected || !dropoffSelected) {
   }
 
 const service = new google.maps.DistanceMatrixService();
+  function isPL24or26(text) {
+  text = text.toLowerCase();
+
+  return (
+    text.includes("mevagissey") ||   // PL26
+    text.includes("st austell") ||   // PL25 (we’ll exclude later)
+    text.includes("par") ||          // PL24
+    text.includes("st blazey") ||    // PL24
+    text.includes("tywardreath") ||  // PL24
+    text.includes("nanpean") ||      // PL26
+    text.includes("st stephen") ||   // PL26
+    text.includes("bugle")           // PL26
+  );
+}
 function getPostcodePrefix(place, inputId) {
 
   // 1. Try Google place (best)
@@ -1093,11 +1109,15 @@ const dropPL25 = dropoffPostcode.startsWith("pl25");
 // pickup must be in PL24 or PL26
 // destination must also be in PL24 or PL26
 // PL25 must not be involved
-const useDeadMileageRule =
-  (pickupPL24 || pickupPL26) &&
-  (dropPL24 || dropPL26) &&
-  !pickupPL25 &&
-  !dropPL25;
+const pickupValid =
+  (pickupText.includes("pl24") || pickupText.includes("pl26") || isPL24or26(pickupText)) &&
+  !pickupText.includes("pl25");
+
+const dropValid =
+  (dropoffText.includes("pl24") || dropoffText.includes("pl26") || isPL24or26(dropoffText)) &&
+  !dropoffText.includes("pl25");
+
+const useDeadMileageRule = pickupValid && dropValid;
 
 // helper to finish fare calculation
 function renderFare(totalMiles, totalDurationText, extraNote = "") {
