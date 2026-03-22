@@ -1060,18 +1060,54 @@ const dropoffText = dropoff.toLowerCase();
   }
 
 const service = new google.maps.DistanceMatrixService();
-  function isPL24or26(text) {
+function isPL24or26(text) {
   text = text.toLowerCase();
 
   return (
-    text.includes("mevagissey") ||   // PL26
-    text.includes("st austell") ||   // PL25 (we’ll exclude later)
-    text.includes("par") ||          // PL24
-    text.includes("st blazey") ||    // PL24
-    text.includes("tywardreath") ||  // PL24
-    text.includes("nanpean") ||      // PL26
-    text.includes("st stephen") ||   // PL26
-    text.includes("bugle")           // PL26
+    // MAIN AREAS
+    text.includes("mevagissey") ||
+    text.includes("par") ||
+    text.includes("st blazey") ||
+    text.includes("st stephen") ||
+    text.includes("nanpean") ||
+    text.includes("bugle") ||
+
+    // EXISTING VILLAGES
+    text.includes("tywardreath") ||
+    text.includes("foxhole") ||
+    text.includes("roche") ||
+    text.includes("trewoon") ||
+    text.includes("penwithick") ||
+    text.includes("treviscoe") ||
+    text.includes("grampound") ||
+    text.includes("grampound road") ||
+    text.includes("probus") ||
+    text.includes("polgooth") ||
+    text.includes("gorran") ||
+    text.includes("gorran haven") ||
+    text.includes("portmellon") ||
+    text.includes("pentewan") ||
+    text.includes("carlyon bay") ||
+    text.includes("charlestown") ||
+
+    // 🔥 NEW: FOWEY AREA (PL23)
+    text.includes("fowey") ||
+    text.includes("polruan") ||
+    text.includes("bodinnick") ||
+
+    // 🔥 NEW: BODMIN AREA (PL30/31)
+    text.includes("bodmin") ||
+    text.includes("lanivet") ||
+    text.includes("washaway") ||
+    text.includes("liskeard") || // optional nearby
+    text.includes("lostwithiel") ||
+
+    // LANDMARKS
+    text.includes("eden project") ||
+    text.includes("heligan") ||
+    text.includes("lost gardens") ||
+    text.includes("pinetum") ||
+    text.includes("premier inn")
   );
 }
 function getPostcodePrefix(place, inputId) {
