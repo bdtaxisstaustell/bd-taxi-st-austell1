@@ -1039,7 +1039,7 @@ if (!pickupSelected || !dropoffSelected) {
     return;
   }
 
-if (!window.google || !google.maps) {   return; }  const service = new google.maps.DistanceMatrixService();
+const service = new google.maps.DistanceMatrixService();
 
 // ✅ SAFE STRINGS
 const pickupText = (pickup || "").toLowerCase();
