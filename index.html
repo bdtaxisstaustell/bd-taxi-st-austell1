@@ -1085,8 +1085,8 @@ function getPostcodePrefixFromText(inputId) {
 
   return match ? match[0].toLowerCase() : "";
 }
-const pickupPostcode = getPostcodePrefixFromText("pickupAddress");
-const dropoffPostcode = getPostcodePrefixFromText("dropoffAddress");
+const pickupPostcode = getPostcodePrefix(window.pickupPlace, "pickupAddress");
+const dropoffPostcode = getPostcodePrefix(window.dropoffPlace, "dropoffAddress");
 // ✅ POSTCODE CHECKS
 const pickupPL24 = pickupPostcode.startsWith("pl24");
 const pickupPL26 = pickupPostcode.startsWith("pl26");
