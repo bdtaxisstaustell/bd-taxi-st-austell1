@@ -1004,39 +1004,88 @@ auto.setBounds(new google.maps.LatLngBounds(
   { lat: 50.25, lng: -4.95 }, // south-west corner
   { lat: 50.45, lng: -4.60 }  // north-east corner
 ));
+function initAutocomplete() {
+  if (!window.google || !google.maps) return;
 
-  auto.addListener("place_changed", function () {
+  const setupAutocomplete = (id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
 
-  const place = auto.getPlace();
+    // reset when typing
+    input.addEventListener("input", function () {
+      if (id === "pickupAddress") pickupSelected = false;
+      if (id === "dropoffAddress") dropoffSelected = false;
 
-  if (id === "pickupAddress") {
-    pickupSelected = true;
-    window.pickupPlace = place;
-  }
+      if (typeof getDistanceAndCalculate === "function") {
+        getDistanceAndCalculate();
+      }
+    });
 
-  if (id === "dropoffAddress") {
-    dropoffSelected = true;
-    window.dropoffPlace = place;
-  }
+    const auto = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: "gb" },
+      fields: ["formatted_address", "geometry", "name", "address_components"]
+    });
 
-  setTimeout(() => {
-    if (typeof getDistanceAndCalculate === "function") {
-      getDistanceAndCalculate();
-    }
-  }, 200);
+    auto.setBounds(new google.maps.LatLngBounds(
+      { lat: 50.25, lng: -4.95 },
+      { lat: 50.45, lng: -4.60 }
+    ));
 
-});
+    auto.addListener("place_changed", function () {
+      const place = auto.getPlace();
 
-  if (id === "pickupAddress") pickupSelected = true;
-  if (id === "dropoffAddress") dropoffSelected = true;
+      if (id === "pickupAddress") {
+        pickupSelected = true;
+        window.pickupPlace = place;
+      }
 
-  setTimeout(() => {
-    if (typeof getDistanceAndCalculate === "function") {
-      getDistanceAndCalculate();
-    }
-  }, 200);
+      if (id === "dropoffAddress") {
+        dropoffSelected = true;
+        window.dropoffPlace = place;
+      }
 
-});
+      setTimeout(() => {
+        if (typeof getDistanceAndCalculate === "function") {
+          getDistanceAndCalculate();
+        }
+      }, 200);
+    });
+  };
+
+  setupAutocomplete("pickupAddress");
+  setupAutocomplete("dropoffAddress");
+  setupAutocomplete("pickupAddressEmail");
+  setupAutocomplete("dropoffAddressEmail");
+}
+
+    const auto = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: "gb" },
+      fields: ["formatted_address", "geometry", "name", "address_components"]
+    });
+
+   
+
+    auto.addListener("place_changed", function () {
+
+      const place = auto.getPlace();
+
+      if (id === "pickupAddress") {
+        pickupSelected = true;
+        window.pickupPlace = place;
+      }
+
+      if (id === "dropoffAddress") {
+        dropoffSelected = true;
+        window.dropoffPlace = place;
+      }
+
+      setTimeout(() => {
+        if (typeof getDistanceAndCalculate === "function") {
+          getDistanceAndCalculate();
+        }
+      }, 200);
+
+    });
   };
 
   setupAutocomplete("pickupAddress");
