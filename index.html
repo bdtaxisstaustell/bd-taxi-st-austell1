@@ -1036,7 +1036,7 @@ if (!pickupSelected || !dropoffSelected) {
     return;
   }
 
-const service = new google.maps.DistanceMatrixService();
+if (!window.google || !google.maps) {   return; }  const service = new google.maps.DistanceMatrixService();
 
 // ✅ SAFE STRINGS
 const pickupText = (pickup || "").toLowerCase();
