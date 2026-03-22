@@ -986,10 +986,15 @@ function initAutocomplete() {
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
     if (!input) return;
-    input.addEventListener("input", function () {
+   input.addEventListener("input", function () {
   if (id === "pickupAddress") pickupSelected = false;
   if (id === "dropoffAddress") dropoffSelected = false;
-});
+
+  // ✅ FORCE RECHECK → SHOW WARNING
+  if (typeof getDistanceAndCalculate === "function") {
+    getDistanceAndCalculate();
+  }
+}); 
     const auto = new google.maps.places.Autocomplete(input, {
   componentRestrictions: { country: "gb" },
   fields: ["formatted_address", "geometry", "name"]
