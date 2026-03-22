@@ -126,30 +126,47 @@ section{
   padding:16px;
   border-radius:8px;
 }
-
-/* BOOKING CARD */
 .booking-card-ui {
-  text-align:left;
   background:#ffffff;
-  padding:24px;
-  border-radius:16px;
-  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+  padding:18px;
+  border-radius:14px;
+  box-shadow:0 6px 20px rgba(0,0,0,0.06);
   border:1px solid #f1f5f9;
 }
 
-/* FORM */
+/* cleaner form */
 #booking input,
 #booking textarea,
 #booking select {
   width:100%;
-  padding:14px;
-  border:1px solid #e5e7eb;
-  border-radius:12px;
+  padding:16px;
+  border:1px solid #e2e8f0;
+  border-radius:10px;
   margin-top:6px;
-  margin-bottom:12px;
+  margin-bottom:14px;
   font-size:16px;
-  background:#fafafa;
-  transition:all 0.25s ease;
+  background:#ffffff;
+}
+
+/* focus */
+#booking input:focus,
+#booking textarea:focus {
+  border-color:#FFC107;
+  box-shadow:0 0 0 3px rgba(255,193,7,0.2);
+}
+
+/* whatsapp style button */
+.uber-btn {
+  background:#25D366;
+  color:white;
+  border:none;
+  padding:18px;
+  font-size:18px;
+  font-weight:800;
+  border-radius:12px;
+  width:100%;
+  position:sticky;
+  bottom:10px;
 }
 
 #booking input:focus,
