@@ -1061,21 +1061,28 @@ const service = new google.maps.DistanceMatrixService();
 
 // ✅ SAFE STRINGS
 
-  function getPostcodePrefix(place) {
-  if (!place || !place.address_components) return "";
+  function getPostcodePrefix(place, inputId) {
 
-  const postcodeComponent = place.address_components.find(c =>
-    c.types.includes("postal_code")
-  );
+  // 1. Try Google place (best)
+  if (place && place.address_components) {
+    const postcodeComponent = place.address_components.find(c =>
+      c.types.includes("postal_code")
+    );
 
-  if (!postcodeComponent) return "";
+    if (postcodeComponent) {
+      return postcodeComponent.long_name.toLowerCase();
+    }
+  }
 
-  return postcodeComponent.long_name.toLowerCase();
+  // 2. Fallback: extract from input text
+  const text = document.getElementById(inputId)?.value || "";
+
+  const match = text.match(/[A-Z]{1,2}[0-9]{1,2}/i);
+
+  return match ? match[0].toLowerCase() : "";
 }
-
-const pickupPostcode = getPostcodePrefix(window.pickupPlace);
-const dropoffPostcode = getPostcodePrefix(window.dropoffPlace);
-
+const pickupPostcode = getPostcodePrefix(window.pickupPlace, "pickupAddress");
+const dropoffPostcode = getPostcodePrefix(window.dropoffPlace, "dropoffAddress");
 // ✅ POSTCODE CHECKS
 const pickupPL24 = pickupPostcode.startsWith("pl24");
 const pickupPL26 = pickupPostcode.startsWith("pl26");
