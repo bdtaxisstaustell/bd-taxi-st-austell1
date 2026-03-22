@@ -986,6 +986,10 @@ function initAutocomplete() {
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
     if (!input) return;
+    input.addEventListener("input", function () {
+  if (id === "pickupAddress") pickupSelected = false;
+  if (id === "dropoffAddress") dropoffSelected = false;
+});
     const auto = new google.maps.places.Autocomplete(input, {
   componentRestrictions: { country: "gb" },
   fields: ["formatted_address", "geometry", "name"]
@@ -1213,7 +1217,7 @@ document.addEventListener("DOMContentLoaded", function () {
   inputs.forEach(id => {
     const el = document.getElementById(id);
     if (el) {
-      el.addEventListener("input", getDistanceAndCalculate);
+      let debounceTimer;  el.addEventListener("input", () => {   clearTimeout(debounceTimer);   debounceTimer = setTimeout(getDistanceAndCalculate, 400); });
       el.addEventListener("change", getDistanceAndCalculate);
       el.addEventListener("blur", getDistanceAndCalculate); // 🔥 mobile fix
     }
