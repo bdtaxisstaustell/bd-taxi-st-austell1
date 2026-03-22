@@ -1150,11 +1150,20 @@ document.addEventListener("DOMContentLoaded", function () {
 }
   
 </script>
-<script 
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete"
-  async defer>
+  <script>
+window.addEventListener("load", function () {
+  setTimeout(() => {
+    if (typeof initAutocomplete === "function") {
+      initAutocomplete();
+    }
+  }, 500);
+});
 </script>
-
+  <script 
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places"
+async defer>
+</script>
+  
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
