@@ -1041,8 +1041,17 @@ if (!pickupSelected || !dropoffSelected) {
 
   service.getDistanceMatrix(
     {
-      origins: [pickup],
-      destinations: [dropoff],
+
+     let originAddress = pickup;
+
+if (pickup.toLowerCase().includes("pl24") &&
+    !dropoff.toLowerCase().includes("pl25")) {
+
+  originAddress = "PL25 4NB"; // your base
+}
+
+origins: [originAddress],
+destinations: [dropoff], 
       travelMode: "DRIVING",
       unitSystem: google.maps.UnitSystem.IMPERIAL
     },
@@ -1067,7 +1076,7 @@ const durationText = result.duration.text;
       const selectedTime = document.getElementById("time")?.value;
       let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
 
-      let ratePerMile = 2.7;
+      let ratePerMile = 3.0;
       let minimumFare = 5.5;
 
       if (hour < 7) {
@@ -1076,13 +1085,34 @@ const durationText = result.duration.text;
       }
 
       let fare = miles * ratePerMile;
+      const specialPlaces = [
+  "eden",
+  "heligan",
+  "pentewan",
+  "premier inn",
+  "meadow lakes",
+  "carlyon bay",
+  "pinetum",
+  "sea view",
+  "campsite",
+  "caravan"
+];
+
+const drop = dropoff.toLowerCase();
+
+for (let place of specialPlaces) {
+  if (drop.includes(place)) {
+    fare += 5;
+    break;
+  }
+}
       if (fare < minimumFare) fare = minimumFare;
 
       const low = Math.round(fare);
       const high = Math.round(fare * 1.15);
 
       const label = (hour < 7) ? " (night rate)" : "";
-      const priceText = "£" + low + "–£" + high + label;
+      const priceText = "£" + low + "–£" + high + label + " (final fare estimate)";
 
       output.innerText =   "Estimated fare: " + priceText +   " • " + distanceText +   " • " + durationText;
       btn.innerText = "🚕 Book Taxi – " + priceText;
