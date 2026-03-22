@@ -508,7 +508,7 @@ gtag('config', 'G-0T3NNG0DZX');
     <label>📍 Pick-up</label>
     <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
 
-    <button type="button" onclick="useCurrentLocation()" 
+    <button type="button" onclick="useCurrentLocation()">
 style="margin-top:6px;background:#eee;border:none;padding:10px;border-radius:8px;cursor:pointer;font-weight:600;">
 📍 Use my location
 </button>
@@ -1107,6 +1107,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 function useCurrentLocation() {
+  console.log("location button clicked");
 
   if (!navigator.geolocation) {
     alert("Geolocation not supported");
