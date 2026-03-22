@@ -1054,11 +1054,7 @@ const service = new google.maps.DistanceMatrixService();
 const pickupText = (pickup || "").toLowerCase();
 const dropoffText = (dropoff || "").toLowerCase();
 
-// ✅ POSTCODE LOGIC (FIXED)
-
-let originAddress = pickup;
-
-// detect areas
+// ✅ POSTCODE CHECKS
 const pickupPL24 = pickupText.includes("pl24");
 const pickupPL26 = pickupText.includes("pl26");
 const pickupPL25 = pickupText.includes("pl25");
@@ -1067,24 +1063,139 @@ const dropPL24 = dropoffText.includes("pl24");
 const dropPL26 = dropoffText.includes("pl26");
 const dropPL25 = dropoffText.includes("pl25");
 
-// apply rule: PL24 or PL26 but NOT PL25
-const involvesOuterArea =
-  (pickupPL24 || pickupPL26 || dropPL24 || dropPL26) &&
+// ✅ RULE:
+// pickup must be in PL24 or PL26
+// destination must also be in PL24 or PL26
+// PL25 must not be involved
+const useDeadMileageRule =
+  (pickupPL24 || pickupPL26) &&
+  (dropPL24 || dropPL26) &&
   !pickupPL25 &&
   !dropPL25;
 
-if (involvesOuterArea) {
-  originAddress = "PL25 4NB";
+// helper to finish fare calculation
+function renderFare(totalMiles, totalDurationText, extraNote = "") {
+  const selectedTime = document.getElementById("time")?.value;
+  let hour = selectedTime
+    ? parseInt(selectedTime.split(":")[0], 10)
+    : new Date().getHours();
+
+  let ratePerMile = 3.0;
+  let minimumFare = 5.5;
+
+  if (hour < 7) {
+    ratePerMile = 4.5;
+    minimumFare = 7.5;
+  }
+
+  let fare = totalMiles * ratePerMile;
+
+  const specialPlaces = [
+    "eden",
+    "heligan",
+    "pentewan",
+    "premier inn",
+    "meadow lakes",
+    "carlyon bay",
+    "pinetum",
+    "sea view",
+    "campsite",
+    "caravan"
+  ];
+
+  for (let place of specialPlaces) {
+    if (dropoffText.includes(place)) {
+      fare += 5;
+      break;
+    }
+  }
+
+  if (fare < minimumFare) fare = minimumFare;
+
+  const low = Math.round(fare);
+  const high = Math.round(fare * 1.15);
+  const label = (hour < 7) ? " (night rate)" : "";
+  const priceText = "£" + low + "–£" + high + label;
+
+  output.innerText =
+    "Estimated fare: " + priceText +
+    " • " + totalMiles.toFixed(1) + " mi" +
+    " • " + totalDurationText +
+    extraNote;
+
+  btn.innerText = "🚕 Book Taxi – " + priceText;
 }
-// ✅ API CALL
+
+// ✅ DEAD MILEAGE RULE: PL25 4NB → pickup → dropoff
+if (useDeadMileageRule) {
+  service.getDistanceMatrix(
+    {
+      origins: ["PL25 4NB", pickup],
+      destinations: [pickup, dropoff],
+      travelMode: "DRIVING",
+      unitSystem: google.maps.UnitSystem.IMPERIAL
+    },
+    function (response, status) {
+      if (status !== "OK") {
+        output.innerText = "Unable to calculate distance";
+        return;
+      }
+
+      const leg1 = response.rows[0].elements[0]; // PL25 4NB -> pickup
+      const leg2 = response.rows[1].elements[1]; // pickup -> dropoff
+
+      if (leg1.status !== "OK" || leg2.status !== "OK") {
+        output.innerText = "Please select valid addresses from the list";
+        return;
+      }
+
+      const totalMeters = leg1.distance.value + leg2.distance.value;
+      const totalMiles = totalMeters / 1609;
+
+      const totalSeconds = leg1.duration.value + leg2.duration.value;
+      const totalMinutes = Math.round(totalSeconds / 60);
+      const totalDurationText =
+        totalMinutes < 60
+          ? totalMinutes + " mins"
+          : Math.floor(totalMinutes / 60) + " hr " + (totalMinutes % 60) + " mins";
+
+      renderFare(
+        totalMiles,
+        totalDurationText,
+      );
+    }
+  );
+
+  return;
+}
+
+// ✅ NORMAL RULE: pickup → dropoff
 service.getDistanceMatrix(
   {
-    origins: [originAddress],
+    origins: [pickup],
     destinations: [dropoff],
     travelMode: "DRIVING",
     unitSystem: google.maps.UnitSystem.IMPERIAL
   },
   function (response, status) {
+    if (status !== "OK") {
+      output.innerText = "Unable to calculate distance";
+      return;
+    }
+
+    const result = response.rows[0].elements[0];
+
+    if (result.status !== "OK") {
+      output.innerText = "Please select valid addresses from the list";
+      return;
+    }
+
+    const totalMiles = result.distance.value / 1609;
+    const totalDurationText = result.duration.text;
+
+    renderFare(totalMiles, totalDurationText);
+  }
+);
 
     if (status !== "OK") {
       output.innerText = "Unable to calculate distance";
@@ -1171,7 +1282,7 @@ function sendWhatsApp() {
     alert("Please complete all fields");
     return;
   }
-
+const fareText = document.getElementById("priceEstimate")?.innerText || "";
   const message =
 `🚕 Taxi Booking Request
 
@@ -1182,6 +1293,8 @@ function sendWhatsApp() {
 📅 Date: ${date}
 ⏰ Time: ${time}
 👥 Passengers: ${passengers}
+
+💰 ${fareText}
 
 Please confirm availability 👍`;
 
