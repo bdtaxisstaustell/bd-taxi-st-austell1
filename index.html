@@ -1037,88 +1037,97 @@ if (!pickupSelected || !dropoffSelected) {
     return;
   }
 
-  const service = new google.maps.DistanceMatrixService();
+const service = new google.maps.DistanceMatrixService();
 
-  service.getDistanceMatrix(
-    {
+// ✅ SAFE STRINGS
+const pickupText = (pickup || "").toLowerCase();
+const dropoffText = (dropoff || "").toLowerCase();
 
-     let originAddress = pickup;
+// ✅ PL24 RULE
+let originAddress = pickup;
 
-if (pickup.toLowerCase().includes("pl24") &&
-    !dropoff.toLowerCase().includes("pl25")) {
-
-  originAddress = "PL25 4NB"; // your base
+if (pickupText.includes("pl24") && !dropoffText.includes("pl25")) {
+  originAddress = "PL25 4NB";
 }
 
-origins: [originAddress],
-destinations: [dropoff], 
-      travelMode: "DRIVING",
-      unitSystem: google.maps.UnitSystem.IMPERIAL
-    },
-    function (response, status) {
+// ✅ API CALL
+service.getDistanceMatrix(
+  {
+    origins: [originAddress],
+    destinations: [dropoff],
+    travelMode: "DRIVING",
+    unitSystem: google.maps.UnitSystem.IMPERIAL
+  },
+  function (response, status) {
 
-      if (status !== "OK") {
-        output.innerText = "Unable to calculate distance";
-        return;
-      }
-
-      const result = response.rows[0].elements[0];
-
-      if (result.status !== "OK") {
-        output.innerText = "Please select valid addresses from the list";
-        return;
-      }
-
-      const miles = result.distance.value / 1609;
-      const distanceText = result.distance.text;
-const durationText = result.duration.text;
-
-      const selectedTime = document.getElementById("time")?.value;
-      let hour = selectedTime ? parseInt(selectedTime.split(":")[0]) : new Date().getHours();
-
-      let ratePerMile = 3.0;
-      let minimumFare = 5.5;
-
-      if (hour < 7) {
-        ratePerMile = 4.5;
-        minimumFare = 7.5;
-      }
-
-      let fare = miles * ratePerMile;
-      const specialPlaces = [
-  "eden",
-  "heligan",
-  "pentewan",
-  "premier inn",
-  "meadow lakes",
-  "carlyon bay",
-  "pinetum",
-  "sea view",
-  "campsite",
-  "caravan"
-];
-
-const drop = dropoff.toLowerCase();
-
-for (let place of specialPlaces) {
-  if (drop.includes(place)) {
-    fare += 5;
-    break;
-  }
-}
-      if (fare < minimumFare) fare = minimumFare;
-
-      const low = Math.round(fare);
-      const high = Math.round(fare * 1.15);
-
-      const label = (hour < 7) ? " (night rate)" : "";
-      const priceText = "£" + low + "–£" + high + label + " (final fare estimate)";
-
-      output.innerText =   "Estimated fare: " + priceText +   " • " + distanceText +   " • " + durationText;
-      btn.innerText = "🚕 Book Taxi – " + priceText;
+    if (status !== "OK") {
+      output.innerText = "Unable to calculate distance";
+      return;
     }
-  );
-}
+
+    const result = response.rows[0].elements[0];
+
+    if (result.status !== "OK") {
+      output.innerText = "Please select valid addresses from the list";
+      return;
+    }
+
+    const miles = result.distance.value / 1609;
+    const distanceText = result.distance.text;
+    const durationText = result.duration.text;
+
+    const selectedTime = document.getElementById("time")?.value;
+    let hour = selectedTime
+      ? parseInt(selectedTime.split(":")[0])
+      : new Date().getHours();
+
+    let ratePerMile = 3.0;
+    let minimumFare = 5.5;
+
+    if (hour < 7) {
+      ratePerMile = 4.5;
+      minimumFare = 7.5;
+    }
+
+    let fare = miles * ratePerMile;
+
+    // ✅ EXTRA £5 LOCATIONS
+    const specialPlaces = [
+      "eden",
+      "heligan",
+      "pentewan",
+      "premier inn",
+      "meadow lakes",
+      "carlyon bay",
+      "pinetum",
+      "sea view",
+      "campsite",
+      "caravan"
+    ];
+
+    for (let place of specialPlaces) {
+      if (dropoffText.includes(place)) {
+        fare += 5;
+        break;
+      }
+    }
+
+    if (fare < minimumFare) fare = minimumFare;
+
+    const low = Math.round(fare);
+    const high = Math.round(fare * 1.15);
+
+    const label = (hour < 7) ? " (night rate)" : "";
+    const priceText = "£" + low + "–£" + high + label + " (final fare estimate)";
+
+    output.innerText =
+      "Estimated fare: " + priceText +
+      " • " + distanceText +
+      " • " + durationText;
+
+    btn.innerText = "🚕 Book Taxi – " + priceText;
+  }
+);
 
 /* WHATSAPP BOOKING */
 function sendWhatsApp() {
