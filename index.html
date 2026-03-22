@@ -1067,7 +1067,7 @@ function renderFare(totalMiles, totalDurationText, extraNote = "") {
     ? parseInt(selectedTime.split(":")[0], 10)
     : new Date().getHours();
 
-  let ratePerMile = 3.0;
+  let ratePerMile = 2.70;
   let minimumFare = 5.5;
 
   if (hour < 7) {
@@ -1203,19 +1203,16 @@ function sendWhatsApp() {
   }
 const fareText = document.getElementById("priceEstimate")?.innerText || "";
   const message =
-`🚕 Taxi Booking Request
+`Taxi Booking
 
-👤 Name: ${name}
-📍 Pick-up: ${pickup}
-🏁 Drop-off: ${dropoff}
+Name: ${name}
+From: ${pickup}
+To: ${dropoff}
+Date: ${date} at ${time}
+Passengers: ${passengers}
+${fareText}
 
-📅 Date: ${date}
-⏰ Time: ${time}
-👥 Passengers: ${passengers}
-
-💰 ${fareText}
-
-Please confirm availability 👍`;
+Please confirm availability👍`;
 
   window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(message), "_blank");
 
