@@ -1058,14 +1058,7 @@ if (!pickupSelected || !dropoffSelected) {
   }
 
 const service = new google.maps.DistanceMatrixService();
-
-function getPostcodePrefixFromText(inputId) {
-  const text = document.getElementById(inputId)?.value || "";
-
-  const match = text.match(/\b([A-Z]{1,2}[0-9]{1,2})/i);
-
-  return match ? match[1].toLowerCase() : "";
-}
+function getPostcodePrefix(place, inputId) {
 
   // 1. Try Google place (best)
   if (place && place.address_components) {
