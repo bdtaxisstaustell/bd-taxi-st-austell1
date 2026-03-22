@@ -1004,7 +1004,28 @@ auto.setBounds(new google.maps.LatLngBounds(
   { lat: 50.25, lng: -4.95 }, // south-west corner
   { lat: 50.45, lng: -4.60 }  // north-east corner
 ));
-    auto.addListener("place_changed", function () {
+
+  auto.addListener("place_changed", function () {
+
+  const place = auto.getPlace();
+
+  if (id === "pickupAddress") {
+    pickupSelected = true;
+    window.pickupPlace = place;
+  }
+
+  if (id === "dropoffAddress") {
+    dropoffSelected = true;
+    window.dropoffPlace = place;
+  }
+
+  setTimeout(() => {
+    if (typeof getDistanceAndCalculate === "function") {
+      getDistanceAndCalculate();
+    }
+  }, 200);
+
+});
 
   if (id === "pickupAddress") pickupSelected = true;
   if (id === "dropoffAddress") dropoffSelected = true;
@@ -1051,17 +1072,30 @@ if (!pickupSelected || !dropoffSelected) {
 const service = new google.maps.DistanceMatrixService();
 
 // ✅ SAFE STRINGS
-const pickupText = (pickup || "").toLowerCase();
-const dropoffText = (dropoff || "").toLowerCase();
+
+  function getPostcodePrefix(place) {
+  if (!place || !place.address_components) return "";
+
+  const postcodeComponent = place.address_components.find(c =>
+    c.types.includes("postal_code")
+  );
+
+  if (!postcodeComponent) return "";
+
+  return postcodeComponent.long_name.toLowerCase();
+}
+
+const pickupPostcode = getPostcodePrefix(window.pickupPlace);
+const dropoffPostcode = getPostcodePrefix(window.dropoffPlace);
 
 // ✅ POSTCODE CHECKS
-const pickupPL24 = pickupText.includes("pl24");
-const pickupPL26 = pickupText.includes("pl26");
-const pickupPL25 = pickupText.includes("pl25");
+const pickupPL24 = pickupPostcode.startsWith("pl24");
+const pickupPL26 = pickupPostcode.startsWith("pl26");
+const pickupPL25 = pickupPostcode.startsWith("pl25");
 
-const dropPL24 = dropoffText.includes("pl24");
-const dropPL26 = dropoffText.includes("pl26");
-const dropPL25 = dropoffText.includes("pl25");
+const dropPL24 = dropoffPostcode.startsWith("pl24");
+const dropPL26 = dropoffPostcode.startsWith("pl26");
+const dropPL25 = dropoffPostcode.startsWith("pl25");
 
 // ✅ RULE:
 // pickup must be in PL24 or PL26
