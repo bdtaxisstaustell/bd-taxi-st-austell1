@@ -447,21 +447,34 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-0T3NNG0DZX');
 </script>
+
   <style>
-body::before {
+.booking-card-ui {
+  position: relative;
+  overflow: hidden;
+}
+
+.booking-card-ui::before {
   content: "";
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 500px;
-  height: 500px;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+
+  width: 180px;                 /* size of watermark */
+  height: 180px;
+
   background: url('watermark.png') no-repeat center;
   background-size: contain;
-  opacity: 0.06;
-  filter: blur(1.5px);
-  transform: translate(-50%, -50%);
-  z-index: -1;
-  pointer-events: none;
+
+  opacity: 0.05;                /* subtle */
+  filter: blur(1px);
+
+  z-index: 0;
+}
+
+.booking-card-ui * {
+  position: relative;
+  z-index: 1;
 }
 </style>
 </head>
