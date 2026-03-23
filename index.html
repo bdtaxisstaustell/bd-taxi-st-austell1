@@ -447,6 +447,23 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-0T3NNG0DZX');
 </script>
+  <style>
+body::before {
+  content: "";
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  width: 500px;
+  height: 500px;
+  background: url('watermark.png') no-repeat center;
+  background-size: contain;
+  opacity: 0.06;
+  filter: blur(1.5px);
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+}
+</style>
 </head>
 <body>
   <header>
