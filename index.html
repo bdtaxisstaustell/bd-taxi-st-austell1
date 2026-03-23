@@ -452,7 +452,6 @@ gtag('config', 'G-0T3NNG0DZX');
 .booking-card-ui {
   position: relative;
   overflow: hidden;
-  border: 3px solid red; /* TEST */
 }
 
 .booking-card-ui::before {
@@ -461,14 +460,21 @@ gtag('config', 'G-0T3NNG0DZX');
   bottom: 10px;
   right: 10px;
 
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
 
   background: url('watermark.png') no-repeat center;
   background-size: contain;
 
-  opacity: 0.5; /* STRONG so we can see it */
-  z-index: 10;  /* bring to front for test */
+  opacity: 0.05;      /* subtle */
+  filter: blur(1px);  /* premium soft look */
+
+  z-index: 0;         /* behind content */
+}
+
+.booking-card-ui * {
+  position: relative;
+  z-index: 1;
 }
 </style>
 </head>
