@@ -1296,14 +1296,18 @@ function renderFare(totalMiles, totalDurationText, extraNote = "") {
   const priceText = "£" + low + "–£" + high + label;
 
   output.innerText =
-    "Estimated fare: " + priceText +
-    const preview = document.getElementById("liveFarePreview");
+  "Estimated fare: " + priceText +
+  " • " + totalMiles.toFixed(1) + " mi" +
+  " • " + totalDurationText +
+  extraNote;
+
+/* update black preview box */
+const preview = document.getElementById("liveFarePreview");
 if (preview) {
   preview.innerText = "🚕 Estimated fare: " + priceText;
 }
-    " • " + totalMiles.toFixed(1) + " mi" +
-    " • " + totalDurationText +
-    extraNote;
+
+btn.innerText = "🚕 Book Taxi – " + priceText;
 
   btn.innerText = "🚕 Book Taxi – " + priceText;
 }
