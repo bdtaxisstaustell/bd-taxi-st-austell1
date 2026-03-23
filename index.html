@@ -116,11 +116,32 @@ header.shrink {
   padding:10px;
   border-radius:6px;
 }
-
 /* SECTIONS */
 section{
   padding:40px 0;
   border-bottom:1px solid #eee;
+}
+
+/* FARES LIST */
+.fares-list {
+  list-style:none;
+  padding:0;
+  margin-top:20px;
+}
+
+.fares-list li {
+  display:flex;
+  justify-content:space-between;
+  padding:10px 14px;
+  border-bottom:1px solid #eee;
+}
+
+.fares-list li span:first-child {
+  text-align:left;
+}
+
+.fares-list li span:last-child {
+  font-weight:700;
 }
   #why-choose {
   background:#f9fafb;
@@ -924,33 +945,46 @@ We provide taxi services in St Austell, Par, Mevagissey, Fowey, St Blazey, Bugle
           
         </div>
       </div>
-      <div class="card" style="margin:40px auto; max-width:600px; text-align:center;">
+<div class="card" style="margin:40px auto; max-width:700px; text-align:center;">
+
   <h3>Typical Guide Fares</h3>
-  <p class="small">
-    The following prices are provided as a guide only. Exact fares may vary
-    depending on distance, time of travel and traffic conditions.
+
+  <p style="color:#64748b;">
+    Prices are estimates only and may vary depending on distance, time and traffic conditions.
   </p>
 
-  <ul class="places" style="list-style-position:inside; padding-left:0;">
-  <li>St Austell → Penrice Hospital: approx. £7</li>
-  <li>St Austell → Par Train Station: approx. £14.50</li>
-  <li>St Austell → Mevagissey: approx. £18</li>
-  <li>St Austell → Gorran Haven: approx. £25</li>
-  <li>St Austell → Bodmin Hospital: approx. £31</li>
-  <li>St Austell → Truro (City Centre): approx. £40</li>
-  <li>St Austell → Truro (Treliske Hospital): approx. £45</li>
-  <li>St Austell → Newquay: approx. £44</li>
-  <li>St Austell → Newquay Airport: approx. £41</li>
-  <li>St Austell → Exeter: approx. £160</li>
-</ul>
+  <!-- 🔥 LIVE PRICE PREVIEW -->
+  <div id="liveFarePreview" style="
+    background:#0f172a;
+    color:white;
+    padding:18px;
+    border-radius:12px;
+    margin:20px 0;
+    font-weight:700;
+    font-size:18px;
+  ">
+    Enter your journey above to see instant price 🚕
+  </div>
 
+  <ul class="fares-list">
+    <li><span>St Austell → Penrice Hospital</span><span>£7</span></li>
+    <li><span>St Austell → Par Train Station</span><span>£14.50</span></li>
+    <li><span>St Austell → Mevagissey</span><span>£18</span></li>
+    <li><span>St Austell → Gorran Haven</span><span>£25</span></li>
+    <li><span>St Austell → Bodmin Hospital</span><span>£31</span></li>
+    <li><span>St Austell → Truro (City Centre)</span><span>£40</span></li>
+    <li><span>St Austell → Truro (Treliske Hospital)</span><span>£45</span></li>
+    <li><span>St Austell → Newquay</span><span>£44</span></li>
+    <li><span>St Austell → Newquay Airport</span><span>£41</span></li>
+    <li><span>St Austell → Exeter</span><span>£160</span></li>
+  </ul>
 
-  <p class="small">
+  <p style="margin-top:12px;font-size:14px;color:#64748b;">
     Please contact us for an exact quote or to book in advance.
   </p>
-</div>
 
-    </section>
+</div>
+</section>
 
 <section id="faq">
   <div class="container">
