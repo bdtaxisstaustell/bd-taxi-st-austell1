@@ -1152,15 +1152,13 @@ function getDistanceAndCalculate() {
 
   const pickupText = pickup.toLowerCase();
   const dropoffText = dropoff.toLowerCase();
+const output = null;
+const btn = document.getElementById("bookBtn");
 
-  const output = document.getElementById("priceEstimate");
-  const btn = document.getElementById("bookBtn");
-
-  if (!pickup || !dropoff || !output) {
-    if (output) output.innerText = "";
-    if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
-    return;
-  }
+if (!pickup || !dropoff) {
+  if (btn) btn.innerText = "🚕 Get Taxi via WhatsApp";
+  return;
+}
 
 const service = new google.maps.DistanceMatrixService();
 function isPL24or26(text) {
