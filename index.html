@@ -1130,20 +1130,24 @@ function initAutocomplete() {
 }
 
 function getDistanceAndCalculate() {
+
   if (!window.google || !google.maps) {
-  return;
-}
-if (!pickupSelected || !dropoffSelected) {
-  const output = document.getElementById("priceEstimate");
-  if (output) {
-    output.innerText = "Please select address from suggestions";
+    return;
   }
-  return;
-}
+
+  // ✅ DEFINE FIRST
   let pickup = document.getElementById("pickupAddress")?.value || "";
   let dropoff = document.getElementById("dropoffAddress")?.value || "";
+
+  // ✅ THEN CHECK
+  if (!pickup || !dropoff) {
+    const output = document.getElementById("priceEstimate");
+    if (output) output.innerText = "";
+    return;
+  }
+
   const pickupText = pickup.toLowerCase();
-const dropoffText = dropoff.toLowerCase();
+  const dropoffText = dropoff.toLowerCase();
 
   const output = document.getElementById("priceEstimate");
   const btn = document.getElementById("bookBtn");
