@@ -1415,7 +1415,7 @@ async function sendWhatsApp() {
 
   const fareText = document.getElementById("liveFarePreview")?.innerText || "";
 
-  // ✅ SAVE TO FIREBASE
+  // ✅ SAVE TO FIREBASE (PUT THIS BACK)
   try {
     await db.collection("bookings").add({
       name,
@@ -1432,7 +1432,7 @@ async function sendWhatsApp() {
     console.error("Error saving booking:", error);
   }
 
-  // ✅ YOUR EXISTING WHATSAPP FLOW
+  // ✅ WHATSAPP MESSAGE
   const message =
 `Taxi Booking Request
 
@@ -1451,40 +1451,6 @@ Please confirm availability👍`;
     window.location.href = "thanks.html";
   }, 1000);
 }
-
-  const phone = "441726806556";
-
-  const name = document.getElementById("name")?.value.trim();
-  const pickup = document.getElementById("pickupAddress")?.value.trim();
-  const dropoff = document.getElementById("dropoffAddress")?.value.trim();
-  const date = document.getElementById("date")?.value;
-  const time = document.getElementById("time")?.value;
-  const passengers = document.getElementById("passengers")?.value;
-
-  if (!name || !pickup || !dropoff || !date || !time || !passengers) {
-    alert("Please complete all fields");
-    return;
-  }
-const fareText = document.getElementById("liveFarePreview")?.innerText || "";
-  const message =
-`Taxi Booking Request
-
-Name: ${name}
-From: ${pickup}
-To: ${dropoff}
-Date: ${date} at ${time}
-Passengers: ${passengers}
-${fareText}
-
-Please confirm availability👍`;
-
-  window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(message), "_blank");
-
-  setTimeout(() => {
-    window.location.href = "thanks.html";
-  }, 1000);
-}
-
 
 /* ASAP */
 function setASAP() {
