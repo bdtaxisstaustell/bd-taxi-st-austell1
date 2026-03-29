@@ -755,42 +755,38 @@ gtag('config', 'G-0T3NNG0DZX');
   <p style="text-align:center;color:#64748b;font-size:14px;margin-bottom:14px;">
   Best for advance bookings or detailed requests
 </p>
+<form id="emailBookingForm">
 
-  <form action="https://formsubmit.co/booking@staustelltaxis.co.uk" method="POST">
-    
-    <input type="hidden" name="_subject" value="New booking request - BD TAXI ST AUSTELL">
-    <input type="hidden" name="_captcha" value="true">
-    <input type="hidden" name="_next" value="https://www.taxistaustell.co.uk/thanks.html">
+  <label>Name</label>
+  <input id="emailName" placeholder="Your full name" required>
 
-    <label>Name</label>
-    <input name="Name" placeholder="Your full name" required>
+  <label>Phone</label>
+  <input id="emailPhone" placeholder="Mobile number" required>
 
-    <label>Phone</label>
-    <input name="Phone" placeholder="Mobile number" required>
+  <label>Email</label>
+  <input id="emailEmail" type="email" placeholder="Email address (optional)">
 
-    <label>Email</label>
-    <input name="Email" type="email" placeholder="Email address (optional)">
+  <label>Pickup address</label>
+  <input id="pickupAddressEmail" placeholder="Enter pickup location" required>
 
-    <label>Pickup address</label>
-    <input id="pickupAddressEmail" name="Pickup" placeholder="Enter pickup location" required>
+  <label>Drop-off address</label>
+  <input id="dropoffAddressEmail" placeholder="Enter destination" required>
 
-    <label>Drop-off address</label>
-    <input id="dropoffAddressEmail" name="Dropoff" placeholder="Enter destination" required>
+  <label>Date</label>
+  <input id="emailDate" type="date" required>
 
-    <label>Date</label>
-    <input name="Date" type="date" required>
+  <label>Time</label>
+  <input id="emailTime" type="time" required>
 
-    <label>Time</label>
-    <input name="Time" type="time" required>
+  <label>Passengers / Luggage</label>
+  <input id="emailPassengers" placeholder="e.g. 2 passengers, 2 suitcases">
 
-    <label>Passengers / Luggage</label>
-    <input name="Passengers" placeholder="e.g. 2 passengers, 2 suitcases">
+  <label>Notes</label>
+  <textarea id="emailNotes" rows="3"></textarea>
 
-    <label>Notes</label>
-    <textarea name="Notes" rows="3"></textarea>
+  <button class="btn" type="submit">Send booking request</button>
 
-    <button class="btn" type="submit">Send booking request</button>
-    </form>
+</form>
 </div>
    </div>
 </section>
@@ -1541,95 +1537,8 @@ function setDropoff(address) {
 <script async defer
   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places">
 </script>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-
-  const header = document.querySelector("header");
-
-  if (!header) return;
-
-  /* =========================
-     SHRINK HEADER ON SCROLL
-  ========================== */
-  window.addEventListener("scroll", function() {
-    if (window.scrollY > 50) {
-      header.classList.add("shrink");
-    } else {
-      header.classList.remove("shrink");
-    }
-  });
-
-  /* =========================
-     HIDE HEADER DURING BOOKING
-  ========================== */
-
-  const bookingInputs = document.querySelectorAll(
-    "#booking input, #booking textarea, #booking button"
-  );
-
-  bookingInputs.forEach(el => {
-
-    // Focus (desktop + mobile keyboard)
-    el.addEventListener("focus", () => {
-      header.classList.add("hide-header");
-    });
-
-    // Click
-    el.addEventListener("click", () => {
-      header.classList.add("hide-header");
-    });
-
-    // Mobile touch
-    el.addEventListener("touchstart", () => {
-      header.classList.add("hide-header");
-    });
-
-  });
-
-  /* =========================
-     SHOW HEADER AGAIN
-  ========================== */
-
-  document.addEventListener("click", function(e) {
-
-    const isInsideBooking = e.target.closest("#booking");
-
-    if (!isInsideBooking) {
-      header.classList.remove("hide-header");
-    }
-
-  });
-
-  /* =========================
-     FIX AUTOCOMPLETE (IMPORTANT)
-  ========================== */
-  setTimeout(() => {
-    if (typeof initAutocomplete === "function") {
-      initAutocomplete();
-    }
-  }, 500);
-
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-  const dropdownBtn = document.querySelector(".dropdown button");
-  const dropdown = document.querySelector(".dropdown");
-
-  if (!dropdownBtn || !dropdown) return;
-
-  dropdownBtn.addEventListener("click", function (e) {
-    e.stopPropagation();
-    dropdown.classList.toggle("open");
-  });
-
-  document.addEventListener("click", function () {
-    dropdown.classList.remove("open");
-  });
-});
-</script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<!-- FIREBASE (LOAD FIRST) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
@@ -1645,5 +1554,94 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 </script>
+
+<!-- MAIN SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+
+  /* HEADER */
+  const header = document.querySelector("header");
+
+  if (header) {
+    window.addEventListener("scroll", () => {
+      header.classList.toggle("shrink", window.scrollY > 50);
+    });
+
+    const bookingInputs = document.querySelectorAll(
+      "#booking input, #booking textarea, #booking button"
+    );
+
+    bookingInputs.forEach(el => {
+      el.addEventListener("focus", () => header.classList.add("hide-header"));
+      el.addEventListener("click", () => header.classList.add("hide-header"));
+      el.addEventListener("touchstart", () => header.classList.add("hide-header"));
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("#booking")) {
+        header.classList.remove("hide-header");
+      }
+    });
+  }
+
+  /* DROPDOWN */
+  const dropdownBtn = document.querySelector(".dropdown button");
+  const dropdown = document.querySelector(".dropdown");
+
+  if (dropdownBtn && dropdown) {
+    dropdownBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      dropdown.classList.toggle("open");
+    });
+
+    document.addEventListener("click", () => {
+      dropdown.classList.remove("open");
+    });
+  }
+
+  /* AUTOCOMPLETE */
+  setTimeout(() => {
+    if (typeof initAutocomplete === "function") {
+      initAutocomplete();
+    }
+  }, 500);
+
+  /* EMAIL BOOKING (FIREBASE SAVE) */
+  const form = document.getElementById("emailBookingForm");
+
+  if (form) {
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      try {
+        await db.collection("bookings").add({
+          name: document.getElementById("emailName").value,
+          phone: document.getElementById("emailPhone").value,
+          email: document.getElementById("emailEmail").value,
+          pickup: document.getElementById("pickupAddressEmail").value,
+          dropoff: document.getElementById("dropoffAddressEmail").value,
+          date: document.getElementById("emailDate").value,
+          time: document.getElementById("emailTime").value,
+          passengers: document.getElementById("emailPassengers").value,
+          notes: document.getElementById("emailNotes").value,
+          source: "email",
+          status: "new",
+          createdAt: new Date()
+        });
+
+        alert("Booking sent successfully!");
+        window.location.href = "thanks.html";
+
+      } catch (error) {
+        console.error(error);
+        alert("Error sending booking");
+      }
+
+    });
+  }
+
+});
+</script>
+
 </body>
 </html>
