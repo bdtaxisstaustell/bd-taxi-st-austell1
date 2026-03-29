@@ -1084,7 +1084,8 @@ Taxi St Austell, St Austell taxi service, local taxi St Austell, airport transfe
 /* GOOGLE AUTOCOMPLETE (FIXED + RELIABLE) */
 let pickupSelected = false;
 let dropoffSelected = false;
-function initAutocomplete() {
+function initAutocomplete() 
+{
   if (!window.google || !google.maps) return;
 
   const setupAutocomplete = (id) => {
@@ -1572,9 +1573,9 @@ function setDropoff(address) {
 }
 </script>
 <script async defer
-  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete">
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places">
 </script>
-  
+
 <script>
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -1592,7 +1593,6 @@ document.addEventListener("DOMContentLoaded", function() {
       header.classList.remove("shrink");
     }
   });
-
 
   /* =========================
      HIDE HEADER DURING BOOKING
@@ -1614,13 +1614,12 @@ document.addEventListener("DOMContentLoaded", function() {
       header.classList.add("hide-header");
     });
 
-    // 🔥 MOBILE FIX (touch)
+    // Mobile touch
     el.addEventListener("touchstart", () => {
       header.classList.add("hide-header");
     });
 
   });
-
 
   /* =========================
      SHOW HEADER AGAIN
@@ -1635,6 +1634,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
   });
+
+  /* =========================
+     FIX AUTOCOMPLETE (IMPORTANT)
+  ========================== */
+  setTimeout(() => {
+    if (typeof initAutocomplete === "function") {
+      initAutocomplete();
+    }
+  }, 500);
 
 });
 </script>
