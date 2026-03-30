@@ -7,46 +7,45 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Taxi Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BD Taxi St Austell Dashboard</title>
 
 <style>
 body {
   font-family: Arial, sans-serif;
-  padding: 12px;
+  padding: 14px;
+  margin: 0;
   background: #eef2f7;
 }
 
 h1 {
   text-align: center;
+  font-size: 32px;
+  margin: 10px 0 20px;
 }
 
 .top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   margin-bottom: 20px;
-  gap: 10px;
-}
-
-@media (max-width: 600px) {
-  .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
 }
 
 .stats {
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 600;
 }
 
 .booking {
   background: white;
-  padding: 15px;
-  margin-bottom: 12px;
-  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+  border-radius: 14px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   word-wrap: break-word;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
 .new { border-left: 6px solid orange; }
@@ -55,44 +54,78 @@ h1 {
 
 .status {
   font-weight: bold;
-  margin-top: 5px;
+  margin: 6px 0 10px;
 }
 
 button {
-  padding: 10px;
+  padding: 12px 14px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 15px;
 }
 
-.accept { background: #28a745; color: white; }
-.reject { background: #dc3545; color: white; }
-.logout { background: black; color: white; }
+.accept {
+  background: #28a745;
+  color: white;
+}
 
-/* BUTTON GROUP (KEY MOBILE FIX) */
+.reject {
+  background: #dc3545;
+  color: white;
+}
+
+.logout {
+  background: black;
+  color: white;
+}
+
 .btn-group {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .btn-group button {
-  flex: 1;
+  flex: 1 1 100%;
 }
 
-/* Desktop */
-@media (min-width: 600px) {
+@media (min-width: 768px) {
   .btn-group button {
-    flex: unset;
+    flex: 0 0 auto;
   }
 }
 
-/* Mobile tweaks */
 @media (max-width: 600px) {
-  h1 { font-size: 22px; }
-  .stats { font-size: 16px; }
+  body {
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin-top: 6px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stats {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .logout {
+    width: 100%;
+  }
+
+  .booking {
+    font-size: 16px;
+    padding: 16px;
+  }
 }
 </style>
 
@@ -114,7 +147,6 @@ button {
 
 <div id="bookings"></div>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -131,14 +163,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* LOAD BOOKINGS */
 let firstLoad = true;
 
 function loadBookings() {
   db.collection("bookings")
     .orderBy("createdAt", "desc")
     .onSnapshot(snapshot => {
-
       const container = document.getElementById("bookings");
       container.innerHTML = "";
 
@@ -157,9 +187,7 @@ function loadBookings() {
           total += Number(data.fareAmount);
         }
 
-        const sourceLabel = data.source === "email"
-          ? "📧 Email"
-          : "🟢 WhatsApp";
+        const sourceLabel = data.source === "email" ? "📧 Email" : "🟢 WhatsApp";
 
         const div = document.createElement("div");
         div.className = "booking " + (data.status || "new");
@@ -180,9 +208,7 @@ function loadBookings() {
             <button class="accept" onclick="updateStatus('${doc.id}','accepted')">Accept</button>
             <button class="reject" onclick="updateStatus('${doc.id}','rejected')">Reject</button>
             <button onclick="deleteBooking('${doc.id}')" style="background:#555;color:white;">Delete</button>
-            <button onclick="replyWhatsApp('${data.phone}','${data.name}')" style="background:#25D366;color:white;">
-              💬 WhatsApp
-            </button>
+            <button onclick="replyWhatsApp('${data.phone}','${data.name}')" style="background:#25D366;color:white;">💬 WhatsApp</button>
           </div>
         `;
 
@@ -196,19 +222,18 @@ function loadBookings() {
     });
 }
 
-/* UPDATE STATUS */
 function updateStatus(id, status) {
-  db.collection("bookings").doc(id).update({ status });
+  db.collection("bookings").doc(id).update({
+    status: status
+  });
 }
 
-/* DELETE */
 function deleteBooking(id) {
   if (confirm("⚠️ Delete this booking?")) {
     db.collection("bookings").doc(id).delete();
   }
 }
 
-/* WHATSAPP REPLY */
 function replyWhatsApp(phone, name) {
   if (!phone || phone === "undefined") {
     alert("No phone number saved for this booking.");
@@ -231,7 +256,6 @@ function replyWhatsApp(phone, name) {
   );
 }
 
-/* LOGOUT */
 function logout() {
   localStorage.removeItem("adminLoggedIn");
   window.location.href = "admin.html";
