@@ -25,6 +25,15 @@ h1 {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  gap: 10px;
+}
+
+@media (max-width: 600px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
 }
 
 .stats {
@@ -63,6 +72,43 @@ button {
 .logout {
   background: black;
   color: white;
+}
+  /* MOBILE IMPROVEMENTS */
+
+.booking {
+  word-wrap: break-word;
+  font-size: 14px;
+}
+
+.booking button {
+  width: 100%;
+  margin-top: 8px;
+}
+
+@media (min-width: 600px) {
+  .booking button {
+    width: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 22px;
+  }
+
+  .stats {
+    font-size: 16px;
+  }
+
+  .booking {
+    font-size: 15px;
+  }
+
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
 }
 </style>
 
