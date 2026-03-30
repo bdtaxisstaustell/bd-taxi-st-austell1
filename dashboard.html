@@ -12,7 +12,7 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 <style>
 body {
   font-family: Arial, sans-serif;
-  padding: 20px;
+  padding: 12px;
   background: #eef2f7;
 }
 
@@ -46,6 +46,7 @@ h1 {
   margin-bottom: 12px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  word-wrap: break-word;
 }
 
 .new { border-left: 6px solid orange; }
@@ -58,57 +59,40 @@ h1 {
 }
 
 button {
-  margin-top: 10px;
-  margin-right: 8px;
-  padding: 8px 12px;
+  padding: 10px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 600;
 }
 
 .accept { background: #28a745; color: white; }
 .reject { background: #dc3545; color: white; }
+.logout { background: black; color: white; }
 
-.logout {
-  background: black;
-  color: white;
-}
-  /* MOBILE IMPROVEMENTS */
-
-.booking {
-  word-wrap: break-word;
-  font-size: 14px;
+/* BUTTON GROUP (KEY MOBILE FIX) */
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
 }
 
-.booking button {
-  width: 100%;
-  margin-top: 8px;
+.btn-group button {
+  flex: 1;
 }
 
+/* Desktop */
 @media (min-width: 600px) {
-  .booking button {
-    width: auto;
+  .btn-group button {
+    flex: unset;
   }
 }
 
+/* Mobile tweaks */
 @media (max-width: 600px) {
-  h1 {
-    font-size: 22px;
-  }
-
-  .stats {
-    font-size: 16px;
-  }
-
-  .booking {
-    font-size: 15px;
-  }
-
-  .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
+  h1 { font-size: 22px; }
+  .stats { font-size: 16px; }
 }
 </style>
 
@@ -147,27 +131,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-/* =========================
-   WHATSAPP ALERT TO YOU
-========================= */
-function notifyWhatsApp(data) {
-  const phone = "441726806556";
-
-  const message = `NEW BOOKING 🚖
-
-Name: ${data.name}
-Phone: ${data.phone || "N/A"}
-From: ${data.pickup}
-To: ${data.dropoff}
-Date: ${data.date} ${data.time}
-Passengers: ${data.passengers}`;
-
-  window.location.href =   "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
-}
-
-/* =========================
-   LOAD BOOKINGS
-========================= */
+/* LOAD BOOKINGS */
 let firstLoad = true;
 
 function loadBookings() {
@@ -185,9 +149,9 @@ function loadBookings() {
         const data = doc.data();
         bookingCount++;
 
-       if (!firstLoad) {
-  document.getElementById("newBookingSound").play();
-}
+        if (!firstLoad) {
+          document.getElementById("newBookingSound").play();
+        }
 
         if (data.fareAmount) {
           total += Number(data.fareAmount);
@@ -207,18 +171,19 @@ function loadBookings() {
           📍 ${data.pickup || ""} → ${data.dropoff || ""}<br>
           📅 ${data.date || ""} at ${data.time || ""}<br>
           👥 ${data.passengers || ""}<br>
-          📞 ${data.phone ? data.phone : "No phone"}<br>
+          📞 ${data.phone || "No phone"}<br>
           ✉️ ${data.email || ""}<br>
           💰 ${data.fare || ""}<br>
           📝 ${data.notes || ""}<br>
 
-          <button class="accept" onclick="updateStatus('${doc.id}','accepted')">Accept</button>
-          <button class="reject" onclick="updateStatus('${doc.id}','rejected')">Reject</button>
-          <button onclick="deleteBooking('${doc.id}')" style="background:#555;color:white;">Delete</button>
-
-          <button onclick="replyWhatsApp('${data.phone}','${data.name}')" style="background:#25D366;color:white;">
-            💬 WhatsApp
-          </button>
+          <div class="btn-group">
+            <button class="accept" onclick="updateStatus('${doc.id}','accepted')">Accept</button>
+            <button class="reject" onclick="updateStatus('${doc.id}','rejected')">Reject</button>
+            <button onclick="deleteBooking('${doc.id}')" style="background:#555;color:white;">Delete</button>
+            <button onclick="replyWhatsApp('${data.phone}','${data.name}')" style="background:#25D366;color:white;">
+              💬 WhatsApp
+            </button>
+          </div>
         `;
 
         container.appendChild(div);
@@ -231,31 +196,22 @@ function loadBookings() {
     });
 }
 
-/* =========================
-   UPDATE STATUS
-========================= */
+/* UPDATE STATUS */
 function updateStatus(id, status) {
-  db.collection("bookings").doc(id).update({
-    status: status
-  });
+  db.collection("bookings").doc(id).update({ status });
 }
 
-/* =========================
-   DELETE
-========================= */
+/* DELETE */
 function deleteBooking(id) {
   if (confirm("⚠️ Delete this booking?")) {
     db.collection("bookings").doc(id).delete();
   }
 }
 
-/* =========================
-   WHATSAPP REPLY
-========================= */
+/* WHATSAPP REPLY */
 function replyWhatsApp(phone, name) {
-
   if (!phone || phone === "undefined") {
-    alert("No phone number saved for this booking.\n\nOnly NEW bookings will have phone.");
+    alert("No phone number saved for this booking.");
     return;
   }
 
@@ -275,9 +231,7 @@ function replyWhatsApp(phone, name) {
   );
 }
 
-/* =========================
-   LOGOUT
-========================= */
+/* LOGOUT */
 function logout() {
   localStorage.removeItem("adminLoggedIn");
   window.location.href = "admin.html";
