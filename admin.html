@@ -7,19 +7,23 @@
 
 <h2>Admin Login</h2>
 
+<input id="username" placeholder="Username">
+<br><br>
 <input id="password" type="password" placeholder="Enter password">
 <br><br>
+
 <button onclick="login()">Login</button>
 
 <script>
 function login() {
-  const pass = document.getElementById("password").value;
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-  if (pass === "Avro2026") {
+  if (username === "bdcabs2026" && password === "Avro2026") {
     localStorage.setItem("adminLoggedIn", "true");
     window.location.href = "dashboard.html";
   } else {
-    alert("Wrong password");
+    alert("Wrong username or password");
   }
 }
 </script>
