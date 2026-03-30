@@ -8,6 +8,7 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 <html>
 <head>
   <title>Taxi Dashboard</title>
+
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -79,7 +80,6 @@ button {
   <button class="logout" onclick="logout()">Logout</button>
 </div>
 
-<!-- SOUND -->
 <audio id="newBookingSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
 <div id="bookings"></div>
@@ -102,7 +102,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 /* =========================
-   WHATSAPP NOTIFY
+   WHATSAPP ALERT TO YOU
 ========================= */
 function notifyWhatsApp(data) {
   const phone = "441726806556";
@@ -110,6 +110,7 @@ function notifyWhatsApp(data) {
   const message = `NEW BOOKING 🚖
 
 Name: ${data.name}
+Phone: ${data.phone || "N/A"}
 From: ${data.pickup}
 To: ${data.dropoff}
 Date: ${data.date} ${data.time}
@@ -130,21 +131,19 @@ function loadBookings() {
 
       const container = document.getElementById("bookings");
       container.innerHTML = "";
-      let bookingCount = 0;
 
+      let bookingCount = 0;
       let total = 0;
 
       snapshot.forEach(doc => {
         const data = doc.data();
         bookingCount++;
 
-        /* SOUND + WHATSAPP */
         if (!firstLoad) {
           document.getElementById("newBookingSound").play();
           notifyWhatsApp(data);
         }
 
-        /* EARNINGS */
         if (data.fareAmount) {
           total += Number(data.fareAmount);
         }
@@ -159,10 +158,11 @@ function loadBookings() {
         div.innerHTML = `
           <strong>${data.name || "No name"}</strong> — ${sourceLabel}<br>
           <div class="status">Status: ${data.status || "new"}</div>
+
           📍 ${data.pickup || ""} → ${data.dropoff || ""}<br>
           📅 ${data.date || ""} at ${data.time || ""}<br>
           👥 ${data.passengers || ""}<br>
-          📞 ${data.phone || ""}<br>
+          📞 ${data.phone ? data.phone : "No phone"}<br>
           ✉️ ${data.email || ""}<br>
           💰 ${data.fare || ""}<br>
           📝 ${data.notes || ""}<br>
@@ -172,15 +172,16 @@ function loadBookings() {
           <button onclick="deleteBooking('${doc.id}')" style="background:#555;color:white;">Delete</button>
 
           <button onclick="replyWhatsApp('${data.phone}','${data.name}')" style="background:#25D366;color:white;">
-  💬 WhatsApp
-</button>
+            💬 WhatsApp
+          </button>
         `;
 
         container.appendChild(div);
       });
 
-document.getElementById("totalEarnings").innerText = total;
-document.getElementById("totalBookings").innerText = bookingCount;
+      document.getElementById("totalEarnings").innerText = total;
+      document.getElementById("totalBookings").innerText = bookingCount;
+
       firstLoad = false;
     });
 }
@@ -195,26 +196,31 @@ function updateStatus(id, status) {
 }
 
 /* =========================
-   LOGOUT
+   DELETE
 ========================= */
-function logout() {
-  localStorage.removeItem("adminLoggedIn");
-  window.location.href = "admin.html";
+function deleteBooking(id) {
+  if (confirm("⚠️ Delete this booking?")) {
+    db.collection("bookings").doc(id).delete();
+  }
 }
-  function replyWhatsApp(phone, name) {
 
-  if (!phone) {
-    alert("No phone number for this booking");
+/* =========================
+   WHATSAPP REPLY
+========================= */
+function replyWhatsApp(phone, name) {
+
+  if (!phone || phone === "undefined") {
+    alert("No phone number saved for this booking.\n\nOnly NEW bookings will have phone.");
     return;
   }
 
-  // remove spaces
   phone = phone.replace(/\s+/g, "");
 
-  // convert UK number (07 → 447)
   if (phone.startsWith("0")) {
     phone = "44" + phone.substring(1);
   }
+
+  phone = phone.replace("+", "");
 
   const message = `Hi ${name || ""}, regarding your taxi booking 🚕`;
 
@@ -223,13 +229,15 @@ function logout() {
     "_blank"
   );
 }
-function deleteBooking(id) {
-  const confirmDelete = confirm("⚠️ Delete this booking?");
 
-  if (confirmDelete) {
-    db.collection("bookings").doc(id).delete();
-  }
+/* =========================
+   LOGOUT
+========================= */
+function logout() {
+  localStorage.removeItem("adminLoggedIn");
+  window.location.href = "admin.html";
 }
+
 loadBookings();
 </script>
 
