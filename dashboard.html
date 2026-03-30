@@ -169,6 +169,7 @@ function loadBookings() {
 
           <button class="accept" onclick="updateStatus('${doc.id}','accepted')">Accept</button>
           <button class="reject" onclick="updateStatus('${doc.id}','rejected')">Reject</button>
+          <button onclick="deleteBooking('${doc.id}')" style="background:#555;color:white;">Delete</button>
         `;
 
         container.appendChild(div);
@@ -196,7 +197,13 @@ function logout() {
   localStorage.removeItem("adminLoggedIn");
   window.location.href = "admin.html";
 }
+function deleteBooking(id) {
+  const confirmDelete = confirm("⚠️ Delete this booking?");
 
+  if (confirmDelete) {
+    db.collection("bookings").doc(id).delete();
+  }
+}
 loadBookings();
 </script>
 
