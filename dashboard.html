@@ -170,6 +170,10 @@ function loadBookings() {
           <button class="accept" onclick="updateStatus('${doc.id}','accepted')">Accept</button>
           <button class="reject" onclick="updateStatus('${doc.id}','rejected')">Reject</button>
           <button onclick="deleteBooking('${doc.id}')" style="background:#555;color:white;">Delete</button>
+
+          <button onclick="replyWhatsApp('${data.phone}','${data.name}')" style="background:#25D366;color:white;">
+  💬 WhatsApp
+</button>
         `;
 
         container.appendChild(div);
@@ -196,6 +200,28 @@ function updateStatus(id, status) {
 function logout() {
   localStorage.removeItem("adminLoggedIn");
   window.location.href = "admin.html";
+}
+  function replyWhatsApp(phone, name) {
+
+  if (!phone) {
+    alert("No phone number for this booking");
+    return;
+  }
+
+  // remove spaces
+  phone = phone.replace(/\s+/g, "");
+
+  // convert UK number (07 → 447)
+  if (phone.startsWith("0")) {
+    phone = "44" + phone.substring(1);
+  }
+
+  const message = `Hi ${name || ""}, regarding your taxi booking 🚕`;
+
+  window.open(
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(message),
+    "_blank"
+  );
 }
 function deleteBooking(id) {
   const confirmDelete = confirm("⚠️ Delete this booking?");
