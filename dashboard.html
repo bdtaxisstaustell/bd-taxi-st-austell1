@@ -116,7 +116,7 @@ To: ${data.dropoff}
 Date: ${data.date} ${data.time}
 Passengers: ${data.passengers}`;
 
-  window.open("https://wa.me/" + phone + "?text=" + encodeURIComponent(message));
+  window.location.href =   "https://wa.me/" + phone + "?text=" + encodeURIComponent(message);
 }
 
 /* =========================
@@ -139,10 +139,9 @@ function loadBookings() {
         const data = doc.data();
         bookingCount++;
 
-        if (!firstLoad) {
-          document.getElementById("newBookingSound").play();
-          notifyWhatsApp(data);
-        }
+       if (!firstLoad) {
+  document.getElementById("newBookingSound").play();
+}
 
         if (data.fareAmount) {
           total += Number(data.fareAmount);
