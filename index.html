@@ -744,10 +744,9 @@ gtag('config', 'G-0T3NNG0DZX');
   Enter your journey above to see instant price 🚕
 </div>
   <!-- BUTTON -->
-  <button id="bookBtn" type="button" onclick="sendWhatsApp()" class="uber-btn" style="width:100%;margin-top:8px;">
-    🚕 Get Taxi via WhatsApp
-  </button>
-
+ <button id="bookBtn" type="button" onclick="sendWhatsApp(); return false;" class="uber-btn" style="width:100%;margin-top:8px;">
+  🚕 Get Taxi via WhatsApp
+</button>
 </div>
 
 <div class="booking-card-ui" id="email-booking">
@@ -1411,7 +1410,6 @@ async function sendWhatsApp() {
 
   const fareText = document.getElementById("liveFarePreview")?.innerText || "";
 
-  // ✅ SAVE TO FIREBASE (PUT THIS BACK)
   try {
     await db.collection("bookings").add({
       name,
@@ -1421,6 +1419,7 @@ async function sendWhatsApp() {
       time,
       passengers,
       fare: fareText,
+      source: "whatsapp",
       status: "new",
       createdAt: new Date()
     });
@@ -1428,7 +1427,6 @@ async function sendWhatsApp() {
     console.error("Error saving booking:", error);
   }
 
-  // ✅ WHATSAPP MESSAGE
   const message =
 `Taxi Booking Request
 
@@ -1447,8 +1445,7 @@ Please confirm availability👍`;
     window.location.href = "thanks.html";
   }, 1000);
 }
-
-/* ASAP */
+  /* ASAP */
 function setASAP() {
   const timeInput = document.getElementById("time");
   if (!timeInput) return;
