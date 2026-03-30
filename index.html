@@ -1447,10 +1447,8 @@ ${fareText}
 
 Please confirm availability 👍`;
 
-  window.open(
-    "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message),
-    "_blank"
-  );
+window.location.href =
+  "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
 
   setTimeout(() => {
     window.location.href = "thanks.html";
