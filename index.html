@@ -1416,22 +1416,27 @@ service.getDistanceMatrix(
 
   // SAVE TO FIREBASE
   try {
-    await db.collection("bookings").add({
-      name,
-      phone: phoneInput,
-      pickup,
-      dropoff,
-      date,
-      time,
-      passengers,
-      fare: fareText,
-      source: "whatsapp",
-      status: "new",
-      createdAt: new Date()
-    });
-  } catch (error) {
-    console.error("Error saving booking:", error);
-  }
+  if (!window.db) throw new Error("Firebase not loaded");
+
+  await db.collection("bookings").add({
+    name,
+    phone: phoneInput,
+    pickup,
+    dropoff,
+    date,
+    time,
+    passengers,
+    fare: fareText,
+    source: "whatsapp",
+    status: "new",
+    createdAt: new Date().toISOString()
+  });
+
+  console.log("Booking saved to Firebase");
+
+} catch (error) {
+  console.error("🔥 FIREBASE ERROR:", error);
+}
 
   // WHATSAPP MESSAGE
   const message =
@@ -1448,11 +1453,14 @@ ${fareText}
 Please confirm availability 👍`;
 
 window.location.href =
-  "https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message);
+ const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
 
-  setTimeout(() => {
-    window.location.href = "thanks.html";
-  }, 1000);
+const url = isMobile
+  ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
+  : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
+
+window.location.href = url;
+
 } 
   /* ASAP */
 function setASAP() {
@@ -1559,6 +1567,8 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+  console.log("Firebase loaded:", !!window.firebase);
+console.log("Firestore ready:", !!window.db);
 </script>
 
 <!-- MAIN SCRIPT -->
