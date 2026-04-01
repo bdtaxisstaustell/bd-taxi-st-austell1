@@ -6,7 +6,6 @@
 
 <style>
 body { font-family: Arial; margin:0; background:#eef2f7; }
-
 h1 { text-align:center; padding:10px; }
 
 .top-bar {
@@ -108,6 +107,7 @@ let currentTab = "new";
 let unsubscribe = null;
 let isInitialLoad = true;
 
+/* TAB SWITCH */
 function setTab(tab){
   currentTab = tab;
 
@@ -120,8 +120,6 @@ function setTab(tab){
 /* 🔔 NOTIFICATION */
 function notify(){
   const sound = document.getElementById("sound");
-
-  // 🔊 Play sound safely
   sound.play().catch(()=>{});
 
   if (Notification.permission === "granted") {
@@ -160,7 +158,6 @@ function autoReply(phone,name){
 /* LOAD BOOKINGS */
 function loadBookings(){
 
-  // 🔥 prevent multiple listeners
   if(unsubscribe){
     unsubscribe();
   }
@@ -177,20 +174,28 @@ function loadBookings(){
       const container = document.getElementById("bookings");
       container.innerHTML="";
 
-     snapshot.forEach(doc=>{
-  const data = doc.data();
-  const id = doc.id;
-
-        const data = change.doc.data();
-        const id = change.doc.id;
-
-        // 🔔 ONLY new bookings trigger
+      // 🔔 Notifications only
+      snapshot.docChanges().forEach(change => {
         if(change.type === "added" && !isInitialLoad){
           notify();
         }
+      });
 
-        const isToday = data.date===today;
-        const isFuture = new Date(data.date+"T"+data.time) > new Date();
+      // ✅ Render ALL bookings
+      snapshot.forEach(doc => {
+
+        const data = doc.data();
+        const id = doc.id;
+
+        const isToday = data.date === today;
+
+        // safer datetime
+        let bookingTime = null;
+        if(data.date && data.time){
+          bookingTime = new Date(data.date + "T" + data.time);
+        }
+
+        const isFuture = bookingTime ? bookingTime > new Date() : false;
 
         let show = false;
 
@@ -211,7 +216,8 @@ function loadBookings(){
         div.className = "booking "+(isToday?"today":"");
 
         div.innerHTML = `
-          <b>${data.name || "No Name"}</b><br>
+          <b>${data.name || "No Name"}</b>
+          ${data.source === "whatsapp" ? "📱" : ""}<br>
           ${data.pickup || "-"} → ${data.dropoff || "-"}<br>
           ${data.date || "-"} ${data.time || ""}<br>
 
