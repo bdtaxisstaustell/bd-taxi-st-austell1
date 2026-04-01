@@ -57,14 +57,11 @@ h1 { text-align:center; padding:10px; }
 
 .accept { background:green; color:white; }
 .reject { background:red; color:white; }
-.driver { background:#007bff; color:white; }
-
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN CHECK -->
 <script>
 if (localStorage.getItem("adminLoggedIn") !== "true") {
   window.location.href = "admin.html";
@@ -89,10 +86,8 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 
 <div id="bookings"></div>
 
-<!-- SOUND -->
 <audio id="sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
-<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -110,6 +105,8 @@ const db = firebase.firestore();
 <script>
 
 let currentTab = "new";
+let unsubscribe = null;
+let isInitialLoad = true;
 
 function setTab(tab){
   currentTab = tab;
@@ -120,13 +117,14 @@ function setTab(tab){
   loadBookings();
 }
 
-/* 🔔 NOTIFICATION + SOUND */
+/* 🔔 NOTIFICATION */
 function notify(){
-  document.getElementById("sound").play();
+  const sound = document.getElementById("sound");
+  sound.play().catch(()=>{});
 
-  if(Notification.permission==="granted"){
-    new Notification("New Booking 🚕");
-  } else {
+  if (Notification.permission === "granted") {
+    new Notification("🚕 New Booking");
+  } else if (Notification.permission !== "denied") {
     Notification.requestPermission();
   }
 }
@@ -142,7 +140,7 @@ function shareLocation(id){
   });
 }
 
-/* 🤖 AUTO WHATSAPP REPLY */
+/* 🤖 AUTO WHATSAPP REPLY (UPDATED MESSAGE) */
 function autoReply(phone,name){
   if(!phone) return;
 
@@ -151,7 +149,10 @@ function autoReply(phone,name){
   }
 
   const msg = encodeURIComponent(
-    "Hi "+name+", your taxi is confirmed and on the way 🚕"
+`Hello, we confirm your booking has been successfully received and scheduled.
+Please contact us if you require any changes.
+Kind regards
+BD Taxi St Austell`
   );
 
   window.open("https://wa.me/"+phone+"?text="+msg);
@@ -160,7 +161,11 @@ function autoReply(phone,name){
 /* LOAD BOOKINGS */
 function loadBookings(){
 
-  db.collection("bookings")
+  if(unsubscribe){
+    unsubscribe();
+  }
+
+  unsubscribe = db.collection("bookings")
     .orderBy("createdAt","desc")
     .onSnapshot(snapshot=>{
 
@@ -172,10 +177,15 @@ function loadBookings(){
       const container = document.getElementById("bookings");
       container.innerHTML="";
 
-      snapshot.forEach(doc=>{
+      snapshot.docChanges().forEach(change=>{
 
-        const data = doc.data();
-        const id = doc.id;
+        const data = change.doc.data();
+        const id = change.doc.id;
+
+        // 🔔 ONLY new bookings trigger notification
+        if(change.type === "added" && !isInitialLoad){
+          notify();
+        }
 
         const isToday = data.date===today;
         const isFuture = new Date(data.date+"T"+data.time) > new Date();
@@ -191,7 +201,7 @@ function loadBookings(){
         count++;
 
         if(isToday && data.fare){
-          const num = parseInt(data.fare.replace(/[^\d]/g,""));
+          const num = parseInt((data.fare || "").replace(/[^\d]/g,""));
           total += num || 0;
         }
 
@@ -199,9 +209,9 @@ function loadBookings(){
         div.className = "booking "+(isToday?"today":"");
 
         div.innerHTML = `
-          <b>${data.name}</b><br>
-          ${data.pickup} → ${data.dropoff}<br>
-          ${data.date} ${data.time}<br>
+          <b>${data.name || "No Name"}</b><br>
+          ${data.pickup || "-"} → ${data.dropoff || "-"}<br>
+          ${data.date || "-"} ${data.time || ""}<br>
 
           <div class="btn-group">
             <button class="accept" onclick="accept('${id}','${data.phone}','${data.name}')">Accept</button>
@@ -212,18 +222,12 @@ function loadBookings(){
         `;
 
         container.appendChild(div);
-
       });
 
       document.getElementById("todayEarnings").innerText = total;
       document.getElementById("totalBookings").innerText = count;
 
-      if(!window.firstLoad){
-        window.firstLoad = true;
-      } else {
-        notify();
-      }
-
+      isInitialLoad = false;
     });
 }
 
