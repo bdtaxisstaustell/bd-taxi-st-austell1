@@ -120,6 +120,8 @@ function setTab(tab){
 /* 🔔 NOTIFICATION */
 function notify(){
   const sound = document.getElementById("sound");
+
+  // 🔊 Play sound safely
   sound.play().catch(()=>{});
 
   if (Notification.permission === "granted") {
@@ -140,7 +142,7 @@ function shareLocation(id){
   });
 }
 
-/* 🤖 AUTO WHATSAPP REPLY (UPDATED MESSAGE) */
+/* 🤖 AUTO WHATSAPP REPLY */
 function autoReply(phone,name){
   if(!phone) return;
 
@@ -149,10 +151,7 @@ function autoReply(phone,name){
   }
 
   const msg = encodeURIComponent(
-`Hello, we confirm your booking has been successfully received and scheduled.
-Please contact us if you require any changes.
-Kind regards
-BD Taxi St Austell`
+    "Hi "+name+", your taxi is confirmed and on the way 🚕"
   );
 
   window.open("https://wa.me/"+phone+"?text="+msg);
@@ -161,6 +160,7 @@ BD Taxi St Austell`
 /* LOAD BOOKINGS */
 function loadBookings(){
 
+  // 🔥 prevent multiple listeners
   if(unsubscribe){
     unsubscribe();
   }
@@ -182,7 +182,7 @@ function loadBookings(){
         const data = change.doc.data();
         const id = change.doc.id;
 
-        // 🔔 ONLY new bookings trigger notification
+        // 🔔 ONLY new bookings trigger
         if(change.type === "added" && !isInitialLoad){
           notify();
         }
