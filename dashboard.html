@@ -177,7 +177,9 @@ function loadBookings(){
       const container = document.getElementById("bookings");
       container.innerHTML="";
 
-      snapshot.docChanges().forEach(change=>{
+     snapshot.forEach(doc=>{
+  const data = doc.data();
+  const id = doc.id;
 
         const data = change.doc.data();
         const id = change.doc.id;
