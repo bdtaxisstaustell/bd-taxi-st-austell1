@@ -1,43 +1,44 @@
-<!-- SAME LOGIN CHECK -->
-<script>
-if (localStorage.getItem("adminLoggedIn") !== "true") {
-  window.location.href = "admin.html";
-}
-</script>
-
 <!DOCTYPE html>
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BD Taxi St Austell Dashboard</title>
+<title>BD Taxi Dashboard</title>
 
 <style>
-body { font-family: Arial; padding: 14px; background:#eef2f7; margin:0; }
-h1 { text-align:center; }
+body { font-family: Arial; margin:0; background:#eef2f7; }
+
+h1 { text-align:center; padding:10px; }
 
 .top-bar {
   display:flex; justify-content:space-between;
-  margin-bottom:20px;
+  padding:10px;
 }
+
+.tabs {
+  display:flex;
+  gap:5px;
+  padding:10px;
+}
+
+.tabs button {
+  flex:1;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.active { background:#25D366; color:white; }
 
 .booking {
   background:white;
-  padding:14px;
-  margin-bottom:12px;
-  border-radius:12px;
+  margin:10px;
+  padding:12px;
+  border-radius:10px;
 }
 
-.today {
-  background:#fff8d6;
-  border-left:6px solid orange;
-}
-
-.row {
-  display:flex;
-  justify-content:space-between;
-  border-bottom:1px solid #eee;
-  padding:4px 0;
-}
+.today { border-left:6px solid orange; }
 
 .btn-group {
   display:flex;
@@ -50,7 +51,7 @@ h1 { text-align:center; }
   flex:1;
   padding:10px;
   border:none;
-  border-radius:8px;
+  border-radius:6px;
   font-weight:bold;
 }
 
@@ -63,19 +64,35 @@ h1 { text-align:center; }
 
 <body>
 
-<h1>🚕 Bd Taxi St Austell Dashboard</h1>
+<!-- LOGIN CHECK -->
+<script>
+if (localStorage.getItem("adminLoggedIn") !== "true") {
+  window.location.href = "admin.html";
+}
+</script>
+
+<h1>🚕 Taxi Dashboard</h1>
 
 <div class="top-bar">
   <div>
-    💰 Today £<span id="todayEarnings">0</span> |
+    💰 £<span id="todayEarnings">0</span> |
     📦 <span id="totalBookings">0</span>
   </div>
-
   <button onclick="logout()">Logout</button>
+</div>
+
+<div class="tabs">
+  <button onclick="setTab('new')" class="active" id="tab-new">New</button>
+  <button onclick="setTab('future')" id="tab-future">Future</button>
+  <button onclick="setTab('done')" id="tab-done">Completed</button>
 </div>
 
 <div id="bookings"></div>
 
+<!-- SOUND -->
+<audio id="sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
@@ -88,11 +105,27 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+</script>
 
-/* 🔔 SIMPLE NOTIFICATION */
-function notify(title, body){
-  if(Notification.permission === "granted"){
-    new Notification(title,{ body });
+<script>
+
+let currentTab = "new";
+
+function setTab(tab){
+  currentTab = tab;
+
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+
+  loadBookings();
+}
+
+/* 🔔 NOTIFICATION + SOUND */
+function notify(){
+  document.getElementById("sound").play();
+
+  if(Notification.permission==="granted"){
+    new Notification("New Booking 🚕");
   } else {
     Notification.requestPermission();
   }
@@ -109,92 +142,95 @@ function shareLocation(id){
   });
 }
 
-/* TIME CALC */
-function getTimeDiff(date,time){
-  const now = new Date();
-  const b = new Date(date+"T"+time);
-  const diff = (b-now)/60000;
+/* 🤖 AUTO WHATSAPP REPLY */
+function autoReply(phone,name){
+  if(!phone) return;
 
-  if(diff < 0) return "Started";
-  if(diff < 60) return "in "+Math.round(diff)+" mins";
-  return "in "+Math.floor(diff/60)+" hrs";
+  if(phone.startsWith("0")){
+    phone="44"+phone.substring(1);
+  }
+
+  const msg = encodeURIComponent(
+    "Hi "+name+", your taxi is confirmed and on the way 🚕"
+  );
+
+  window.open("https://wa.me/"+phone+"?text="+msg);
 }
 
+/* LOAD BOOKINGS */
 function loadBookings(){
 
-  db.collection("bookings").onSnapshot(snapshot=>{
+  db.collection("bookings")
+    .orderBy("createdAt","desc")
+    .onSnapshot(snapshot=>{
 
-    const today = new Date().toISOString().split("T")[0];
-    let todayTotal = 0;
-    let count = 0;
+      const today = new Date().toISOString().split("T")[0];
 
-    const list = [];
+      let total = 0;
+      let count = 0;
 
-    snapshot.forEach(doc=>{
-      list.push({ id:doc.id, ...doc.data() });
-    });
+      const container = document.getElementById("bookings");
+      container.innerHTML="";
 
-    // SORT
-    list.sort((a,b)=>{
-      if(a.date===today && b.date!==today) return -1;
-      if(a.date!==today && b.date===today) return 1;
-      if(a.date!==b.date) return a.date.localeCompare(b.date);
-      return (a.time||"").localeCompare(b.time||"");
-    });
+      snapshot.forEach(doc=>{
 
-    const container = document.getElementById("bookings");
-    container.innerHTML="";
+        const data = doc.data();
+        const id = doc.id;
 
-    list.forEach(data=>{
+        const isToday = data.date===today;
+        const isFuture = new Date(data.date+"T"+data.time) > new Date();
 
-      count++;
+        let show = false;
 
-      if(data.date===today && data.fareAmount){
-        todayTotal += Number(data.fareAmount);
+        if(currentTab==="new" && data.status!=="done") show = true;
+        if(currentTab==="future" && isFuture) show = true;
+        if(currentTab==="done" && data.status==="done") show = true;
+
+        if(!show) return;
+
+        count++;
+
+        if(isToday && data.fare){
+          const num = parseInt(data.fare.replace(/[^\d]/g,""));
+          total += num || 0;
+        }
+
+        const div = document.createElement("div");
+        div.className = "booking "+(isToday?"today":"");
+
+        div.innerHTML = `
+          <b>${data.name}</b><br>
+          ${data.pickup} → ${data.dropoff}<br>
+          ${data.date} ${data.time}<br>
+
+          <div class="btn-group">
+            <button class="accept" onclick="accept('${id}','${data.phone}','${data.name}')">Accept</button>
+            <button class="reject" onclick="updateStatus('${id}','rejected')">Reject</button>
+            <button onclick="deleteBooking('${id}')">Delete</button>
+            <button onclick="shareLocation('${id}')">📍</button>
+          </div>
+        `;
+
+        container.appendChild(div);
+
+      });
+
+      document.getElementById("todayEarnings").innerText = total;
+      document.getElementById("totalBookings").innerText = count;
+
+      if(!window.firstLoad){
+        window.firstLoad = true;
+      } else {
+        notify();
       }
 
-      const div = document.createElement("div");
-      div.className = "booking "+(data.date===today?"today":"");
-
-      div.innerHTML = `
-        <b>${data.name}</b>
-        <div>${getTimeDiff(data.date,data.time)}</div>
-
-        <div class="row"><span>Route</span><span>${data.pickup} → ${data.dropoff}</span></div>
-        <div class="row"><span>Date</span><span>${data.date} ${data.time}</span></div>
-        <div class="row"><span>Passengers</span><span>${data.passengers}</span></div>
-
-        <div class="btn-group">
-          <button class="accept" onclick="updateStatus('${data.id}','accepted')">Accept</button>
-          <button class="reject" onclick="updateStatus('${data.id}','rejected')">Reject</button>
-          <button onclick="deleteBooking('${data.id}')">Delete</button>
-          <button onclick="replyWhatsApp('${data.phone}','${data.name}')">WhatsApp</button>
-          <button class="driver" onclick="assignDriver('${data.id}')">Assign</button>
-          <button onclick="shareLocation('${data.id}')">📍 Location</button>
-        </div>
-      `;
-
-      container.appendChild(div);
     });
-
-    document.getElementById("todayEarnings").innerText = todayTotal;
-    document.getElementById("totalBookings").innerText = count;
-
-    // 🔔 notify new booking
-    if(!window.firstLoaded){
-      window.firstLoaded = true;
-    } else {
-      notify("New Booking 🚕","Check dashboard");
-    }
-
-  });
 }
 
-/* FUNCTIONS */
-function assignDriver(id){
-  const name = prompt("Driver name?");
-  if(!name) return;
-  db.collection("bookings").doc(id).update({ driver:name });
+/* ACTIONS */
+function accept(id,phone,name){
+  db.collection("bookings").doc(id).update({ status:"done" });
+  autoReply(phone,name);
 }
 
 function updateStatus(id,status){
@@ -207,22 +243,13 @@ function deleteBooking(id){
   }
 }
 
-function replyWhatsApp(phone,name){
-  if(!phone) return alert("No phone");
-
-  if(phone.startsWith("0")){
-    phone="44"+phone.substring(1);
-  }
-
-  window.open("https://wa.me/"+phone);
-}
-
 function logout(){
   localStorage.removeItem("adminLoggedIn");
   window.location.href="admin.html";
 }
 
 loadBookings();
+
 </script>
 
 </body>
