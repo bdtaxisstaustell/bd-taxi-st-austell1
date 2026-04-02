@@ -1083,7 +1083,6 @@ let pickupSelected = false;
 let dropoffSelected = false;
 function initAutocomplete() 
 {
-  if (!window.google || !google.maps) return;
 
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
