@@ -1395,56 +1395,7 @@ service.getDistanceMatrix(
     }
 /* WHATSAPP BOOKING */
 
- async function sendWhatsApp() {
-
-  const phoneNumber = "441726806556";
-
-  const name = document.getElementById("name")?.value.trim();
-  const phoneInput = document.getElementById("phone")?.value.trim();
-  const pickup = document.getElementById("pickupAddress")?.value.trim();
-  const dropoff = document.getElementById("dropoffAddress")?.value.trim();
-  const date = document.getElementById("date")?.value;
-  const time = document.getElementById("time")?.value;
-  const passengers = document.getElementById("passengers")?.value;
-
-  if (!name || !phoneInput || !pickup || !dropoff || !date || !time || !passengers) {
-    alert("Please complete all fields");
-    return;
-  }
-
-  const fareText = document.getElementById("liveFarePreview")?.innerText || "";
-
-  // SAVE TO FIREBASE
-  try {
-
-  if (!window.db) throw new Error("Firebase not loaded");
-
-  await db.collection("bookings").add({
-    name,
-    phone: phoneInput,
-    pickup,
-    dropoff,
-    date,
-    time,
-    passengers,
-    fare: fareText,
-    source: "whatsapp",
-    status: "new",
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  });
-
-  console.log("✅ Booking saved to Firebase");
-
-  // ✅ IMPORTANT — confirm save worked
-  alert("Booking saved successfully!");
-
-} catch (error) {
-  console.error("🔥 FIREBASE ERROR:", error);
-
-  // ❌ IMPORTANT — STOP if failed
-  alert("Booking NOT saved. Check console.");
-  return;
-}
+ 
   // WHATSAPP MESSAGE
   const message =
 `Taxi Booking Request
@@ -1565,18 +1516,28 @@ function setDropoff(address) {
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
-  authDomain: "taxi-bookings-69cff.firebaseapp.com",
-  projectId: "taxi-bookings-69cff",
-  storageBucket: "taxi-bookings-69cff.firebasestorage.app",
-  messagingSenderId: "1074073110832",
-  appId: "1:1074073110832:web:7abfe2772b46245187a0f5"
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "..."
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-  console.log("Firebase loaded:", !!window.firebase);
-console.log("Firestore ready:", !!window.db);
+let db = null;
+
+// 🔥 Safe initialization (IMPORTANT)
+function initFirebase() {
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+
+  db = firebase.firestore();
+
+  console.log("Firebase loaded:", !!firebase);
+  console.log("Firestore ready:", !!db);
+}
+
+// ✅ Run it immediately
+initFirebase();
 </script>
 
 <!-- MAIN SCRIPT -->
