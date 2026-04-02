@@ -40,7 +40,6 @@ h1 { text-align:center; padding:10px; }
 
 .today { border-left:6px solid orange; }
 
-/* SOURCE TAGS */
 .tag {
   display:inline-block;
   padding:3px 8px;
@@ -128,17 +127,13 @@ let currentTab = "new";
 let unsubscribe = null;
 let isInitialLoad = true;
 
-/* TAB SWITCH */
 function setTab(tab){
   currentTab = tab;
-
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
   document.getElementById("tab-"+tab).classList.add("active");
-
   loadBookings();
 }
 
-/* 🔔 NOTIFICATION */
 function notify(){
   const sound = document.getElementById("sound");
   sound.play().catch(()=>{});
@@ -150,7 +145,6 @@ function notify(){
   }
 }
 
-/* 📍 DRIVER LOCATION */
 function shareLocation(id){
   navigator.geolocation.getCurrentPosition(pos=>{
     db.collection("bookings").doc(id).update({
@@ -161,7 +155,7 @@ function shareLocation(id){
   });
 }
 
-/* 🤖 AUTO WHATSAPP REPLY */
+/* ✅ CORRECT MESSAGE (YOUR REQUEST) */
 function autoReply(phone,name){
   if(!phone) return;
 
@@ -176,7 +170,6 @@ function autoReply(phone,name){
   window.open("https://wa.me/"+phone+"?text="+msg);
 }
 
-/* LOAD BOOKINGS */
 function loadBookings(){
 
   if(unsubscribe){
@@ -230,7 +223,6 @@ function loadBookings(){
           total += num || 0;
         }
 
-        /* SOURCE TAG */
         let sourceTag = "";
         if(data.source === "whatsapp"){
           sourceTag = `<span class="tag whatsapp">WhatsApp</span>`;
@@ -245,7 +237,6 @@ function loadBookings(){
 
         div.innerHTML = `
           ${sourceTag}
-
           <b>${data.name || "No Name"}</b>
 
           <div class="section">
@@ -285,7 +276,6 @@ function loadBookings(){
     });
 }
 
-/* ACTIONS */
 function accept(id,phone,name){
   db.collection("bookings").doc(id).update({ status:"done" });
   autoReply(phone,name);
