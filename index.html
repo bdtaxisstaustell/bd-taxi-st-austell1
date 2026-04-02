@@ -1422,7 +1422,7 @@ function sendWhatsApp() {
 
   const phoneNumber = "441726806556"; // your WhatsApp number
 
-  const message =
+ const message =
 `Taxi Booking Request
 
 Name: ${name}
@@ -1435,13 +1435,34 @@ ${fareText}
 
 Please confirm availability 👍`;
 
-  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+// ✅ ADD THIS BLOCK HERE
+if (db) {
+  db.collection("bookings").add({
+    name,
+    phone: phoneInput,
+    pickup,
+    dropoff,
+    date,
+    time,
+    passengers,
+    notes: fareText,
+    source: "whatsapp",
+    status: "new",
+    createdAt: new Date()
+  }).then(() => {
+    console.log("WhatsApp booking saved");
+  }).catch(err => {
+    console.error("Firebase error:", err);
+  });
+}
 
-  const url = isMobile
-    ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
-    : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
+const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
 
-  window.open(url, "_blank");
+const url = isMobile
+  ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
+  : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
+
+window.open(url, "_blank");
 }
 
   /* ASAP */
