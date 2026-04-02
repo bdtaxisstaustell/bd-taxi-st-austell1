@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BD Taxi Dashboard</title>
+<title>BD Taxi St Austell Dashboard</title>
 
 <style>
 body { font-family: Arial; margin:0; background:#eef2f7; }
@@ -87,7 +87,7 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 }
 </script>
 
-<h1>🚕 Taxi Dashboard</h1>
+<h1>🚕 BD Taxi St Austell Dashboard</h1>
 
 <div class="top-bar">
   <div>
@@ -109,7 +109,6 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
@@ -303,10 +302,9 @@ function deleteBooking(id){
   }
 }
 
-  function logout(){
-  firebase.auth().signOut().then(()=>{
-    window.location.href="admin.html";
-  });
+function logout(){
+  localStorage.removeItem("adminLoggedIn");
+  window.location.href="admin.html";
 }
 
 loadBookings();
