@@ -35,9 +35,29 @@ h1 { text-align:center; padding:10px; }
   margin:10px;
   padding:12px;
   border-radius:10px;
+  line-height:1.5;
 }
 
 .today { border-left:6px solid orange; }
+
+/* SOURCE TAGS */
+.tag {
+  display:inline-block;
+  padding:3px 8px;
+  border-radius:6px;
+  font-size:12px;
+  font-weight:bold;
+  margin-bottom:6px;
+}
+
+.whatsapp { background:#25D366; color:white; }
+.email { background:#007BFF; color:white; }
+.web { background:#666; color:white; }
+
+.section {
+  margin-top:5px;
+  font-size:14px;
+}
 
 .btn-group {
   display:flex;
@@ -56,6 +76,7 @@ h1 { text-align:center; padding:10px; }
 
 .accept { background:green; color:white; }
 .reject { background:red; color:white; }
+.call { background:#222; color:white; }
 </style>
 </head>
 
@@ -149,8 +170,8 @@ function autoReply(phone,name){
   }
 
   const msg = encodeURIComponent(
-  "Hi " + name + ", your taxi booking is confirmed. Thank you for choosing BD Taxi St Austell. We look forward to providing you with a safe and comfortable journey.\n\nKind regards,\nBD Taxi St Austell 🚕"
-);
+    "Hi " + name + ", your taxi booking is confirmed. Thank you for choosing BD Taxi St Austell. We look forward to providing you with a safe and comfortable journey.\n\nKind regards,\nBD Taxi St Austell 🚕"
+  );
 
   window.open("https://wa.me/"+phone+"?text="+msg);
 }
@@ -174,14 +195,12 @@ function loadBookings(){
       const container = document.getElementById("bookings");
       container.innerHTML="";
 
-      // 🔔 Notifications only
       snapshot.docChanges().forEach(change => {
         if(change.type === "added" && !isInitialLoad){
           notify();
         }
       });
 
-      // ✅ Render ALL bookings
       snapshot.forEach(doc => {
 
         const data = doc.data();
@@ -189,7 +208,6 @@ function loadBookings(){
 
         const isToday = data.date === today;
 
-        // safer datetime
         let bookingTime = null;
         if(data.date && data.time){
           bookingTime = new Date(data.date + "T" + data.time);
@@ -212,14 +230,42 @@ function loadBookings(){
           total += num || 0;
         }
 
+        /* SOURCE TAG */
+        let sourceTag = "";
+        if(data.source === "whatsapp"){
+          sourceTag = `<span class="tag whatsapp">WhatsApp</span>`;
+        } else if(data.source === "email"){
+          sourceTag = `<span class="tag email">Email</span>`;
+        } else {
+          sourceTag = `<span class="tag web">Web</span>`;
+        }
+
         const div = document.createElement("div");
         div.className = "booking "+(isToday?"today":"");
 
         div.innerHTML = `
+          ${sourceTag}
+
           <b>${data.name || "No Name"}</b>
-          ${data.source === "whatsapp" ? "📱" : ""}<br>
-          ${data.pickup || "-"} → ${data.dropoff || "-"}<br>
-          ${data.date || "-"} ${data.time || ""}<br>
+
+          <div class="section">
+            ${data.phone ? "📞 " + data.phone : ""}
+            ${data.phone ? `<button class="call" onclick="window.location.href='tel:${data.phone}'">Call</button>` : ""}
+          </div>
+
+          <div class="section">
+            ${data.email ? "📧 " + data.email : ""}
+          </div>
+
+          <div class="section">
+            📍 ${data.pickup || "-"} → ${data.dropoff || "-"}
+          </div>
+
+          <div class="section">
+            🕒 ${data.date || "-"} ${data.time || ""}
+          </div>
+
+          ${data.notes ? `<div class="section">📝 ${data.notes}</div>` : ""}
 
           <div class="btn-group">
             <button class="accept" onclick="accept('${id}','${data.phone}','${data.name}')">Accept</button>
