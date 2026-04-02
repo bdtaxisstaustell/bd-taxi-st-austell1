@@ -1403,7 +1403,25 @@ service.getDistanceMatrix(
 /* WHATSAPP BOOKING */
 
  
-  // WHATSAPP MESSAGE
+function sendWhatsApp() {
+
+  const name = document.getElementById("name")?.value || "";
+  const phoneInput = document.getElementById("phone")?.value || "";
+  const pickup = document.getElementById("pickupAddress")?.value || "";
+  const dropoff = document.getElementById("dropoffAddress")?.value || "";
+  const date = document.getElementById("date")?.value || "";
+  const time = document.getElementById("time")?.value || "";
+  const passengers = document.getElementById("passengers")?.value || "";
+
+  const fareText = document.getElementById("liveFarePreview")?.innerText || "";
+
+  if (!pickup || !dropoff) {
+    alert("Please enter pickup and drop-off locations");
+    return;
+  }
+
+  const phoneNumber = "447726806556"; // your WhatsApp number
+
   const message =
 `Taxi Booking Request
 
@@ -1417,13 +1435,14 @@ ${fareText}
 
 Please confirm availability 👍`;
 
- const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
 
-const url = isMobile
-  ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
-  : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
+  const url = isMobile
+    ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
+    : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
 
-window.open(url, "_blank");
+  window.open(url, "_blank");
+}
 
   /* ASAP */
 function setASAP() {
@@ -1512,11 +1531,37 @@ function setDropoff(address) {
 }
 </script>
 
-  
-<!-- FIREBASE (LOAD FIRST) -->
+<!-- ✅ FIREBASE LOAD -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<!-- ✅ FIREBASE INIT -->
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+  authDomain: "taxi-bookings-69cff.firebaseapp.com",
+  projectId: "taxi-bookings-69cff",
+  storageBucket: "taxi-bookings-69cff.firebasestorage.app",
+  messagingSenderId: "1074073110832",
+  appId: "1:1074073110832:web:7abfe2772b46245187a0f5",
+  measurementId: "G-FT43W7YHQ9"
+};
+
+let db = null;
+
+// Safe init
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+db = firebase.firestore();
+
+console.log("Firebase loaded:", !!firebase);
+console.log("Firestore ready:", !!db);
+</script>
+
+<!-- ✅ MAIN SCRIPT (HEADER + DROPDOWN + EMAIL BOOKING) -->
+<script>
 document.addEventListener("DOMContentLoaded", function() {
 
   /* HEADER */
@@ -1559,13 +1604,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-
   /* EMAIL BOOKING (FIREBASE SAVE) */
   const form = document.getElementById("emailBookingForm");
 
   if (form) {
     form.addEventListener("submit", async function(e) {
       e.preventDefault();
+
+      console.log("Submitting booking...");
 
       try {
         await db.collection("bookings").add({
@@ -1587,81 +1633,13 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "thanks.html";
 
       } catch (error) {
-        console.error(error);
+        console.error("Booking error:", error);
         alert("Error sending booking");
       }
-
     });
   }
 
 });
-</script>
-
-  <!-- FIREBASE (LOAD FIRST) -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
-<script>
-const firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "..."
-};
-
-let db = null;
-
-// ✅ Safe Firebase init
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
-
-db = firebase.firestore();
-
-console.log("Firebase loaded:", !!firebase);
-console.log("Firestore ready:", !!db);
-</script>
-
-<!-- MAIN SCRIPT -->
-  <script>
-function initAutocomplete() {
-
-  function setup(id) {
-    const input = document.getElementById(id);
-    if (!input) return;
-
-    const auto = new google.maps.places.Autocomplete(input, {
-      componentRestrictions: { country: "gb" }
-    });
-
-    auto.addListener("place_changed", () => {
-      const place = auto.getPlace();
-
-      if (id === "pickupAddress") {
-        window.pickupPlace = place;
-      }
-
-      if (id === "dropoffAddress") {
-        window.dropoffPlace = place;
-      }
-
-      if (typeof getDistanceAndCalculate === "function") {
-        setTimeout(getDistanceAndCalculate, 200);
-      }
-    });
-  }
-
-  setup("pickupAddress");
-  setup("dropoffAddress");
-
-  if (document.getElementById("pickupAddressEmail")) {
-    setup("pickupAddressEmail");
-  }
-
-  if (document.getElementById("dropoffAddressEmail")) {
-    setup("dropoffAddressEmail");
-  }
-}
-    window.initAutocomplete = initAutocomplete;
 </script>
 
 <!-- ✅ GOOGLE MAPS MUST BE LAST -->
