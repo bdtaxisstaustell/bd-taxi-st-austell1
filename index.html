@@ -1621,6 +1621,61 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 </script>
+<!-- FIREBASE (LOAD FIRST) -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<script>
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "..."
+};
+
+let db = null;
+
+// ✅ Safe Firebase init
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+db = firebase.firestore();
+
+console.log("Firebase loaded:", !!firebase);
+console.log("Firestore ready:", !!db);
+</script>
+
+<!-- MAIN SCRIPT (ALL YOUR FUNCTIONS HERE) -->
+<script>
+// make sure initAutocomplete EXISTS here
+
+function initAutocomplete() {
+
+  const setup = (id) => {
+    const input = document.getElementById(id);
+    if (!input) return;
+
+    const auto = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: "gb" }
+    });
+
+    auto.addListener("place_changed", () => {
+      if (typeof getDistanceAndCalculate === "function") {
+        setTimeout(getDistanceAndCalculate, 200);
+      }
+    });
+  };
+
+  setup("pickupAddress");
+  setup("dropoffAddress");
+  setup("pickupAddressEmail");
+  setup("dropoffAddressEmail");
+}
+</script>
+
+<!-- ✅ GOOGLE MAPS MUST BE LAST -->
+<script 
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&loading=async&callback=initAutocomplete">
+</script>
 </body>
 </html>
