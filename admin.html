@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
 body { font-family: Arial; text-align:center; padding:40px; background:#eef2f7; }
-input { padding:10px; margin:5px; width:80%; }
-button { padding:12px; width:85%; background:#25D366; color:white; border:none; border-radius:8px; }
+input { padding:10px; margin:5px; width:80%; border-radius:6px; border:1px solid #ccc; }
+button { padding:12px; width:85%; background:#25D366; color:white; border:none; border-radius:8px; font-size:16px; }
 </style>
 </head>
 
@@ -21,10 +21,9 @@ button { padding:12px; width:85%; background:#25D366; color:white; border:none; 
 
 <script>
 function login(){
-  const user = document.getElementById("username").value;
-  const pass = document.getElementById("password").value;
+  const user = document.getElementById("username").value.trim();
+  const pass = document.getElementById("password").value.trim();
 
-  // 🔑 CHANGE THESE
   const correctUser = "bdcabs2026";
   const correctPass = "Avro2026";
 
