@@ -423,6 +423,14 @@ section{
     grid-template-columns:1fr;
   }
 }
+  .gm-host{
+  width:100%;
+}
+
+.gm-host gmp-place-autocomplete{
+  width:100%;
+  display:block;
+}
 </style>
   <script type="application/ld+json">
 {
@@ -562,7 +570,8 @@ gtag('config', 'G-0T3NNG0DZX');
   <div class="input-group">
   <label>📍 Pick-up</label>
 
-  <input id="pickupAddress" placeholder="Enter pickup location" autocomplete="off">
+  <div id="pickupAutocompleteHost" class="gm-host"></div> 
+    <input id="pickupAddress" type="hidden">
     <select onchange="selectPickupFromDropdown(this.value)"
   style="margin-top:8px;padding:12px;border-radius:10px;border:1px solid #e5e7eb;width:100%;font-size:14px;">
 
@@ -627,7 +636,8 @@ gtag('config', 'G-0T3NNG0DZX');
   <!-- DROPOFF -->
   <div class="input-group">
     <label>🏁 Drop-off</label>
-    <input id="dropoffAddress" placeholder="Where are you going?" autocomplete="off">
+    <div id="dropoffAutocompleteHost" class="gm-host"></div> 
+    <input id="dropoffAddress" type="hidden">
     <select onchange="selectDropoffFromDropdown(this.value)"
   style="margin-top:8px;padding:12px;border-radius:10px;border:1px solid #e5e7eb;width:100%;font-size:14px;">
 
@@ -1617,41 +1627,63 @@ console.log("Firestore ready:", !!db);
 </script>
 
 <!-- MAIN SCRIPT -->
-<script>
-function initAutocomplete() {
+  <script>
+async function initAutocomplete() {
 
-  const setup = (id) => {
-    const input = document.getElementById(id);
-    if (!input) return;
+  await google.maps.importLibrary("places");
 
-    try {
-      const auto = new google.maps.places.Autocomplete(input, {
-        componentRestrictions: { country: "gb" }
+  function setup(hostId, hiddenId, placeholderText) {
+
+    const host = document.getElementById(hostId);
+    const hidden = document.getElementById(hiddenId);
+
+    if (!host || !hidden) return;
+
+    host.innerHTML = "";
+
+    const widget = new google.maps.places.PlaceAutocompleteElement({
+      includedRegionCodes: ["gb"]
+    });
+
+    widget.placeholder = placeholderText;
+
+    host.appendChild(widget);
+
+    widget.addEventListener("gmp-select", async (event) => {
+
+      const place = event.placePrediction.toPlace();
+
+      await place.fetchFields({
+        fields: ["formattedAddress", "displayName", "location"]
       });
 
-      auto.addListener("place_changed", () => {
-        if (typeof getDistanceAndCalculate === "function") {
-          setTimeout(getDistanceAndCalculate, 200);
-        }
-      });
+      const address =
+        place.formattedAddress ||
+        place.displayName ||
+        "";
 
-    } catch (err) {
-      console.error("Autocomplete error:", err);
-    }
-  };
+      hidden.value = address;
 
-  // ✅ Always present inputs
-  setup("pickupAddress");
-  setup("dropoffAddress");
+      if (hiddenId === "pickupAddress") {
+        window.pickupPlace = place;
+      }
 
-  // ✅ Safe optional inputs (prevents crash)
-  if (document.getElementById("pickupAddressEmail")) {
-    setup("pickupAddressEmail");
+      if (hiddenId === "dropoffAddress") {
+        window.dropoffPlace = place;
+      }
+
+      hidden.dispatchEvent(new Event("input", { bubbles: true }));
+      hidden.dispatchEvent(new Event("change", { bubbles: true }));
+
+      if (typeof getDistanceAndCalculate === "function") {
+        setTimeout(getDistanceAndCalculate, 200);
+      }
+
+    });
   }
 
-  if (document.getElementById("dropoffAddressEmail")) {
-    setup("dropoffAddressEmail");
-  }
+  setup("pickupAutocompleteHost", "pickupAddress", "Enter pickup location");
+  setup("dropoffAutocompleteHost", "dropoffAddress", "Where are you going?");
 }
 </script>
 
