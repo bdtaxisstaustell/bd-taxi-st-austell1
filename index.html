@@ -1402,8 +1402,7 @@ service.getDistanceMatrix(
     }
 /* WHATSAPP BOOKING */
 
- 
-function sendWhatsApp() {
+ function sendWhatsApp() {
 
   const name = document.getElementById("name")?.value || "";
   const phoneInput = document.getElementById("phone")?.value || "";
@@ -1420,9 +1419,9 @@ function sendWhatsApp() {
     return;
   }
 
-  const phoneNumber = "441726806556"; // your WhatsApp number
+  const phoneNumber = "441726806556";
 
- const message =
+  const message =
 `Taxi Booking Request
 
 Name: ${name}
@@ -1435,25 +1434,35 @@ ${fareText}
 
 Please confirm availability 👍`;
 
-// ✅ ADD THIS BLOCK HERE
-if (db) {
-  db.collection("bookings").add({
-    name,
-    phone: phoneInput,
-    pickup,
-    dropoff,
-    date,
-    time,
-    passengers,
-    notes: fareText,
-    source: "whatsapp",
-    status: "new",
-    createdAt: new Date()
-  }).then(() => {
-    console.log("WhatsApp booking saved");
-  }).catch(err => {
-    console.error("Firebase error:", err);
-  });
+  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
+
+  const url = isMobile
+    ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
+    : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
+
+  // ✅ OPEN WHATSAPP FIRST (VERY IMPORTANT)
+  window.location.href = url;
+
+  // ✅ SAVE TO FIREBASE AFTER (NON-BLOCKING)
+  if (db) {
+    db.collection("bookings").add({
+      name,
+      phone: phoneInput,
+      pickup,
+      dropoff,
+      date,
+      time,
+      passengers,
+      notes: fareText,
+      source: "whatsapp",
+      status: "new",
+      createdAt: new Date()
+    }).then(() => {
+      console.log("WhatsApp booking saved");
+    }).catch(err => {
+      console.error("Firebase error:", err);
+    });
+  }
 }
 
 const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
