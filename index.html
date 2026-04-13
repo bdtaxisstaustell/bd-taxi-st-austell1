@@ -1106,7 +1106,7 @@ function initAutocomplete() {
       fields: ["formatted_address", "geometry", "name", "address_components"]
     });
 
-    // Optional bounds (can remove if causing issues)
+    // Optional bounds
     auto.setBounds(new google.maps.LatLngBounds(
       { lat: 50.25, lng: -4.95 },
       { lat: 50.45, lng: -4.60 }
@@ -1117,49 +1117,45 @@ function initAutocomplete() {
       if (id === "pickupAddress") pickupSelected = false;
       if (id === "dropoffAddress") dropoffSelected = false;
 
-      if (typeof getDistanceAndCalculate === "function") {
-        getDistanceAndCalculate();
-      }
+      setTimeout(() => {
+        if (typeof getDistanceAndCalculate === "function") {
+          getDistanceAndCalculate();
+        }
+      }, 300);
     });
 
     // When user selects a place
+    auto.addListener("place_changed", function () {
+      const place = auto.getPlace();
 
-  auto.addListener("place_changed", function () {
-  const place = auto.getPlace();
+      if (!place) return;
 
-  // ✅ safer check
-  if (!place || !place.formatted_address) {
-    console.warn("Invalid place");
-    return;
-  }
+      if (id === "pickupAddress") {
+        pickupSelected = true;
+        window.pickupPlace = place;
+      }
 
-  // ✅ ensure address fills
-  input.value = place.formatted_address;
+      if (id === "dropoffAddress") {
+        dropoffSelected = true;
+        window.dropoffPlace = place;
+      }
 
-  if (id === "pickupAddress") {
-    pickupSelected = true;
-    window.pickupPlace = place;
-  }
+      setTimeout(() => {
+        if (typeof getDistanceAndCalculate === "function") {
+          getDistanceAndCalculate();
+        }
+      }, 300);
+    });
 
-  if (id === "dropoffAddress") {
-    dropoffSelected = true;
-    window.dropoffPlace = place;
-  }
-
-  // ✅ delay for pricing
-  setTimeout(() => {
-    if (typeof getDistanceAndCalculate === "function") {
-      getDistanceAndCalculate();
-    }
-  }, 300);
-});
+  }; // ✅ CLOSE setupAutocomplete HERE
 
   // Attach autocomplete to all fields
   setupAutocomplete("pickupAddress");
   setupAutocomplete("dropoffAddress");
   setupAutocomplete("pickupAddressEmail");
   setupAutocomplete("dropoffAddressEmail");
-}
+
+} // ✅ CLOSE initAutocomplete
 
 </script>
 
