@@ -7,128 +7,115 @@
 <style>
 body { font-family: Arial; margin:0; background:#eef2f7; }
 
-h1 { text-align:center; padding:10px; }
+h1 { text-align:center; padding:10px; margin:0; }
 
-/* TOP BAR */
 .top-bar {
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
+  display:flex; justify-content:space-between;
+  padding:10px; background:#111; color:white;
+  position:sticky; top:0; z-index:10;
 }
 
-/* TABS */
 .tabs {
-  display:flex;
-  gap:5px;
-  padding:10px;
+  display:flex; gap:6px; padding:10px;
 }
 
 .tabs button {
-  flex:1;
-  padding:10px;
-  border:none;
-  border-radius:8px;
-  font-weight:bold;
-  cursor:pointer;
+  flex:1; padding:12px; border:none;
+  border-radius:10px; font-weight:bold;
+  background:#ddd;
 }
 
-.active { background:#25D366; color:white; }
+.active { background:#111; color:white; }
 
-/* BOOKING CARD */
+.search {
+  padding:10px;
+}
+
+.search input {
+  width:100%; padding:12px;
+  border-radius:10px; border:1px solid #ccc;
+}
+
 .booking {
   background:white;
   margin:10px;
-  padding:12px;
-  border-radius:10px;
-  line-height:1.5;
-
-  position:relative;
-  overflow:visible; /* FIX */
+  padding:14px;
+  border-radius:14px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.08);
 }
 
 .today { border-left:6px solid orange; }
 
-/* TAGS */
-.tag {
-  display:inline-block;
-  padding:3px 8px;
-  border-radius:6px;
-  font-size:12px;
-  font-weight:bold;
-  margin-bottom:6px;
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
-.whatsapp { background:#25D366; color:white; }
-.email { background:#007BFF; color:white; }
-.web { background:#666; color:white; }
+.name { font-size:18px; font-weight:bold; }
 
-.section { margin-top:5px; font-size:14px; }
+.fare {
+  font-size:22px;
+  font-weight:bold;
+  color:#16a34a;
+}
 
-/* BUTTONS */
-.btn-group {
+.route {
+  margin-top:6px;
+  font-size:14px;
+}
+
+.meta {
+  font-size:13px;
+  color:#555;
+  margin-top:4px;
+}
+
+.status {
+  margin-top:6px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+.new { color:orange; }
+.accepted { color:green; }
+.done { color:#2563eb; }
+.rejected { color:red; }
+
+.actions {
   display:flex;
   flex-wrap:wrap;
   gap:6px;
   margin-top:10px;
 }
 
-.btn-group button {
+.actions button {
   flex:1;
-  padding:10px;
+  padding:12px;
   border:none;
-  border-radius:6px;
+  border-radius:8px;
   font-weight:bold;
-  cursor:pointer;
 }
 
 .accept { background:green; color:white; }
+.complete { background:#2563eb; color:white; }
 .reject { background:red; color:white; }
-.call { background:#222; color:white; }
-
-/* MENU */
-.menu-wrap { position:relative; }
+.delete { background:#444; color:white; }
+.call { background:black; color:white; }
+.map { background:#666; color:white; }
 
 .menu-btn {
-  padding:8px;
+  font-size:22px;
+  background:none;
   border:none;
-  border-radius:6px;
+  padding:6px;
   cursor:pointer;
 }
 
-.menu-panel {
-  position:absolute;
-  right:0;
-  top:calc(100% + 6px);
-  min-width:200px;
-  background:#fff;
-  border:1px solid #ddd;
-  border-radius:10px;
-  display:none;
-  z-index:9999; /* FIX */
-}
-
-.menu-panel.open { display:block; }
-
-.menu-item {
-  display:block;
-  width:100%;
-  padding:10px;
-  border:none;
-  background:white;
-  text-align:left;
-  cursor:pointer;
-}
-
-.menu-item:hover { background:#f2f2f2; }
-
-/* MOBILE FIX */
-@media (max-width:720px){
-  .menu-panel{
-    left:0;
-    right:0;
-    width:100%;
-    top:50px;
-  }
+.empty {
+  text-align:center;
+  padding:40px;
+  color:#666;
 }
 
 </style>
@@ -146,201 +133,158 @@ if (localStorage.getItem("adminLoggedIn") !== "true") {
 
 <div class="top-bar">
   <div>
-    💰 £<span id="todayEarnings">0</span> |
-    📦 <span id="totalBookings">0</span>
+    💰 £<span id="earnings">0</span> |
+    📦 <span id="count">0</span>
   </div>
-
-  <div>
-    <button onclick="toggleNotifications()">🔔 Alerts</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="tabs">
   <button onclick="setTab('new')" class="active" id="tab-new">New</button>
-  <button onclick="setTab('future')" id="tab-future">Future</button>
-  <button onclick="setTab('done')" id="tab-done">Completed</button>
+  <button onclick="setTab('accepted')" id="tab-accepted">Accepted</button>
+  <button onclick="setTab('done')" id="tab-done">Done</button>
+  <button onclick="setTab('all')" id="tab-all">All (30d)</button>
+</div>
+
+<div class="search">
+  <input id="search" placeholder="Search bookings..." oninput="render()">
 </div>
 
 <div id="bookings"></div>
-
-<audio id="sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+  apiKey: "YOUR_KEY",
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
-  projectId: "taxi-bookings-69cff",
-  storageBucket: "taxi-bookings-69cff.appspot.com",
-  messagingSenderId: "1074073110832",
-  appId: "1:1074073110832:web:7abfe2772b46245187a0f5"
+  projectId: "taxi-bookings-69cff"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let currentTab = "new";
-let unsubscribe = null;
-let isInitialLoad = true;
-let notificationsOn = true;
+let currentTab="new";
+let all=[];
 
-/* TAB SWITCH */
 function setTab(tab){
-  currentTab = tab;
+  currentTab=tab;
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
   document.getElementById("tab-"+tab).classList.add("active");
-  loadBookings();
+  render();
 }
 
-/* NOTIFICATIONS */
-function toggleNotifications(){
-  notificationsOn = !notificationsOn;
-  alert("Notifications " + (notificationsOn ? "ON" : "OFF"));
+function statusClass(s){
+  if(s==="accepted") return "accepted";
+  if(s==="done") return "done";
+  if(s==="rejected") return "rejected";
+  return "new";
 }
 
-function notify(){
-  if(!notificationsOn) return;
-
-  document.getElementById("sound").play().catch(()=>{});
+function inLast30Days(dateStr){
+  if(!dateStr) return false;
+  const d=new Date(dateStr);
+  const now=new Date();
+  return (now-d)/(1000*60*60*24)<=30;
 }
 
-/* MENU */
-function toggleMenu(id){
-  document.querySelectorAll(".menu-panel").forEach(m=>m.classList.remove("open"));
-  document.getElementById("menu-"+id).classList.toggle("open");
-}
+function render(){
+  const container=document.getElementById("bookings");
+  container.innerHTML="";
 
-document.addEventListener("click",(e)=>{
-  if(!e.target.closest(".menu-wrap")){
-    document.querySelectorAll(".menu-panel").forEach(m=>m.classList.remove("open"));
+  const search=document.getElementById("search").value.toLowerCase();
+
+  let count=0;
+  let total=0;
+
+  all.forEach(item=>{
+    const d=item.data;
+    const status=d.status||"new";
+
+    if(search && JSON.stringify(d).toLowerCase().indexOf(search)===-1) return;
+
+    if(currentTab==="new" && status!=="new") return;
+    if(currentTab==="accepted" && status!=="accepted") return;
+    if(currentTab==="done" && status!=="done") return;
+    if(currentTab==="all" && !inLast30Days(d.date)) return;
+
+    count++;
+
+    if(status==="done" && d.fare){
+      total+=parseFloat(d.fare)||0;
+    }
+
+    const div=document.createElement("div");
+    div.className="booking "+(d.date===new Date().toISOString().split("T")[0]?"today":"");
+
+    div.innerHTML=`
+      <div class="header">
+        <div class="name">${d.name||"No Name"}</div>
+        <div class="fare">£${d.fare||"-"}</div>
+      </div>
+
+      <div class="route">📍 ${d.pickup||"-"} → ${d.dropoff||"-"}</div>
+
+      <div class="meta">🕒 ${d.date||"-"} ${d.time||""}</div>
+      <div class="meta">📞 ${d.phone||"-"}</div>
+
+      <div class="status ${statusClass(status)}">${status.toUpperCase()}</div>
+
+      <div class="actions">
+        ${status==="new"?`<button class="accept" onclick="update('${item.id}','accepted')">Accept</button>`:""}
+        ${status==="accepted"?`<button class="complete" onclick="update('${item.id}','done')">Complete</button>`:""}
+        ${status!=="rejected"?`<button class="reject" onclick="update('${item.id}','rejected')">Reject</button>`:""}
+
+        <button class="call" onclick="call('${d.phone}')">Call</button>
+        <button class="map" onclick="map('${d.pickup}')">Map</button>
+        <button class="delete" onclick="del('${item.id}')">Delete</button>
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.getElementById("earnings").innerText=total.toFixed(2);
+  document.getElementById("count").innerText=count;
+
+  if(!count){
+    container.innerHTML="<div class='empty'>No bookings</div>";
   }
-});
-
-/* MAIN LOAD */
-function loadBookings(){
-
-  if(unsubscribe){ unsubscribe(); }
-
-  unsubscribe = db.collection("bookings")
-    .orderBy("createdAt","desc")
-    .onSnapshot(snapshot=>{
-
-      const today = new Date().toISOString().split("T")[0];
-
-      let total = 0;
-      let count = 0;
-
-      const container = document.getElementById("bookings");
-      container.innerHTML="";
-
-      snapshot.docChanges().forEach(change => {
-        if(change.type === "added" && !isInitialLoad){
-          notify();
-        }
-      });
-
-      snapshot.forEach(doc => {
-
-        const data = doc.data();
-        const id = doc.id;
-
-        const isToday = data.date === today;
-
-        let bookingTime = data.date && data.time ? new Date(data.date+"T"+data.time) : null;
-        const isFuture = bookingTime ? bookingTime > new Date() : false;
-
-        let show = false;
-        if(currentTab==="new" && data.status!=="done") show = true;
-        if(currentTab==="future" && isFuture) show = true;
-        if(currentTab==="done" && data.status==="done") show = true;
-        if(!show) return;
-
-        count++;
-
-        if(isToday && data.fare){
-          total += parseInt((data.fare||"").replace(/[^\d]/g,"")) || 0;
-        }
-
-        let sourceTag =
-          data.source==="whatsapp" ? `<span class="tag whatsapp">WhatsApp</span>` :
-          data.source==="email" ? `<span class="tag email">Email</span>` :
-          `<span class="tag web">Web</span>`;
-
-        const div = document.createElement("div");
-        div.className = "booking "+(isToday?"today":"");
-
-        div.innerHTML = `
-          ${sourceTag}
-          <b>${data.name || "No Name"}</b>
-
-          <div class="section">
-            ${data.phone ? "📞 "+data.phone : ""}
-            ${data.phone ? `<button class="call" onclick="window.location.href='tel:${data.phone}'">Call</button>` : ""}
-          </div>
-
-          <div class="section">${data.email ? "📧 "+data.email : ""}</div>
-          <div class="section">📍 ${data.pickup||"-"} → ${data.dropoff||"-"}</div>
-          <div class="section">🕒 ${data.date||"-"} ${data.time||""}</div>
-
-          <div class="btn-group">
-            <button class="accept" onclick="accept('${id}')">Accept</button>
-            <button class="reject" onclick="updateStatus('${id}','rejected')">Reject</button>
-
-            <div class="menu-wrap">
-              <button class="menu-btn" onclick="toggleMenu('${id}')">⋯</button>
-
-              <div class="menu-panel" id="menu-${id}">
-                <button class="menu-item" onclick="deleteBooking('${id}')">🗑 Delete</button>
-                <button class="menu-item" onclick="shareLocation('${id}')">📍 Share Location</button>
-              </div>
-            </div>
-          </div>
-        `;
-
-        container.appendChild(div);
-      });
-
-      document.getElementById("todayEarnings").innerText = total;
-      document.getElementById("totalBookings").innerText = count;
-
-      isInitialLoad = false;
-    });
 }
 
-/* ACTIONS */
-function accept(id){
-  db.collection("bookings").doc(id).update({ status:"done" });
+function update(id,status){
+  db.collection("bookings").doc(id).update({status});
 }
 
-function updateStatus(id,status){
-  db.collection("bookings").doc(id).update({ status });
-}
-
-function deleteBooking(id){
-  if(confirm("Delete?")){
+function del(id){
+  if(confirm("Delete booking?")){
     db.collection("bookings").doc(id).delete();
   }
 }
 
-function shareLocation(id){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    db.collection("bookings").doc(id).update({
-      driverLat: pos.coords.latitude,
-      driverLng: pos.coords.longitude
-    });
-    alert("Location sent");
-  });
+function call(p){
+  if(p) window.location.href="tel:"+p;
+}
+
+function map(addr){
+  if(addr) window.open("https://maps.google.com?q="+encodeURIComponent(addr));
 }
 
 function logout(){
   localStorage.removeItem("adminLoggedIn");
-  window.location.href="admin.html";
+  location.href="admin.html";
 }
 
-loadBookings();
+db.collection("bookings")
+.onSnapshot(snap=>{
+  all=[];
+  snap.forEach(doc=>{
+    all.push({id:doc.id,data:doc.data()});
+  });
+  render();
+});
+
 </script>
 
 </body>
