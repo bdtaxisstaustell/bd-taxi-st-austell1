@@ -1090,32 +1090,39 @@ Taxi St Austell, St Austell taxi service, local taxi St Austell, airport transfe
 let pickupSelected = false;
 let dropoffSelected = false;
 
- function initAutocomplete() {
-  console.log("Autocomplete working");
+function initAutocomplete() {
+  console.log("Autocomplete started");
 
-  const pickup = document.getElementById("pickupAddress");
-  const dropoff = document.getElementById("dropoffAddress");
+  const setupAutocomplete = (id) => {
+    const input = document.getElementById(id);
 
-  if (pickup) {
-    new google.maps.places.Autocomplete(pickup);
-  }
-
-  if (dropoff) {
-    new google.maps.places.Autocomplete(dropoff);
-  }
-}
-
+    if (!input) {
+      console.warn("Missing input:", id);
+      return;
+    }
 
     const auto = new google.maps.places.Autocomplete(input, {
       componentRestrictions: { country: "gb" },
       fields: ["formatted_address", "geometry", "name", "address_components"]
     });
 
+    // Optional bounds (can remove if causing issues)
     auto.setBounds(new google.maps.LatLngBounds(
       { lat: 50.25, lng: -4.95 },
       { lat: 50.45, lng: -4.60 }
     ));
 
+    // Reset flags when typing
+    input.addEventListener("input", function () {
+      if (id === "pickupAddress") pickupSelected = false;
+      if (id === "dropoffAddress") dropoffSelected = false;
+
+      if (typeof getDistanceAndCalculate === "function") {
+        getDistanceAndCalculate();
+      }
+    });
+
+    // When user selects a place
     auto.addListener("place_changed", function () {
       const place = auto.getPlace();
 
@@ -1137,11 +1144,14 @@ let dropoffSelected = false;
     });
   };
 
+  // Attach autocomplete to all fields
   setupAutocomplete("pickupAddress");
   setupAutocomplete("dropoffAddress");
   setupAutocomplete("pickupAddressEmail");
   setupAutocomplete("dropoffAddressEmail");
 }
+
+</script>
 
 function getDistanceAndCalculate() {
 
