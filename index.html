@@ -1090,23 +1090,21 @@ Taxi St Austell, St Austell taxi service, local taxi St Austell, airport transfe
 let pickupSelected = false;
 let dropoffSelected = false;
 
-  function initAutocomplete() 
-{
-  console.log("Autocomplete started");
+ function initAutocomplete() {
+  console.log("Autocomplete working");
 
-  const setupAutocomplete = (id) => {
-    const input = document.getElementById(id);
-    if (!input) return;
+  const pickup = document.getElementById("pickupAddress");
+  const dropoff = document.getElementById("dropoffAddress");
 
-    // reset flags when typing
-    input.addEventListener("input", function () {
-      if (id === "pickupAddress") pickupSelected = false;
-      if (id === "dropoffAddress") dropoffSelected = false;
+  if (pickup) {
+    new google.maps.places.Autocomplete(pickup);
+  }
 
-      if (typeof getDistanceAndCalculate === "function") {
-        getDistanceAndCalculate();
-      }
-    });
+  if (dropoff) {
+    new google.maps.places.Autocomplete(dropoff);
+  }
+}
+
 
     const auto = new google.maps.places.Autocomplete(input, {
       componentRestrictions: { country: "gb" },
