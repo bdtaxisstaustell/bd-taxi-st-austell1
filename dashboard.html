@@ -8,104 +8,48 @@
 <style>
 body { margin:0; font-family:Arial; background:#eef2f7; }
 
-/* HEADER */
 .top {
   background:#0f172a;
   color:white;
   padding:12px;
-  position:sticky;
-  top:0;
-  z-index:10;
 }
-.top h2 { margin:0; font-size:18px; }
-.stats { margin-top:6px; font-size:14px; }
+.top h2 { margin:0; }
 
-/* TABS */
 .tabs {
   display:flex;
   gap:6px;
   padding:10px;
-  flex-wrap:wrap;
 }
 .tabs button {
   flex:1;
   padding:10px;
   border:none;
   border-radius:10px;
-  font-weight:bold;
-  background:#ddd;
 }
-.tabs .active {
-  background:#0f172a;
-  color:white;
-}
+.active { background:#0f172a; color:white; }
 
-/* CARD */
 .card {
   background:white;
   margin:10px;
   padding:14px;
   border-radius:14px;
-  position:relative;
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* MENU */
-.menu {
-  position:absolute;
-  top:10px;
-  right:10px;
-}
-.menu button {
-  width:36px;
-  height:36px;
-  border:none;
-  border-radius:50%;
-  background:#0f172a;
-  color:white;
-  font-size:18px;
-}
-
-/* TAG */
-.tag {
-  font-size:12px;
-  margin-top:4px;
-}
-
-/* FARE */
-.fare {
-  background:#0f172a;
-  color:white;
-  padding:6px 10px;
-  border-radius:10px;
-  font-weight:bold;
-  display:inline-block;
-  margin-top:6px;
-}
-
-/* ACTIONS */
-.actions {
-  display:flex;
-  gap:6px;
-  margin-top:10px;
-  flex-wrap:wrap;
-}
 .actions button {
-  flex:1;
-  padding:10px;
+  margin:5px 5px 0 0;
+  padding:8px;
   border:none;
   border-radius:8px;
   font-weight:bold;
 }
-.accept { background:green; color:white; }
-.reject { background:red; color:white; }
-.done { background:#0ea5e9; color:white; }
-.secondary { background:#ddd; }
 
-/* MOBILE */
-@media(max-width:600px){
-  .actions { flex-direction:column; }
-}
+.accept{background:green;color:white;}
+.reject{background:red;color:white;}
+.done{background:#0ea5e9;color:white;}
+.edit{background:#f59e0b;color:white;}
+.fare{background:#111827;color:white;}
+.secondary{background:#ddd;}
 </style>
 </head>
 
@@ -113,18 +57,14 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
 
 <div class="top">
   <h2>🚕 BD Taxi Dashboard</h2>
-  <div class="stats">
-    💰 £<span id="earn">0</span> |
-    📦 <span id="count">0</span>
-  </div>
+  💰 £<span id="earn">0</span> |
+  📦 <span id="count">0</span>
 </div>
 
 <div class="tabs">
   <button onclick="setTab('new')" id="tab-new" class="active">New</button>
   <button onclick="setTab('accepted')" id="tab-accepted">Accepted</button>
-  <button onclick="setTab('future')" id="tab-future">Future</button>
   <button onclick="setTab('done')" id="tab-done">Done</button>
-  <button onclick="setTab('history')" id="tab-history">History</button>
 </div>
 
 <div id="list"></div>
@@ -134,7 +74,7 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+ apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q"
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
   projectId: "taxi-bookings-69cff"
 };
@@ -142,49 +82,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let tab = "new";
-let all = [];
+let tab="new";
+let all=[];
 
-/* UTIL */
-function escapeHtml(t){
-  return String(t||"").replace(/[&<>"']/g, m => ({
-    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
-  }[m]));
-}
-
-function getFare(d){
-  return d.fare || d.price || d.quotedFare || "";
-}
-
-function getSourceTag(s){
-  if(s==="whatsapp") return "🟢 WhatsApp";
-  if(s==="email") return "🔵 Email";
-  return "⚪ Web";
-}
-
-function isFuture(d){
-  return new Date(d.date+"T"+(d.time||"00:00")) > new Date();
-}
-
-function inLast30(d){
-  const diff = (new Date() - new Date(d.date+"T"+(d.time||"00:00")))/(1000*60*60*24);
-  return diff<=30 && diff>=0;
-}
-
-/* FILTER */
-function match(d){
-  const s = (d.status||"new").toLowerCase();
-
-  if(tab==="new") return s==="new";
-  if(tab==="accepted") return s==="accepted";
-  if(tab==="done") return s==="done";
-  if(tab==="future") return isFuture(d);
-  if(tab==="history") return inLast30(d);
-
-  return true;
-}
-
-/* UI */
+/* TAB */
 function setTab(t){
   tab=t;
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
@@ -192,46 +93,45 @@ function setTab(t){
   render();
 }
 
+/* RENDER */
 function render(){
-  const container = document.getElementById("list");
+  const container=document.getElementById("list");
   container.innerHTML="";
 
-  let total=0;
-  let count=0;
+  let total=0,count=0;
 
   all.forEach(({id,d})=>{
-    if(!match(d)) return;
-
-    const fare = getFare(d);
+    if((d.status||"new")!==tab) return;
 
     count++;
-
-    if(d.status==="done" && fare){
-      total += parseFloat(fare)||0;
-    }
+    const fare = parseFloat(d.fare)||0;
+    if(d.status==="done") total+=fare;
 
     const div=document.createElement("div");
     div.className="card";
 
     div.innerHTML=`
-      <div class="menu">
-        <button onclick="del('${id}')">⋯</button>
-      </div>
+      <b>${d.name||"No Name"}</b><br>
+      📞 ${d.phone||"-"}<br>
+      📍 ${d.pickup||"-"} → ${d.dropoff||"-"}<br>
+      🕒 ${d.date||""} ${d.time||""}<br>
 
-      <b>${escapeHtml(d.name||"No Name")}</b>
-
-      <div class="tag">${getSourceTag(d.source)}</div>
-
-      📍 ${escapeHtml(d.pickup||"-")} → ${escapeHtml(d.dropoff||"-")}<br>
-      🕒 ${escapeHtml(d.date||"-")} ${escapeHtml(d.time||"")}
-
-      <div class="fare">${fare ? "£"+fare : "No fare"}</div>
+      💰 £${fare || "0"}
 
       <div class="actions">
-        ${d.status==="new" ? `<button class="accept" onclick="accept('${id}','${d.phone}','${d.name}','${fare}')">Accept</button>` : ""}
+
+        ${d.status==="new" ? `<button class="accept" onclick="accept('${id}')">Accept</button>` : ""}
+
         ${d.status==="accepted" ? `<button class="done" onclick="status('${id}','done')">Complete</button>` : ""}
+
         <button class="reject" onclick="status('${id}','rejected')">Reject</button>
-        ${tab==="history" ? `<button class="secondary" onclick="del('${id}')">Delete</button>` : ""}
+
+        <button class="fare" onclick="editFare('${id}', '${fare}')">Edit Fare</button>
+
+        <button class="edit" onclick="editBooking('${id}')">Edit</button>
+
+        <button class="secondary" onclick="messageCustomer('${id}')">Message</button>
+
       </div>
     `;
 
@@ -242,43 +142,100 @@ function render(){
   document.getElementById("count").innerText = count;
 }
 
-/* ACTIONS */
+/* STATUS */
 function status(id,s){
   db.collection("bookings").doc(id).update({status:s});
 }
 
-function accept(id,phone,name,fare){
+/* ACCEPT */
+function accept(id){
   status(id,"accepted");
-  whatsapp(phone,name,fare);
+  messageCustomer(id);
 }
 
-function del(id){
-  if(confirm("Delete booking?")){
-    db.collection("bookings").doc(id).delete();
+/* FARE EDIT */
+function editFare(id,current){
+  const newFare = prompt("Enter fare (£):", current||"");
+  if(newFare===null) return;
+
+  db.collection("bookings").doc(id).update({
+    fare: newFare
+  });
+}
+
+/* BOOKING EDIT */
+function editBooking(id){
+  const item = all.find(b=>b.id===id);
+  const d = item.d;
+
+  const name = prompt("Name:", d.name||"");
+  if(name===null) return;
+
+  const phone = prompt("Phone:", d.phone||"");
+  const pickup = prompt("Pickup:", d.pickup||"");
+  const dropoff = prompt("Dropoff:", d.dropoff||"");
+  const date = prompt("Date (YYYY-MM-DD):", d.date||"");
+  const time = prompt("Time:", d.time||"");
+
+  db.collection("bookings").doc(id).update({
+    name, phone, pickup, dropoff, date, time
+  });
+}
+
+/* MESSAGE LOGIC */
+function messageCustomer(id){
+  const item = all.find(b=>b.id===id);
+  const d = item.d;
+
+  if(!d.phone) return alert("No phone number");
+
+  const source = (d.source||"").toLowerCase();
+
+  if(source==="email"){
+    sendEmail(d);
+  } else {
+    sendWhatsApp(d);
   }
 }
 
 /* WHATSAPP */
-function whatsapp(phone,name,fare){
-  if(!phone) return;
+function sendWhatsApp(d){
+  let phone = d.phone.replace(/\D/g,'');
 
-  phone = phone.replace(/\D/g,'');
-
-  if(phone.startsWith("0")){
-    phone="44"+phone.substring(1);
-  }
+  if(phone.startsWith("0")) phone="44"+phone.substring(1);
 
   const msg = encodeURIComponent(
-`Hi ${name||""} 👋
+`Hi ${d.name||""}
 
-Your taxi booking is CONFIRMED ✅
+Your taxi is confirmed 🚕
+Pickup: ${d.pickup}
+Dropoff: ${d.dropoff}
+Time: ${d.date} ${d.time}
 
-💰 Fare: ${fare ? "£"+fare : "To be confirmed"}
-
-🚕 BD Taxi St Austell`
+BD Taxi`
   );
 
   window.open("https://wa.me/"+phone+"?text="+msg);
+}
+
+/* EMAIL */
+function sendEmail(d){
+  const subject = encodeURIComponent("Taxi Booking Confirmation");
+  const body = encodeURIComponent(
+`Hi ${d.name},
+
+Your taxi is confirmed.
+
+Pickup: ${d.pickup}
+Dropoff: ${d.dropoff}
+Date: ${d.date}
+Time: ${d.time}
+
+Thank you,
+BD Taxi`
+  );
+
+  window.location.href = `mailto:${d.email}?subject=${subject}&body=${body}`;
 }
 
 /* LOAD */
