@@ -1,113 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Taxi Dashboard</title>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>BD Taxi Dashboard</title>
 
 <style>
-body {
-  font-family: Arial;
-  margin:0;
-  background:#eef2f7;
-}
+body { margin:0; font-family:Arial; background:#eef2f7; }
 
 /* HEADER */
-.header {
-  position:sticky;
-  top:0;
-  background:#111;
+.top {
+  background:#0f172a;
   color:white;
   padding:12px;
-  z-index:100;
+  position:sticky;
+  top:0;
+  z-index:10;
 }
 
-h1 {
-  margin:0;
-  font-size:20px;
-}
+.top h2 { margin:0; font-size:18px; }
 
-/* STATS */
 .stats {
   display:flex;
-  justify-content:space-between;
+  gap:10px;
   margin-top:8px;
   font-size:14px;
-}
-
-/* SEARCH */
-.search {
-  padding:10px;
-}
-
-.search input {
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:16px;
 }
 
 /* TABS */
 .tabs {
   display:flex;
-  gap:5px;
+  gap:6px;
   padding:10px;
+  flex-wrap:wrap;
 }
 
 .tabs button {
   flex:1;
   padding:10px;
   border:none;
-  border-radius:8px;
+  border-radius:10px;
   font-weight:bold;
+  background:#ddd;
 }
 
-.active {
-  background:#25D366;
+.tabs .active {
+  background:#0f172a;
   color:white;
 }
 
-/* BOOKING CARD */
-.booking {
+/* CARD */
+.card {
   background:white;
   margin:10px;
   padding:14px;
-  border-radius:12px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.05);
+  border-radius:14px;
+  position:relative;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* HEADER ROW */
-.booking-top {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+/* MENU BUTTON */
+.menu {
+  position:absolute;
+  top:10px;
+  right:10px;
 }
 
-/* NAME */
-.name {
-  font-weight:bold;
-  font-size:16px;
+.menu button {
+  width:36px;
+  height:36px;
+  border:none;
+  border-radius:50%;
+  background:#0f172a;
+  color:white;
+  font-size:18px;
 }
 
 /* FARE */
 .fare {
-  font-size:18px;
+  background:#0f172a;
+  color:white;
+  padding:6px 10px;
+  border-radius:10px;
   font-weight:bold;
-  color:#16a34a;
+  display:inline-block;
+  margin-top:5px;
 }
 
-/* ROW */
-.row {
-  margin-top:6px;
-  font-size:14px;
-}
-
-/* ACTION BUTTONS */
+/* ACTIONS */
 .actions {
   display:flex;
-  flex-wrap:wrap;
   gap:6px;
   margin-top:10px;
+  flex-wrap:wrap;
 }
 
 .actions button {
@@ -118,87 +103,44 @@ h1 {
   font-weight:bold;
 }
 
-/* COLORS */
 .accept { background:green; color:white; }
-.complete { background:#0ea5e9; color:white; }
 .reject { background:red; color:white; }
+.done { background:#0ea5e9; color:white; }
 .secondary { background:#ddd; }
-
-/* MENU BUTTON */
-.menu {
-  position:absolute;
-  right:12px;
-  top:12px;
-  font-size:20px;
-  background:none;
-  border:none;
-}
-
-/* MENU PANEL */
-.menu-panel {
-  display:none;
-  position:absolute;
-  right:10px;
-  top:40px;
-  background:white;
-  border:1px solid #ccc;
-  border-radius:8px;
-  overflow:hidden;
-}
-
-.menu-panel button {
-  display:block;
-  width:100%;
-  padding:10px;
-  border:none;
-  background:white;
-}
-
-.menu-panel button:hover {
-  background:#eee;
-}
 
 /* MOBILE */
 @media(max-width:600px){
-  .actions button {
-    flex:100%;
-  }
+  .actions { flex-direction:column; }
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="header">
-  <h1>🚕 Taxi Dashboard</h1>
+<div class="top">
+  <h2>🚕 BD Taxi Dashboard</h2>
   <div class="stats">
-    <div>£<span id="earnings">0</span></div>
-    <div><span id="count">0</span> bookings</div>
+    💰 £<span id="earn">0</span> |
+    📦 <span id="count">0</span>
   </div>
 </div>
 
-<div class="search">
-  <input id="search" placeholder="Search bookings...">
-</div>
-
 <div class="tabs">
-  <button onclick="setTab('all')" class="active" id="tab-all">All</button>
-  <button onclick="setTab('new')" id="tab-new">New</button>
+  <button onclick="setTab('new')" id="tab-new" class="active">New</button>
   <button onclick="setTab('accepted')" id="tab-accepted">Accepted</button>
+  <button onclick="setTab('future')" id="tab-future">Future</button>
   <button onclick="setTab('done')" id="tab-done">Done</button>
+  <button onclick="setTab('history')" id="tab-history">History</button>
 </div>
 
-<div id="bookings"></div>
-
-<audio id="sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<div id="list"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIza...",
+  apiKey: "AIzaSy...",
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
   projectId: "taxi-bookings-69cff"
 };
@@ -206,19 +148,99 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let currentTab = "all";
-let allBookings = [];
+let tab = "new";
+let all = [];
 
-/* TAB */
-function setTab(tab){
-  currentTab = tab;
+function setTab(t){
+  tab = t;
   document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
+  document.getElementById("tab-"+t).classList.add("active");
   render();
 }
 
-/* WHATSAPP AUTO */
-function sendWhatsApp(phone,name){
+function isFuture(d){
+  return new Date(d.date+"T"+(d.time||"00:00")) > new Date();
+}
+
+function inLast30(d){
+  const diff = (new Date() - new Date(d.date+"T"+(d.time||"00:00")))/(1000*60*60*24);
+  return diff <= 30 && diff >= 0;
+}
+
+function match(d){
+  const s = d.status || "new";
+
+  if(tab==="new") return s==="new";
+  if(tab==="accepted") return s==="accepted";
+  if(tab==="done") return s==="done";
+  if(tab==="future") return isFuture(d);
+  if(tab==="history") return inLast30(d);
+
+  return true;
+}
+
+function render(){
+  const container = document.getElementById("list");
+  container.innerHTML = "";
+
+  let total = 0;
+  let count = 0;
+
+  all.forEach(({id,d})=>{
+    if(!match(d)) return;
+
+    count++;
+
+    if(d.fare && d.status==="done"){
+      total += parseFloat(d.fare) || 0;
+    }
+
+    const div = document.createElement("div");
+    div.className="card";
+
+    div.innerHTML = `
+      <div class="menu">
+        <button onclick="del('${id}')">⋯</button>
+      </div>
+
+      <b>${d.name||"No Name"}</b><br>
+      📍 ${d.pickup||"-"} → ${d.dropoff||"-"}<br>
+      🕒 ${d.date||"-"} ${d.time||""}
+
+      <div class="fare">£${d.fare||"-"}</div>
+
+      <div class="actions">
+        ${d.status==="new" ? `<button class="accept" onclick="accept('${id}', '${d.phone}', '${d.name}')">Accept</button>` : ""}
+        ${d.status==="accepted" ? `<button class="done" onclick="status('${id}','done')">Complete</button>` : ""}
+        <button class="reject" onclick="status('${id}','rejected')">Reject</button>
+        ${tab==="history" ? `<button class="secondary" onclick="del('${id}')">Delete</button>` : ""}
+      </div>
+    `;
+
+    container.appendChild(div);
+  });
+
+  document.getElementById("earn").innerText = total;
+  document.getElementById("count").innerText = count;
+}
+
+function status(id,s){
+  db.collection("bookings").doc(id).update({status:s});
+}
+
+function accept(id,phone,name){
+  status(id,"accepted");
+  whatsapp(phone,name);
+}
+
+function del(id){
+  if(confirm("Delete?")){
+    db.collection("bookings").doc(id).delete();
+  }
+}
+
+/* WhatsApp auto */
+function whatsapp(phone,name){
   if(!phone) return;
 
   if(phone.startsWith("0")){
@@ -226,127 +248,24 @@ function sendWhatsApp(phone,name){
   }
 
   const msg = encodeURIComponent(
-    `Hi ${name}, your taxi is confirmed 🚕`
+`Hi ${name||""} 👋
+
+Your taxi is confirmed ✅
+
+🚕 BD Taxi St Austell`
   );
 
   window.open("https://wa.me/"+phone+"?text="+msg);
 }
 
-/* STATUS */
-function update(id,status){
-  db.collection("bookings").doc(id).update({status});
-}
-
-/* DELETE */
-function deleteBooking(id){
-  if(confirm("Delete booking?")){
-    db.collection("bookings").doc(id).delete();
-  }
-}
-
-/* ACCEPT */
-function accept(id,phone,name){
-  update(id,"accepted");
-  sendWhatsApp(phone,name);
-}
-
-/* COMPLETE */
-function complete(id){
-  update(id,"done");
-}
-
 /* LOAD */
-db.collection("bookings").onSnapshot(snapshot=>{
-  allBookings = [];
-
-  snapshot.forEach(doc=>{
-    const data = doc.data();
-
-    // only last 30 days
-    const date = new Date(data.date);
-    const now = new Date();
-    const diff = (now - date) / (1000*60*60*24);
-
-    if(diff <= 30){
-      allBookings.push({id:doc.id, ...data});
-    }
+db.collection("bookings").onSnapshot(snap=>{
+  all = [];
+  snap.forEach(doc=>{
+    all.push({id:doc.id, d:doc.data()});
   });
-
   render();
 });
-
-/* RENDER */
-function render(){
-  const container = document.getElementById("bookings");
-  container.innerHTML="";
-
-  const search = document.getElementById("search").value.toLowerCase();
-
-  let earnings = 0;
-  let count = 0;
-
-  allBookings.forEach(b=>{
-
-    if(search && !JSON.stringify(b).toLowerCase().includes(search)) return;
-
-    if(currentTab==="new" && b.status!=="new") return;
-    if(currentTab==="accepted" && b.status!=="accepted") return;
-    if(currentTab==="done" && b.status!=="done") return;
-
-    count++;
-
-    if(b.status==="done"){
-      earnings += Number(b.fare)||0;
-    }
-
-    const div = document.createElement("div");
-    div.className="booking";
-
-    div.innerHTML = `
-      <button class="menu" onclick="toggleMenu('${b.id}')">⋮</button>
-
-      <div class="menu-panel" id="menu-${b.id}">
-        <button onclick="deleteBooking('${b.id}')">Delete</button>
-      </div>
-
-      <div class="booking-top">
-        <div class="name">${b.name||"No name"}</div>
-        <div class="fare">£${b.fare||0}</div>
-      </div>
-
-      <div class="row">📞 ${b.phone||"-"}</div>
-      <div class="row">📍 ${b.pickup||"-"} → ${b.dropoff||"-"}</div>
-      <div class="row">🕒 ${b.date||""} ${b.time||""}</div>
-
-      <div class="actions">
-        ${b.status==="new" ? `
-          <button class="accept" onclick="accept('${b.id}','${b.phone}','${b.name}')">Accept</button>
-        ` : ""}
-
-        ${b.status==="accepted" ? `
-          <button class="complete" onclick="complete('${b.id}')">Complete</button>
-        ` : ""}
-
-        <button class="reject" onclick="update('${b.id}','rejected')">Reject</button>
-      </div>
-    `;
-
-    container.appendChild(div);
-  });
-
-  document.getElementById("earnings").innerText = earnings;
-  document.getElementById("count").innerText = count;
-}
-
-/* MENU TOGGLE */
-function toggleMenu(id){
-  const menu = document.getElementById("menu-"+id);
-  menu.style.display = menu.style.display==="block" ? "none" : "block";
-}
-
-/* SEARCH */
-document.getElementById("search").addEventListener("input",render);
-
 </script>
 
 </body>
