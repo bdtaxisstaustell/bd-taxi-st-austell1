@@ -1089,8 +1089,10 @@ Taxi St Austell, St Austell taxi service, local taxi St Austell, airport transfe
 /* GOOGLE AUTOCOMPLETE (FIXED + RELIABLE) */
 let pickupSelected = false;
 let dropoffSelected = false;
-function initAutocomplete() 
+
+  function initAutocomplete() 
 {
+  console.log("Autocomplete started");
 
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
