@@ -1,256 +1,1427 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BD Taxi St Austell Dashboard</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BD Taxi St Austell Dashboard</title>
 
-<style>
-body { font-family: Arial; margin:0; background:#eef2f7; }
-h1 { text-align:center; padding:10px; }
+  <style>
+    :root{
+      --bg:#0f172a;
+      --bg-soft:#111827;
+      --panel:#ffffff;
+      --panel-2:#f8fafc;
+      --text:#0f172a;
+      --muted:#64748b;
+      --border:#e2e8f0;
+      --shadow:0 10px 30px rgba(15,23,42,.08);
 
-.top-bar { display:flex; justify-content:space-between; padding:10px; }
+      --brand:#16a34a;
+      --brand-dark:#15803d;
+      --danger:#dc2626;
+      --danger-dark:#b91c1c;
+      --warning:#f59e0b;
+      --info:#2563eb;
+      --done:#0ea5e9;
+      --neutral:#475569;
 
-.tabs { display:flex; gap:5px; padding:10px; }
+      --tab:#e2e8f0;
+      --tab-active:#0f172a;
+      --tab-active-text:#fff;
 
-.tabs button {
-  flex:1; padding:10px; border:none; border-radius:8px;
-  font-weight:bold; cursor:pointer;
-}
+      --badge-new-bg:#fef3c7;
+      --badge-new-text:#92400e;
+      --badge-accepted-bg:#dcfce7;
+      --badge-accepted-text:#166534;
+      --badge-done-bg:#dbeafe;
+      --badge-done-text:#1d4ed8;
+      --badge-rejected-bg:#fee2e2;
+      --badge-rejected-text:#991b1b;
 
-.active { background:#25D366; color:white; }
+      --source-whatsapp:#25D366;
+      --source-email:#2563eb;
+      --source-web:#64748b;
 
-.booking {
-  background:white; margin:10px; padding:12px;
-  border-radius:10px; line-height:1.5;
-}
+      --radius:18px;
+      --radius-sm:12px;
+    }
 
-.today { border-left:6px solid orange; }
+    * { box-sizing:border-box; }
 
-.tag {
-  display:inline-block; padding:3px 8px; border-radius:6px;
-  font-size:12px; font-weight:bold; margin-bottom:6px;
-}
+    html, body {
+      margin:0;
+      padding:0;
+      font-family: Inter, Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 25%),
+        radial-gradient(circle at top right, rgba(22,163,74,.12), transparent 28%),
+        linear-gradient(180deg, #eef4ff 0%, #f8fafc 55%, #eef2f7 100%);
+      color:var(--text);
+      min-height:100%;
+    }
 
-.whatsapp { background:#25D366; color:white; }
-.email { background:#007BFF; color:white; }
-.web { background:#666; color:white; }
+    a { color:inherit; }
 
-.section { margin-top:5px; font-size:14px; }
+    .app {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 18px;
+    }
 
-.btn-group {
-  display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;
-}
+    .top-shell {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      padding-top: 4px;
+      backdrop-filter: blur(12px);
+    }
 
-.btn-group button {
-  flex:1; padding:10px; border:none; border-radius:6px; font-weight:bold;
-}
+    .hero {
+      background: linear-gradient(135deg, #0f172a, #111827 65%, #1e293b);
+      color: #fff;
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow: 0 16px 40px rgba(2, 6, 23, 0.28);
+      margin-bottom: 16px;
+    }
 
-.accept { background:green; color:white; }
-.reject { background:red; color:white; }
-.call { background:#222; color:white; }
-</style>
+    .hero-top {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .brand-wrap h1{
+      margin:0;
+      font-size: clamp(22px, 4vw, 34px);
+      line-height:1.1;
+    }
+
+    .brand-wrap p{
+      margin:8px 0 0;
+      color:rgba(255,255,255,.75);
+      font-size:14px;
+    }
+
+    .top-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .danger-btn,
+    .icon-btn,
+    .action-btn,
+    .menu-btn {
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      transition:.18s ease;
+    }
+
+    .ghost-btn,
+    .primary-btn,
+    .danger-btn{
+      padding:11px 14px;
+      border-radius:12px;
+      font-size:14px;
+    }
+
+    .ghost-btn{
+      background:rgba(255,255,255,.12);
+      color:#fff;
+      border:1px solid rgba(255,255,255,.16);
+    }
+
+    .ghost-btn:hover{ background:rgba(255,255,255,.18); }
+
+    .primary-btn{
+      background:var(--brand);
+      color:#fff;
+    }
+
+    .primary-btn:hover{ background:var(--brand-dark); }
+
+    .danger-btn{
+      background:rgba(239,68,68,.16);
+      color:#fff;
+      border:1px solid rgba(239,68,68,.22);
+    }
+
+    .danger-btn:hover{ background:rgba(239,68,68,.25); }
+
+    .stats-grid{
+      margin-top:18px;
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0,1fr));
+      gap:12px;
+    }
+
+    .stat-card{
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:18px;
+      padding:14px 16px;
+      min-height:86px;
+    }
+
+    .stat-label{
+      color:rgba(255,255,255,.72);
+      font-size:12px;
+      margin-bottom:10px;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    .stat-value{
+      font-size:28px;
+      font-weight:800;
+      line-height:1;
+    }
+
+    .controls{
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:22px;
+      padding:14px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+
+    .controls-row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .tab-btn{
+      background:var(--tab);
+      color:#0f172a;
+      border:none;
+      padding:11px 14px;
+      border-radius:12px;
+      font-weight:800;
+      cursor:pointer;
+      min-width:120px;
+      transition:.18s ease;
+    }
+
+    .tab-btn.active{
+      background:var(--tab-active);
+      color:var(--tab-active-text);
+      box-shadow:0 8px 20px rgba(15,23,42,.14);
+    }
+
+    .search-wrap{
+      flex:1 1 260px;
+      min-width:220px;
+      position:relative;
+    }
+
+    .search-wrap input,
+    .filter-select{
+      width:100%;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:12px;
+      padding:12px 14px;
+      font-size:14px;
+      color:var(--text);
+      outline:none;
+    }
+
+    .search-wrap input:focus,
+    .filter-select:focus{
+      border-color:#93c5fd;
+      box-shadow:0 0 0 4px rgba(37,99,235,.08);
+    }
+
+    .filter-select{
+      min-width:180px;
+      width:auto;
+    }
+
+    .summary-line{
+      margin-top:10px;
+      font-size:13px;
+      color:var(--muted);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .board{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:14px;
+      padding-bottom:30px;
+    }
+
+    .booking-card{
+      background:rgba(255,255,255,.94);
+      border:1px solid rgba(226,232,240,.95);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      padding:16px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .booking-card.today::before{
+      content:"";
+      position:absolute;
+      left:0;
+      top:0;
+      bottom:0;
+      width:6px;
+      background:linear-gradient(180deg, #f59e0b, #f97316);
+    }
+
+    .booking-card.new-flash{
+      animation: glow 1.6s ease 1;
+    }
+
+    @keyframes glow{
+      0%   { box-shadow:0 0 0 0 rgba(37,99,235,.35), var(--shadow); }
+      50%  { box-shadow:0 0 0 10px rgba(37,99,235,0), var(--shadow); }
+      100% { box-shadow:var(--shadow); }
+    }
+
+    .booking-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+
+    .booking-title{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      min-width:220px;
+    }
+
+    .booking-name{
+      font-size:20px;
+      font-weight:800;
+      line-height:1.1;
+      word-break:break-word;
+    }
+
+    .pill-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .tag,
+    .status-badge,
+    .tiny-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+    }
+
+    .tag.whatsapp { background:rgba(37,211,102,.12); color:#15803d; }
+    .tag.email    { background:rgba(37,99,235,.10); color:#1d4ed8; }
+    .tag.web      { background:rgba(100,116,139,.12); color:#334155; }
+
+    .status-badge.new       { background:var(--badge-new-bg); color:var(--badge-new-text); }
+    .status-badge.accepted  { background:var(--badge-accepted-bg); color:var(--badge-accepted-text); }
+    .status-badge.done      { background:var(--badge-done-bg); color:var(--badge-done-text); }
+    .status-badge.rejected  { background:var(--badge-rejected-bg); color:var(--badge-rejected-text); }
+
+    .tiny-badge{
+      background:#f1f5f9;
+      color:#334155;
+      border:1px solid #e2e8f0;
+    }
+
+    .fare-box{
+      text-align:right;
+      min-width:120px;
+    }
+
+    .fare-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+    }
+
+    .fare-value{
+      font-size:24px;
+      font-weight:900;
+      line-height:1;
+    }
+
+    .booking-grid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:12px;
+      margin-bottom:12px;
+    }
+
+    .info-box{
+      background:var(--panel-2);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      min-height:78px;
+    }
+
+    .info-label{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:8px;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:.04em;
+    }
+
+    .info-value{
+      font-size:14px;
+      font-weight:700;
+      color:var(--text);
+      line-height:1.45;
+      word-break:break-word;
+    }
+
+    .notes-box{
+      margin-bottom:12px;
+    }
+
+    .notes-box .info-box{
+      min-height:auto;
+    }
+
+    .actions-row{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .action-btn{
+      padding:11px 14px;
+      border-radius:12px;
+      font-size:14px;
+    }
+
+    .action-btn.accept{
+      background:var(--brand);
+      color:#fff;
+    }
+
+    .action-btn.accept:hover{ background:var(--brand-dark); }
+
+    .action-btn.complete{
+      background:var(--done);
+      color:#fff;
+    }
+
+    .action-btn.complete:hover{ filter:brightness(.95); }
+
+    .action-btn.reject{
+      background:var(--danger);
+      color:#fff;
+    }
+
+    .action-btn.reject:hover{ background:var(--danger-dark); }
+
+    .action-btn.secondary{
+      background:#eef2f7;
+      color:#0f172a;
+      border:1px solid var(--border);
+    }
+
+    .action-btn.secondary:hover{
+      background:#e2e8f0;
+    }
+
+    .menu-wrap{
+      position:relative;
+      margin-left:auto;
+    }
+
+    .menu-btn{
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      background:#f8fafc;
+      border:1px solid var(--border);
+      font-size:20px;
+      line-height:1;
+      color:#0f172a;
+    }
+
+    .menu-btn:hover{
+      background:#eef2f7;
+    }
+
+    .menu-panel{
+      position:absolute;
+      right:0;
+      top:48px;
+      min-width:220px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:16px;
+      box-shadow:0 16px 36px rgba(2,6,23,.16);
+      padding:8px;
+      display:none;
+      z-index:20;
+    }
+
+    .menu-panel.open{
+      display:block;
+    }
+
+    .menu-item{
+      width:100%;
+      border:none;
+      background:#fff;
+      text-align:left;
+      padding:11px 12px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:700;
+      color:#0f172a;
+    }
+
+    .menu-item:hover{
+      background:#f8fafc;
+    }
+
+    .menu-item.danger{
+      color:#b91c1c;
+    }
+
+    .empty-state{
+      background:rgba(255,255,255,.88);
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:40px 20px;
+      text-align:center;
+      color:var(--muted);
+      box-shadow:var(--shadow);
+    }
+
+    .empty-state h3{
+      margin:0 0 8px;
+      color:#0f172a;
+      font-size:20px;
+    }
+
+    .toast{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      background:#0f172a;
+      color:#fff;
+      padding:12px 14px;
+      border-radius:14px;
+      box-shadow:0 14px 30px rgba(2,6,23,.28);
+      z-index:100;
+      opacity:0;
+      transform:translateY(12px);
+      pointer-events:none;
+      transition:.22s ease;
+      max-width:320px;
+      font-weight:700;
+      font-size:14px;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .footer-note{
+      padding:10px 6px 22px;
+      color:var(--muted);
+      font-size:12px;
+      text-align:center;
+    }
+
+    @media (max-width: 1100px){
+      .stats-grid{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .booking-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 720px){
+      .app{ padding:12px; }
+      .hero{ border-radius:20px; padding:16px; }
+      .stats-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .controls-row{ align-items:stretch; }
+      .tabs{ width:100%; }
+      .tab-btn{ flex:1 1 calc(50% - 8px); min-width:auto; }
+      .search-wrap{ flex:1 1 100%; }
+      .filter-select{ width:100%; }
+      .booking-grid{ grid-template-columns:1fr; }
+      .booking-name{ font-size:18px; }
+      .fare-box{ text-align:left; }
+      .actions-row{ align-items:stretch; }
+      .action-btn{ flex:1 1 calc(50% - 8px); }
+      .menu-wrap{ margin-left:0; width:100%; }
+      .menu-btn{ width:100%; }
+      .menu-panel{ left:0; right:auto; width:100%; top:50px; }
+    }
+  </style>
 </head>
-
 <body>
 
-<script>
-if (localStorage.getItem("adminLoggedIn") !== "true") {
-  window.location.href = "admin.html";
-}
-</script>
+  <script>
+    // Kept for compatibility with your current setup.
+    // This is NOT secure by itself.
+    if (localStorage.getItem("adminLoggedIn") !== "true") {
+      window.location.href = "admin.html";
+    }
+  </script>
 
-<h1>🚕 BD Taxi St Austell Dashboard</h1>
+  <div class="app">
+    <div class="top-shell">
+      <section class="hero">
+        <div class="hero-top">
+          <div class="brand-wrap">
+            <h1>🚕 BD Taxi St Austell</h1>
+            <p>Live dispatch dashboard for bookings, tracking, and driver actions.</p>
+          </div>
 
-<div class="top-bar">
-  <div>
-    💰 £<span id="todayEarnings">0</span> |
-    📦 <span id="totalBookings">0</span>
+          <div class="top-actions">
+            <button class="ghost-btn" id="notificationBtn" type="button">🔔 Enable alerts</button>
+            <button class="danger-btn" type="button" onclick="logout()">Logout</button>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Today's Earnings</div>
+            <div class="stat-value" id="todayEarnings">£0.00</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Visible Bookings</div>
+            <div class="stat-value" id="visibleBookings">0</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">New</div>
+            <div class="stat-value" id="newCount">0</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Accepted</div>
+            <div class="stat-value" id="acceptedCount">0</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Completed Today</div>
+            <div class="stat-value" id="doneTodayCount">0</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="controls">
+      <div class="controls-row">
+        <div class="tabs">
+          <button class="tab-btn active" id="tab-new" type="button" onclick="setTab('new')">🆕 New</button>
+          <button class="tab-btn" id="tab-future" type="button" onclick="setTab('future')">📅 Future</button>
+          <button class="tab-btn" id="tab-accepted" type="button" onclick="setTab('accepted')">✅ Accepted</button>
+          <button class="tab-btn" id="tab-done" type="button" onclick="setTab('done')">🏁 Completed</button>
+          <button class="tab-btn" id="tab-rejected" type="button" onclick="setTab('rejected')">⛔ Rejected</button>
+        </div>
+
+        <div class="search-wrap">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search by name, phone, route, email, notes..."
+            autocomplete="off"
+          />
+        </div>
+
+        <select id="sortSelect" class="filter-select" onchange="renderBookings()">
+          <option value="pickupAsc">Sort: pickup earliest</option>
+          <option value="pickupDesc">Sort: pickup latest</option>
+          <option value="createdDesc">Sort: newest created</option>
+          <option value="createdAsc">Sort: oldest created</option>
+        </select>
+      </div>
+
+      <div class="summary-line">
+        <div id="summaryText">Showing live bookings.</div>
+        <div id="lastUpdatedText">Waiting for updates...</div>
+      </div>
+    </section>
+
+    <main id="bookings" class="board"></main>
+
+    <div class="footer-note">
+      Dashboard updated for clearer workflow, safer rendering, and better mobile use.
+    </div>
   </div>
-  <button onclick="logout()">Logout</button>
-</div>
 
-<div class="tabs">
-  <button onclick="setTab('new')" class="active" id="tab-new">New</button>
-  <button onclick="setTab('future')" id="tab-future">Future</button>
-  <button onclick="setTab('done')" id="tab-done">Completed</button>
-</div>
+  <div class="toast" id="toast"></div>
 
-<div id="bookings"></div>
+  <audio id="sound" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
 
-<audio id="sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+      authDomain: "taxi-bookings-69cff.firebaseapp.com",
+      projectId: "taxi-bookings-69cff",
+      storageBucket: "taxi-bookings-69cff.appspot.com",
+      messagingSenderId: "1074073110832",
+      appId: "1:1074073110832:web:7abfe2772b46245187a0f5"
+    };
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
-  authDomain: "taxi-bookings-69cff.firebaseapp.com",
-  projectId: "taxi-bookings-69cff",
-  storageBucket: "taxi-bookings-69cff.appspot.com",
-  messagingSenderId: "1074073110832",
-  appId: "1:1074073110832:web:7abfe2772b46245187a0f5"
-};
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-</script>
+    let currentTab = "new";
+    let unsubscribe = null;
+    let isInitialLoad = true;
+    let lastNotifyTime = 0;
+    let allBookings = [];
+    let lastSnapshotAt = null;
 
-<script>
+    const bookingsEl = document.getElementById("bookings");
+    const searchInput = document.getElementById("searchInput");
+    const sortSelect = document.getElementById("sortSelect");
+    const toastEl = document.getElementById("toast");
+    const notificationBtn = document.getElementById("notificationBtn");
 
-let currentTab = "new";
-let unsubscribe = null;
-let isInitialLoad = true;
+    const todayYMD = () => {
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    };
 
-function setTab(tab){
-  currentTab = tab;
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
-  loadBookings();
-}
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
 
-function notify(){
-  const sound = document.getElementById("sound");
-  sound.play().catch(()=>{});
+    function normaliseStatus(status) {
+      const s = String(status || "").toLowerCase().trim();
+      if (["done", "completed", "complete"].includes(s)) return "done";
+      if (["accepted", "accept", "confirmed"].includes(s)) return "accepted";
+      if (["rejected", "reject", "cancelled", "canceled"].includes(s)) return "rejected";
+      return "new";
+    }
 
-  if (Notification.permission === "granted") {
-    new Notification("🚕 New Booking");
-  } else if (Notification.permission !== "denied") {
-    Notification.requestPermission();
-  }
-}
+    function parseFare(value) {
+      if (typeof value === "number" && Number.isFinite(value)) return value;
+      if (typeof value === "string") {
+        const cleaned = value.replace(/[^0-9.]/g, "");
+        const parsed = parseFloat(cleaned);
+        return Number.isFinite(parsed) ? parsed : 0;
+      }
+      return 0;
+    }
 
-function shareLocation(id){
-  navigator.geolocation.getCurrentPosition(pos=>{
-    db.collection("bookings").doc(id).update({
-      driverLat: pos.coords.latitude,
-      driverLng: pos.coords.longitude
+    function formatMoney(value) {
+      const amount = Number(value) || 0;
+      return new Intl.NumberFormat("en-GB", {
+        style: "currency",
+        currency: "GBP"
+      }).format(amount);
+    }
+
+    function getBookingDateTime(data) {
+      if (!data || !data.date) return null;
+      const time = data.time && String(data.time).trim() ? String(data.time).trim() : "00:00";
+      const dt = new Date(`${data.date}T${time}`);
+      return Number.isNaN(dt.getTime()) ? null : dt;
+    }
+
+    function formatPickupDateTime(data) {
+      const dt = getBookingDateTime(data);
+      if (!dt) return `${data.date || "-"} ${data.time || ""}`.trim();
+      return dt.toLocaleString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function formatCreatedAt(createdAt) {
+      try {
+        if (!createdAt) return "Unknown";
+        const dateObj = typeof createdAt.toDate === "function"
+          ? createdAt.toDate()
+          : new Date(createdAt);
+        if (Number.isNaN(dateObj.getTime())) return "Unknown";
+        return dateObj.toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "short",
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+      } catch {
+        return "Unknown";
+      }
+    }
+
+    function isTodayBooking(data) {
+      return data && data.date === todayYMD();
+    }
+
+    function isFutureBooking(data) {
+      const dt = getBookingDateTime(data);
+      return !!(dt && dt.getTime() > Date.now());
+    }
+
+    function showToast(message) {
+      toastEl.textContent = message;
+      toastEl.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => {
+        toastEl.classList.remove("show");
+      }, 2600);
+    }
+
+    function updateNotificationButton() {
+      if (!("Notification" in window)) {
+        notificationBtn.textContent = "🔕 Alerts unsupported";
+        notificationBtn.disabled = true;
+        notificationBtn.style.opacity = ".65";
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        notificationBtn.textContent = "🔔 Alerts enabled";
+      } else if (Notification.permission === "denied") {
+        notificationBtn.textContent = "🔕 Alerts blocked";
+      } else {
+        notificationBtn.textContent = "🔔 Enable alerts";
+      }
+    }
+
+    async function requestNotifications() {
+      if (!("Notification" in window)) {
+        showToast("Notifications are not supported in this browser.");
+        return;
+      }
+
+      try {
+        const permission = await Notification.requestPermission();
+        updateNotificationButton();
+
+        if (permission === "granted") {
+          showToast("Notifications enabled.");
+        } else {
+          showToast("Notifications were not enabled.");
+        }
+      } catch (error) {
+        console.error("Notification permission error:", error);
+        showToast("Could not enable notifications.");
+      }
+    }
+
+    notificationBtn.addEventListener("click", requestNotifications);
+
+    function notifyNewBooking(name) {
+      const now = Date.now();
+      if (now - lastNotifyTime < 2500) return;
+      lastNotifyTime = now;
+
+      const sound = document.getElementById("sound");
+      sound.play().catch(() => {});
+
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("🚕 New Booking", {
+          body: name ? `${name} sent a booking request.` : "A new booking has arrived."
+        });
+      }
+    }
+
+    function getSourceTag(source) {
+      const s = String(source || "web").toLowerCase();
+      if (s === "whatsapp") return '<span class="tag whatsapp">WhatsApp</span>';
+      if (s === "email") return '<span class="tag email">Email</span>';
+      return '<span class="tag web">Web</span>';
+    }
+
+    function getStatusBadge(status) {
+      const s = normaliseStatus(status);
+      const labels = {
+        new: "New",
+        accepted: "Accepted",
+        done: "Completed",
+        rejected: "Rejected"
+      };
+      return `<span class="status-badge ${s}">${labels[s]}</span>`;
+    }
+
+    function getTabTitle(tab) {
+      switch (tab) {
+        case "new": return "New bookings";
+        case "future": return "Future bookings";
+        case "accepted": return "Accepted bookings";
+        case "done": return "Completed bookings";
+        case "rejected": return "Rejected bookings";
+        default: return "Bookings";
+      }
+    }
+
+    function matchesSearch(data, query) {
+      if (!query) return true;
+      const q = query.toLowerCase();
+
+      const haystack = [
+        data.name,
+        data.phone,
+        data.email,
+        data.pickup,
+        data.dropoff,
+        data.notes,
+        data.date,
+        data.time,
+        data.source,
+        data.status
+      ]
+        .map(v => String(v || "").toLowerCase())
+        .join(" ");
+
+      return haystack.includes(q);
+    }
+
+    function matchesTab(data) {
+      const status = normaliseStatus(data.status);
+
+      if (currentTab === "new") {
+        return status === "new";
+      }
+
+      if (currentTab === "future") {
+        return isFutureBooking(data) && (status === "new" || status === "accepted");
+      }
+
+      if (currentTab === "accepted") {
+        return status === "accepted";
+      }
+
+      if (currentTab === "done") {
+        return status === "done";
+      }
+
+      if (currentTab === "rejected") {
+        return status === "rejected";
+      }
+
+      return true;
+    }
+
+    function sortBookings(bookings) {
+      const mode = sortSelect.value;
+
+      return [...bookings].sort((a, b) => {
+        const aPickup = getBookingDateTime(a.data)?.getTime() || 0;
+        const bPickup = getBookingDateTime(b.data)?.getTime() || 0;
+
+        const aCreated = a.data.createdAt?.toDate?.()?.getTime?.() || 0;
+        const bCreated = b.data.createdAt?.toDate?.()?.getTime?.() || 0;
+
+        switch (mode) {
+          case "pickupAsc":
+            return aPickup - bPickup || bCreated - aCreated;
+          case "pickupDesc":
+            return bPickup - aPickup || bCreated - aCreated;
+          case "createdAsc":
+            return aCreated - bCreated || aPickup - bPickup;
+          case "createdDesc":
+          default:
+            return bCreated - aCreated || aPickup - bPickup;
+        }
+      });
+    }
+
+    function updateHeaderStats() {
+      const today = todayYMD();
+
+      let todayEarnings = 0;
+      let newCount = 0;
+      let acceptedCount = 0;
+      let doneTodayCount = 0;
+
+      allBookings.forEach(item => {
+        const data = item.data;
+        const status = normaliseStatus(data.status);
+
+        if (status === "new") newCount++;
+        if (status === "accepted") acceptedCount++;
+        if (status === "done" && data.date === today) {
+          doneTodayCount++;
+          todayEarnings += parseFare(data.fare);
+        }
+      });
+
+      document.getElementById("todayEarnings").textContent = formatMoney(todayEarnings);
+      document.getElementById("newCount").textContent = newCount;
+      document.getElementById("acceptedCount").textContent = acceptedCount;
+      document.getElementById("doneTodayCount").textContent = doneTodayCount;
+    }
+
+    function renderBookings() {
+      closeAllMenus();
+
+      const query = searchInput.value.trim().toLowerCase();
+
+      const visible = sortBookings(
+        allBookings.filter(item => matchesTab(item.data) && matchesSearch(item.data, query))
+      );
+
+      document.getElementById("visibleBookings").textContent = visible.length;
+      document.getElementById("summaryText").textContent =
+        `${getTabTitle(currentTab)} • ${visible.length} shown${query ? ` • filtered by "${searchInput.value.trim()}"` : ""}`;
+
+      if (!lastSnapshotAt) {
+        document.getElementById("lastUpdatedText").textContent = "Waiting for updates...";
+      } else {
+        document.getElementById("lastUpdatedText").textContent =
+          `Last updated: ${lastSnapshotAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`;
+      }
+
+      if (!visible.length) {
+        bookingsEl.innerHTML = `
+          <section class="empty-state">
+            <h3>No bookings here</h3>
+            <p>Try switching tab, clearing the search, or wait for new bookings to arrive.</p>
+          </section>
+        `;
+        return;
+      }
+
+      bookingsEl.innerHTML = visible.map(item => renderBookingCard(item)).join("");
+    }
+
+    function renderBookingCard(item) {
+      const { id, data, isNewlyAdded } = item;
+      const status = normaliseStatus(data.status);
+      const todayClass = isTodayBooking(data) ? "today" : "";
+      const newFlashClass = isNewlyAdded ? "new-flash" : "";
+
+      const name = escapeHtml(data.name || "No Name");
+      const phone = escapeHtml(data.phone || "");
+      const email = escapeHtml(data.email || "");
+      const pickup = escapeHtml(data.pickup || "-");
+      const dropoff = escapeHtml(data.dropoff || "-");
+      const notes = escapeHtml(data.notes || "");
+      const pickupDateTime = escapeHtml(formatPickupDateTime(data));
+      const createdAt = escapeHtml(formatCreatedAt(data.createdAt));
+      const fare = parseFare(data.fare);
+
+      const mapsQuery = encodeURIComponent(`${data.pickup || ""}`);
+      const mapHref = mapsQuery ? `https://www.google.com/maps/search/?api=1&query=${mapsQuery}` : "#";
+      const telHref = data.phone ? `tel:${String(data.phone).replace(/\s+/g, "")}` : "#";
+
+      let primaryButtons = "";
+
+      if (status === "new") {
+        primaryButtons = `
+          <button class="action-btn accept" type="button" onclick="acceptBooking('${id}')">Accept</button>
+          <button class="action-btn reject" type="button" onclick="updateStatus('${id}','rejected')">Reject</button>
+        `;
+      } else if (status === "accepted") {
+        primaryButtons = `
+          <button class="action-btn complete" type="button" onclick="updateStatus('${id}','done')">Complete</button>
+          <button class="action-btn reject" type="button" onclick="updateStatus('${id}','rejected')">Reject</button>
+        `;
+      } else if (status === "done") {
+        primaryButtons = `
+          <button class="action-btn secondary" type="button" onclick="updateStatus('${id}','accepted')">Reopen</button>
+        `;
+      } else if (status === "rejected") {
+        primaryButtons = `
+          <button class="action-btn secondary" type="button" onclick="updateStatus('${id}','new')">Restore</button>
+        `;
+      }
+
+      const phoneBlock = phone
+        ? `<a class="action-btn secondary" href="${telHref}">📞 Call</a>`
+        : "";
+
+      const emailBlock = email
+        ? `<a class="action-btn secondary" href="mailto:${email}">✉️ Email</a>`
+        : "";
+
+      const mapsBlock = data.pickup
+        ? `<a class="action-btn secondary" href="${mapHref}" target="_blank" rel="noopener">🗺️ Map</a>`
+        : "";
+
+      return `
+        <article class="booking-card ${todayClass} ${newFlashClass}">
+          <div class="booking-top">
+            <div class="booking-title">
+              <div class="booking-name">${name}</div>
+              <div class="pill-row">
+                ${getSourceTag(data.source)}
+                ${getStatusBadge(status)}
+                ${isTodayBooking(data) ? '<span class="tiny-badge">Today</span>' : ''}
+                ${isFutureBooking(data) ? '<span class="tiny-badge">Future</span>' : ''}
+              </div>
+            </div>
+
+            <div class="fare-box">
+              <div class="fare-label">Fare</div>
+              <div class="fare-value">${fare ? escapeHtml(formatMoney(fare)) : "—"}</div>
+            </div>
+          </div>
+
+          <div class="booking-grid">
+            <div class="info-box">
+              <div class="info-label">Pickup Time</div>
+              <div class="info-value">${pickupDateTime}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Phone</div>
+              <div class="info-value">${phone || "—"}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Email</div>
+              <div class="info-value">${email || "—"}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Created</div>
+              <div class="info-value">${createdAt}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Pickup</div>
+              <div class="info-value">${pickup}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Dropoff</div>
+              <div class="info-value">${dropoff}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Booking ID</div>
+              <div class="info-value">${escapeHtml(id)}</div>
+            </div>
+
+            <div class="info-box">
+              <div class="info-label">Source</div>
+              <div class="info-value">${escapeHtml(String(data.source || "web"))}</div>
+            </div>
+          </div>
+
+          ${notes ? `
+            <div class="notes-box">
+              <div class="info-box">
+                <div class="info-label">Notes</div>
+                <div class="info-value">${notes}</div>
+              </div>
+            </div>
+          ` : ''}
+
+          <div class="actions-row">
+            ${primaryButtons}
+            ${phoneBlock}
+            ${emailBlock}
+            ${mapsBlock}
+
+            <div class="menu-wrap">
+              <button class="menu-btn" type="button" onclick="toggleMenu('${id}')">⋯</button>
+              <div class="menu-panel" id="menu-${id}">
+                <button class="menu-item" type="button" onclick="shareLocation('${id}')">📍 Share my location</button>
+                <button class="menu-item" type="button" onclick="sendWhatsAppReply('${id}')">💬 WhatsApp message</button>
+                <button class="menu-item" type="button" onclick="copyBookingSummary('${id}')">📋 Copy summary</button>
+                <button class="menu-item danger" type="button" onclick="deleteBooking('${id}')">🗑️ Delete booking</button>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function setTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      if (activeBtn) activeBtn.classList.add("active");
+      renderBookings();
+    }
+
+    function closeAllMenus() {
+      document.querySelectorAll(".menu-panel.open").forEach(el => {
+        el.classList.remove("open");
+      });
+    }
+
+    function toggleMenu(id) {
+      const target = document.getElementById(`menu-${id}`);
+      if (!target) return;
+
+      const isOpen = target.classList.contains("open");
+      closeAllMenus();
+      if (!isOpen) target.classList.add("open");
+    }
+
+    document.addEventListener("click", (event) => {
+      const insideMenu = event.target.closest(".menu-wrap");
+      if (!insideMenu) closeAllMenus();
     });
-    alert("Location sent");
-  });
-}
 
-function autoReply(phone,name){
-  if(!phone) return;
+    async function updateStatus(id, status) {
+      try {
+        closeAllMenus();
 
-  if(phone.startsWith("0")){
-    phone="44"+phone.substring(1);
-  }
+        await db.collection("bookings").doc(id).update({
+          status: normaliseStatus(status),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-  const msg = encodeURIComponent(
-    "Hi " + name + ", your taxi booking is confirmed. Thank you for choosing BD Taxi St Austell. We look forward to providing you with a safe and comfortable journey.\n\nKind regards,\nBD Taxi St Austell 🚕"
-  );
+        showToast(`Booking marked as ${normaliseStatus(status)}.`);
+      } catch (error) {
+        console.error("Status update failed:", error);
+        showToast("Could not update booking status.");
+      }
+    }
 
-  window.open("https://wa.me/"+phone+"?text="+msg);
-}
+    async function acceptBooking(id) {
+      const item = allBookings.find(b => b.id === id);
+      const data = item?.data || {};
 
-function loadBookings(){
+      try {
+        await db.collection("bookings").doc(id).update({
+          status: "accepted",
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-  if(unsubscribe){ unsubscribe(); }
+        if (data.phone) {
+          openWhatsAppConfirmation(data.phone, data.name, data.date, data.time, data.pickup, data.dropoff);
+        }
 
-  unsubscribe = db.collection("bookings")
-    .orderBy("createdAt","desc")
-    .onSnapshot(snapshot=>{
+        showToast("Booking accepted.");
+      } catch (error) {
+        console.error("Accept failed:", error);
+        showToast("Could not accept booking.");
+      }
+    }
 
-      const today = new Date().toISOString().split("T")[0];
+    function formatPhoneForWhatsApp(phone) {
+      let p = String(phone || "").replace(/[^\d+]/g, "");
 
-      let total = 0;
-      let count = 0;
+      if (!p) return "";
 
-      const container = document.getElementById("bookings");
-      container.innerHTML="";
+      if (p.startsWith("00")) p = p.slice(2);
+      if (p.startsWith("+")) p = p.slice(1);
+      if (p.startsWith("0")) p = "44" + p.slice(1);
+
+      return p;
+    }
+
+    function openWhatsAppConfirmation(phone, name, date, time, pickup, dropoff) {
+      const formattedPhone = formatPhoneForWhatsApp(phone);
+      if (!formattedPhone) return;
+
+      const message =
+        `Hi ${name || "there"}, your taxi booking has been accepted by BD Taxi St Austell.\n\n` +
+        `Pickup: ${pickup || "-"}\n` +
+        `Dropoff: ${dropoff || "-"}\n` +
+        `Date: ${date || "-"}\n` +
+        `Time: ${time || "-"}\n\n` +
+        `Thank you for choosing BD Taxi St Austell 🚕`;
+
+      const url = `https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank", "noopener");
+    }
+
+    function sendWhatsAppReply(id) {
+      closeAllMenus();
+      const item = allBookings.find(b => b.id === id);
+      if (!item) return;
+
+      const data = item.data || {};
+      if (!data.phone) {
+        showToast("No phone number for this booking.");
+        return;
+      }
+
+      openWhatsAppConfirmation(data.phone, data.name, data.date, data.time, data.pickup, data.dropoff);
+    }
+
+    async function shareLocation(id) {
+      closeAllMenus();
+
+      if (!navigator.geolocation) {
+        showToast("Geolocation is not supported on this device.");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          try {
+            await db.collection("bookings").doc(id).update({
+              driverLat: pos.coords.latitude,
+              driverLng: pos.coords.longitude,
+              locationUpdatedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            showToast("Driver location sent.");
+          } catch (error) {
+            console.error("Location update failed:", error);
+            showToast("Could not send location.");
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          showToast("Location access was denied or unavailable.");
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+      );
+    }
+
+    async function deleteBooking(id) {
+      closeAllMenus();
+
+      const ok = confirm("Delete this booking permanently?");
+      if (!ok) return;
+
+      try {
+        await db.collection("bookings").doc(id).delete();
+        showToast("Booking deleted.");
+      } catch (error) {
+        console.error("Delete failed:", error);
+        showToast("Could not delete booking.");
+      }
+    }
+
+    async function copyBookingSummary(id) {
+      closeAllMenus();
+
+      const item = allBookings.find(b => b.id === id);
+      if (!item) return;
+
+      const data = item.data || {};
+      const summary =
+        `Booking: ${data.name || "No Name"}\n` +
+        `Phone: ${data.phone || "-"}\n` +
+        `Email: ${data.email || "-"}\n` +
+        `Pickup: ${data.pickup || "-"}\n` +
+        `Dropoff: ${data.dropoff || "-"}\n` +
+        `Date/Time: ${data.date || "-"} ${data.time || ""}\n` +
+        `Fare: ${data.fare ? formatMoney(parseFare(data.fare)) : "-" }\n` +
+        `Notes: ${data.notes || "-" }\n` +
+        `Status: ${normaliseStatus(data.status)}`;
+
+      try {
+        await navigator.clipboard.writeText(summary);
+        showToast("Booking summary copied.");
+      } catch (error) {
+        console.error("Copy failed:", error);
+        showToast("Could not copy summary.");
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem("adminLoggedIn");
+      window.location.href = "admin.html";
+    }
+
+    function handleSnapshot(snapshot) {
+      const items = [];
+      const newlyAddedIds = new Set();
 
       snapshot.docChanges().forEach(change => {
-        if(change.type === "added" && !isInitialLoad){
-          notify();
+        if (change.type === "added" && !isInitialLoad) {
+          newlyAddedIds.add(change.doc.id);
+          notifyNewBooking(change.doc.data()?.name || "");
         }
       });
 
       snapshot.forEach(doc => {
+        const data = doc.data() || {};
+        const normalised = {
+          ...data,
+          status: normaliseStatus(data.status)
+        };
 
-        const data = doc.data();
-        const id = doc.id;
-
-        const isToday = data.date === today;
-
-        let bookingTime = data.date && data.time ? new Date(data.date+"T"+data.time) : null;
-        const isFuture = bookingTime ? bookingTime > new Date() : false;
-
-        let show = false;
-        if(currentTab==="new" && data.status!=="done") show = true;
-        if(currentTab==="future" && isFuture) show = true;
-        if(currentTab==="done" && data.status==="done") show = true;
-        if(!show) return;
-
-        count++;
-
-        if(isToday && data.fare){
-          total += parseInt((data.fare||"").replace(/[^\d]/g,"")) || 0;
-        }
-
-        let sourceTag =
-          data.source==="whatsapp" ? `<span class="tag whatsapp">WhatsApp</span>` :
-          data.source==="email" ? `<span class="tag email">Email</span>` :
-          `<span class="tag web">Web</span>`;
-
-        const div = document.createElement("div");
-        div.className = "booking "+(isToday?"today":"");
-
-        div.innerHTML = `
-          ${sourceTag}
-          <b>${data.name || "No Name"}</b>
-
-          <div class="section">
-            ${data.phone ? "📞 "+data.phone : ""}
-            ${data.phone ? `<button class="call" onclick="window.location.href='tel:${data.phone}'">Call</button>` : ""}
-          </div>
-
-          <div class="section">${data.email ? "📧 "+data.email : ""}</div>
-          <div class="section">📍 ${data.pickup||"-"} → ${data.dropoff||"-"}</div>
-          <div class="section">🕒 ${data.date||"-"} ${data.time||""}</div>
-          ${data.notes ? `<div class="section">📝 ${data.notes}</div>` : ""}
-
-          <div class="btn-group">
-            <button class="accept" onclick="accept('${id}','${data.phone}','${data.name}')">Accept</button>
-            <button class="reject" onclick="updateStatus('${id}','rejected')">Reject</button>
-            <button onclick="deleteBooking('${id}')">Delete</button>
-            <button onclick="shareLocation('${id}')">📍</button>
-          </div>
-        `;
-
-        container.appendChild(div);
+        items.push({
+          id: doc.id,
+          data: normalised,
+          isNewlyAdded: newlyAddedIds.has(doc.id)
+        });
       });
 
-      document.getElementById("todayEarnings").innerText = total;
-      document.getElementById("totalBookings").innerText = count;
+      allBookings = items;
+      lastSnapshotAt = new Date();
+
+      updateHeaderStats();
+      renderBookings();
 
       isInitialLoad = false;
+    }
+
+    function loadBookings() {
+      if (unsubscribe) unsubscribe();
+
+      unsubscribe = db.collection("bookings").onSnapshot(
+        (snapshot) => {
+          handleSnapshot(snapshot);
+        },
+        (error) => {
+          console.error("Snapshot error:", error);
+          bookingsEl.innerHTML = `
+            <section class="empty-state">
+              <h3>Could not load bookings</h3>
+              <p>Check your Firebase connection, Firestore rules, or console errors.</p>
+            </section>
+          `;
+          showToast("Live bookings could not be loaded.");
+        }
+      );
+    }
+
+    searchInput.addEventListener("input", renderBookings);
+
+    window.addEventListener("beforeunload", () => {
+      if (unsubscribe) unsubscribe();
     });
-}
 
-function accept(id,phone,name){
-  db.collection("bookings").doc(id).update({ status:"done" });
-  autoReply(phone,name);
-}
-
-function updateStatus(id,status){
-  db.collection("bookings").doc(id).update({ status });
-}
-
-function deleteBooking(id){
-  if(confirm("Delete?")){
-    db.collection("bookings").doc(id).delete();
-  }
-}
-
-function logout(){
-  localStorage.removeItem("adminLoggedIn");
-  window.location.href="admin.html";
-}
-
-loadBookings();
-
-</script>
-
+    updateNotificationButton();
+    loadBookings();
+  </script>
 </body>
 </html>
