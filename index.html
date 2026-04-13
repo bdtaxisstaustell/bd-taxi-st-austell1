@@ -1124,17 +1124,17 @@ function initAutocomplete() {
 
     // When user selects a place
 
-    auto.addListener("place_changed", function () {
+  auto.addListener("place_changed", function () {
   const place = auto.getPlace();
 
-  // ❗ important safety check
-  if (!place || !place.geometry) {
+  // ✅ safer check
+  if (!place || !place.formatted_address) {
     console.warn("Invalid place");
     return;
   }
 
-  // ✅ force correct address into input
-  input.value = place.formatted_address || input.value;
+  // ✅ ensure address fills
+  input.value = place.formatted_address;
 
   if (id === "pickupAddress") {
     pickupSelected = true;
@@ -1146,7 +1146,7 @@ function initAutocomplete() {
     window.dropoffPlace = place;
   }
 
-  // ✅ small delay = fixes price + ASAP
+  // ✅ delay for pricing
   setTimeout(() => {
     if (typeof getDistanceAndCalculate === "function") {
       getDistanceAndCalculate();
