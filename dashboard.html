@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>BD Taxi Dashboard</title>
 
 <style>
@@ -17,15 +17,8 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   top:0;
   z-index:10;
 }
-
 .top h2 { margin:0; font-size:18px; }
-
-.stats {
-  display:flex;
-  gap:10px;
-  margin-top:8px;
-  font-size:14px;
-}
+.stats { margin-top:6px; font-size:14px; }
 
 /* TABS */
 .tabs {
@@ -34,7 +27,6 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   padding:10px;
   flex-wrap:wrap;
 }
-
 .tabs button {
   flex:1;
   padding:10px;
@@ -43,7 +35,6 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   font-weight:bold;
   background:#ddd;
 }
-
 .tabs .active {
   background:#0f172a;
   color:white;
@@ -59,13 +50,12 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   box-shadow:0 5px 15px rgba(0,0,0,0.05);
 }
 
-/* MENU BUTTON */
+/* MENU */
 .menu {
   position:absolute;
   top:10px;
   right:10px;
 }
-
 .menu button {
   width:36px;
   height:36px;
@@ -76,6 +66,12 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   font-size:18px;
 }
 
+/* TAG */
+.tag {
+  font-size:12px;
+  margin-top:4px;
+}
+
 /* FARE */
 .fare {
   background:#0f172a;
@@ -84,7 +80,7 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   border-radius:10px;
   font-weight:bold;
   display:inline-block;
-  margin-top:5px;
+  margin-top:6px;
 }
 
 /* ACTIONS */
@@ -94,7 +90,6 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   margin-top:10px;
   flex-wrap:wrap;
 }
-
 .actions button {
   flex:1;
   padding:10px;
@@ -102,7 +97,6 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
   border-radius:8px;
   font-weight:bold;
 }
-
 .accept { background:green; color:white; }
 .reject { background:red; color:white; }
 .done { background:#0ea5e9; color:white; }
@@ -140,7 +134,7 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
   projectId: "taxi-bookings-69cff"
 };
@@ -151,11 +145,21 @@ const db = firebase.firestore();
 let tab = "new";
 let all = [];
 
-function setTab(t){
-  tab = t;
-  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
-  document.getElementById("tab-"+t).classList.add("active");
-  render();
+/* UTIL */
+function escapeHtml(t){
+  return String(t||"").replace(/[&<>"']/g, m => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"
+  }[m]));
+}
+
+function getFare(d){
+  return d.fare || d.price || d.quotedFare || "";
+}
+
+function getSourceTag(s){
+  if(s==="whatsapp") return "🟢 WhatsApp";
+  if(s==="email") return "🔵 Email";
+  return "⚪ Web";
 }
 
 function isFuture(d){
@@ -164,11 +168,12 @@ function isFuture(d){
 
 function inLast30(d){
   const diff = (new Date() - new Date(d.date+"T"+(d.time||"00:00")))/(1000*60*60*24);
-  return diff <= 30 && diff >= 0;
+  return diff<=30 && diff>=0;
 }
 
+/* FILTER */
 function match(d){
-  const s = d.status || "new";
+  const s = (d.status||"new").toLowerCase();
 
   if(tab==="new") return s==="new";
   if(tab==="accepted") return s==="accepted";
@@ -179,38 +184,51 @@ function match(d){
   return true;
 }
 
+/* UI */
+function setTab(t){
+  tab=t;
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+t).classList.add("active");
+  render();
+}
+
 function render(){
   const container = document.getElementById("list");
-  container.innerHTML = "";
+  container.innerHTML="";
 
-  let total = 0;
-  let count = 0;
+  let total=0;
+  let count=0;
 
   all.forEach(({id,d})=>{
     if(!match(d)) return;
 
+    const fare = getFare(d);
+
     count++;
 
-    if(d.fare && d.status==="done"){
-      total += parseFloat(d.fare) || 0;
+    if(d.status==="done" && fare){
+      total += parseFloat(fare)||0;
     }
 
-    const div = document.createElement("div");
+    const div=document.createElement("div");
     div.className="card";
 
-    div.innerHTML = `
+    div.innerHTML=`
       <div class="menu">
         <button onclick="del('${id}')">⋯</button>
       </div>
 
-      <b>${d.name||"No Name"}</b><br>
-      📍 ${d.pickup||"-"} → ${d.dropoff||"-"}<br>
-      🕒 ${d.date||"-"} ${d.time||""}
+      <b>${escapeHtml(d.name||"No Name")}</b>
 
-      <div class="fare">£${d.fare||"-"}</div>
+      <div class="tag">${getSourceTag(d.source)}</div>
+
+      📍 ${escapeHtml(d.pickup||"-")} → ${escapeHtml(d.dropoff||"-")}<br>
+      🕒 ${escapeHtml(d.date||"-")} ${escapeHtml(d.time||"")}
+
+      <div class="fare">${fare ? "£"+fare : "No fare"}</div>
 
       <div class="actions">
-        ${d.status==="new" ? `<button class="accept" onclick="accept('${id}', '${d.phone}', '${d.name}')">Accept</button>` : ""}
+        ${d.status==="new" ? `<button class="accept" onclick="accept('${id}','${d.phone}','${d.name}','${fare}')">Accept</button>` : ""}
         ${d.status==="accepted" ? `<button class="done" onclick="status('${id}','done')">Complete</button>` : ""}
         <button class="reject" onclick="status('${id}','rejected')">Reject</button>
         ${tab==="history" ? `<button class="secondary" onclick="del('${id}')">Delete</button>` : ""}
@@ -220,28 +238,31 @@ function render(){
     container.appendChild(div);
   });
 
-  document.getElementById("earn").innerText = total;
+  document.getElementById("earn").innerText = total.toFixed(2);
   document.getElementById("count").innerText = count;
 }
 
+/* ACTIONS */
 function status(id,s){
   db.collection("bookings").doc(id).update({status:s});
 }
 
-function accept(id,phone,name){
+function accept(id,phone,name,fare){
   status(id,"accepted");
-  whatsapp(phone,name);
+  whatsapp(phone,name,fare);
 }
 
 function del(id){
-  if(confirm("Delete?")){
+  if(confirm("Delete booking?")){
     db.collection("bookings").doc(id).delete();
   }
 }
 
-/* WhatsApp auto */
-function whatsapp(phone,name){
+/* WHATSAPP */
+function whatsapp(phone,name,fare){
   if(!phone) return;
+
+  phone = phone.replace(/\D/g,'');
 
   if(phone.startsWith("0")){
     phone="44"+phone.substring(1);
@@ -250,7 +271,9 @@ function whatsapp(phone,name){
   const msg = encodeURIComponent(
 `Hi ${name||""} 👋
 
-Your taxi is confirmed ✅
+Your taxi booking is CONFIRMED ✅
+
+💰 Fare: ${fare ? "£"+fare : "To be confirmed"}
 
 🚕 BD Taxi St Austell`
   );
@@ -260,7 +283,7 @@ Your taxi is confirmed ✅
 
 /* LOAD */
 db.collection("bookings").onSnapshot(snap=>{
-  all = [];
+  all=[];
   snap.forEach(doc=>{
     all.push({id:doc.id, d:doc.data()});
   });
