@@ -1089,46 +1089,35 @@ Taxi St Austell, St Austell taxi service, local taxi St Austell, airport transfe
 /* GOOGLE AUTOCOMPLETE (FIXED + RELIABLE) */
 let pickupSelected = false;
 let dropoffSelected = false;
-
-function initAutocomplete() {
-  console.log("Autocomplete started");
+function initAutocomplete() 
+{
 
   const setupAutocomplete = (id) => {
     const input = document.getElementById(id);
+    if (!input) return;
 
-    if (!input) {
-      console.warn("Missing input:", id);
-      return;
-    }
+    // reset flags when typing
+    input.addEventListener("input", function () {
+      if (id === "pickupAddress") pickupSelected = false;
+      if (id === "dropoffAddress") dropoffSelected = false;
+
+      if (typeof getDistanceAndCalculate === "function") {
+        getDistanceAndCalculate();
+      }
+    });
 
     const auto = new google.maps.places.Autocomplete(input, {
       componentRestrictions: { country: "gb" },
       fields: ["formatted_address", "geometry", "name", "address_components"]
     });
 
-    // Optional bounds
     auto.setBounds(new google.maps.LatLngBounds(
       { lat: 50.25, lng: -4.95 },
       { lat: 50.45, lng: -4.60 }
     ));
 
-    // Reset flags when typing
-    input.addEventListener("input", function () {
-      if (id === "pickupAddress") pickupSelected = false;
-      if (id === "dropoffAddress") dropoffSelected = false;
-
-      setTimeout(() => {
-        if (typeof getDistanceAndCalculate === "function") {
-          getDistanceAndCalculate();
-        }
-      }, 300);
-    });
-
-    // When user selects a place
     auto.addListener("place_changed", function () {
       const place = auto.getPlace();
-
-      if (!place) return;
 
       if (id === "pickupAddress") {
         pickupSelected = true;
@@ -1144,20 +1133,15 @@ function initAutocomplete() {
         if (typeof getDistanceAndCalculate === "function") {
           getDistanceAndCalculate();
         }
-      }, 300);
+      }, 200);
     });
+  };
 
-  }; // ✅ CLOSE setupAutocomplete HERE
-
-  // Attach autocomplete to all fields
   setupAutocomplete("pickupAddress");
   setupAutocomplete("dropoffAddress");
   setupAutocomplete("pickupAddressEmail");
   setupAutocomplete("dropoffAddressEmail");
-
-} // ✅ CLOSE initAutocomplete
-
-</script>
+}
 
 function getDistanceAndCalculate() {
 
@@ -1418,7 +1402,8 @@ service.getDistanceMatrix(
     }
 /* WHATSAPP BOOKING */
 
- function sendWhatsApp() {
+ 
+function sendWhatsApp() {
 
   const name = document.getElementById("name")?.value || "";
   const phoneInput = document.getElementById("phone")?.value || "";
@@ -1435,9 +1420,9 @@ service.getDistanceMatrix(
     return;
   }
 
-  const phoneNumber = "441726806556";
+  const phoneNumber = "441726806556"; // your WhatsApp number
 
-  const message =
+ const message =
 `Taxi Booking Request
 
 Name: ${name}
@@ -1450,35 +1435,25 @@ ${fareText}
 
 Please confirm availability 👍`;
 
-  const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
-
-  const url = isMobile
-    ? "https://api.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message)
-    : "https://web.whatsapp.com/send?phone=" + phoneNumber + "&text=" + encodeURIComponent(message);
-
-  // ✅ OPEN WHATSAPP FIRST (VERY IMPORTANT)
-  window.location.href = url;
-
-  // ✅ SAVE TO FIREBASE AFTER (NON-BLOCKING)
-  if (db) {
-    db.collection("bookings").add({
-      name,
-      phone: phoneInput,
-      pickup,
-      dropoff,
-      date,
-      time,
-      passengers,
-      notes: fareText,
-      source: "whatsapp",
-      status: "new",
-      createdAt: new Date()
-    }).then(() => {
-      console.log("WhatsApp booking saved");
-    }).catch(err => {
-      console.error("Firebase error:", err);
-    });
-  }
+// ✅ ADD THIS BLOCK HERE
+if (db) {
+  db.collection("bookings").add({
+    name,
+    phone: phoneInput,
+    pickup,
+    dropoff,
+    date,
+    time,
+    passengers,
+    notes: fareText,
+    source: "whatsapp",
+    status: "new",
+    createdAt: new Date()
+  }).then(() => {
+    console.log("WhatsApp booking saved");
+  }).catch(err => {
+    console.error("Firebase error:", err);
+  });
 }
 
 const isMobile = /Android|iPhone|iPad/i.test(navigator.userAgent);
@@ -1689,11 +1664,9 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 
 <!-- ✅ GOOGLE MAPS MUST BE LAST -->
-
 <script 
-src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&callback=initAutocomplete">
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCPWxCnrWR0uPC3J2_Tt7TWItuj5uAUI7s&libraries=places&loading=async&callback=initAutocomplete">
 </script>
 
-  
 </body>
 </html>
