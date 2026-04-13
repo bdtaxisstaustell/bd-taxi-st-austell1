@@ -1123,26 +1123,36 @@ function initAutocomplete() {
     });
 
     // When user selects a place
+
     auto.addListener("place_changed", function () {
-      const place = auto.getPlace();
+  const place = auto.getPlace();
 
-      if (id === "pickupAddress") {
-        pickupSelected = true;
-        window.pickupPlace = place;
-      }
+  // ❗ important safety check
+  if (!place || !place.geometry) {
+    console.warn("Invalid place");
+    return;
+  }
 
-      if (id === "dropoffAddress") {
-        dropoffSelected = true;
-        window.dropoffPlace = place;
-      }
+  // ✅ force correct address into input
+  input.value = place.formatted_address || input.value;
 
-      setTimeout(() => {
-        if (typeof getDistanceAndCalculate === "function") {
-          getDistanceAndCalculate();
-        }
-      }, 200);
-    });
-  };
+  if (id === "pickupAddress") {
+    pickupSelected = true;
+    window.pickupPlace = place;
+  }
+
+  if (id === "dropoffAddress") {
+    dropoffSelected = true;
+    window.dropoffPlace = place;
+  }
+
+  // ✅ small delay = fixes price + ASAP
+  setTimeout(() => {
+    if (typeof getDistanceAndCalculate === "function") {
+      getDistanceAndCalculate();
+    }
+  }, 300);
+});
 
   // Attach autocomplete to all fields
   setupAutocomplete("pickupAddress");
