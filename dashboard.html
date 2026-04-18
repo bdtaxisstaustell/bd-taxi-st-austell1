@@ -67,25 +67,54 @@ input {
 
 <body>
 
-<h1>🚕 BD Taxi Dashboard</h1>
-<div id="bookings"></div>
+<!-- LOGIN -->
+<div id="loginScreen">
+  <h2>Login</h2>
+  <input id="email" placeholder="Email"><br><br>
+  <input id="password" type="password" placeholder="Password"><br><br>
+  <button onclick="login()">Login</button>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;">
+  <h1>🚕 BD Taxi Dashboard</h1>
+  <button onclick="logout()" style="float:right;">Logout</button>
+  <div id="bookings"></div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSy...",
+  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
   projectId: "taxi-bookings-69cff",
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 let allBookings = [];
 let currentEditId = null;
 
+/* ---------- LOGIN ---------- */
+function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email, password)
+    .catch(err => alert(err.message));
+}
+
+function logout() {
+  auth.signOut();
+}
+
+/* ---------- HELPERS ---------- */
 function todayYMD() {
   return new Date().toISOString().split("T")[0];
 }
@@ -102,6 +131,7 @@ function formatMoney(v) {
   return "£" + Number(v || 0).toFixed(2);
 }
 
+/* ---------- RENDER ---------- */
 function groupBookings() {
   const today = todayYMD();
   const groups = { today: [], future: [], rejected: [], done: [] };
@@ -179,6 +209,7 @@ function renderActions(id, status) {
   return b;
 }
 
+/* ---------- ACTIONS ---------- */
 function updateStatus(id, status) {
   db.collection("bookings").doc(id).update({ status });
 }
@@ -224,12 +255,29 @@ function saveEdit() {
   editModal.style.display = "none";
 }
 
-db.collection("bookings").onSnapshot(snapshot => {
-  allBookings = [];
-  snapshot.forEach(doc => {
-    allBookings.push({ id: doc.id, data: doc.data() });
-  });
-  renderBookings();
+/* ---------- AUTH PROTECTION ---------- */
+auth.onAuthStateChanged(user => {
+  if (user) {
+    loginScreen.style.display = "none";
+    app.style.display = "block";
+
+    db.collection("bookings").onSnapshot(snapshot => {
+      allBookings = [];
+
+      snapshot.forEach(doc => {
+        allBookings.push({
+          id: doc.id,
+          data: doc.data()
+        });
+      });
+
+      renderBookings();
+    });
+
+  } else {
+    loginScreen.style.display = "block";
+    app.style.display = "none";
+  }
 });
 </script>
 
