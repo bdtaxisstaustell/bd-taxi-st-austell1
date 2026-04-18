@@ -255,46 +255,61 @@ async function logout() {
 }
 
 /* RENDER */
-function renderBookings() {
+
+ function renderBookings() {
   const today = new Date().toISOString().split("T")[0];
 
   const groups = {
-  today: [],
-  future: [],
-  rejected: [],
-  done: [],
-  deleted: []   // 
-};
+    today_whatsapp: [],
+    today_email: [],
+    future_whatsapp: [],
+    future_email: [],
+    rejected: [],
+    done: [],
+    deleted: []
+  };
 
   allBookings.forEach(b => {
     const d = b.data || {};
     const status = (d.status || "").toLowerCase();
+    const source = (d.source || "email").toLowerCase(); // 👈 NEW
 
     if (status === "deleted") {
-  groups.deleted.push(b);
-}
-else if (status === "rejected" || status === "cancelled") {
-  groups.rejected.push(b);
-}
-else if (status === "done") {
-  groups.done.push(b);
-}
-else if (d.date === today) {
-  groups.today.push(b);
-}
-else {
-  groups.future.push(b);
-}
-   
+      groups.deleted.push(b);
+    }
+    else if (status === "rejected" || status === "cancelled") {
+      groups.rejected.push(b);
+    }
+    else if (status === "done") {
+      groups.done.push(b);
+    }
+    else if (d.date === today) {
+      if (source === "whatsapp") {
+        groups.today_whatsapp.push(b);
+      } else {
+        groups.today_email.push(b);
+      }
+    }
+    else {
+      if (source === "whatsapp") {
+        groups.future_whatsapp.push(b);
+      } else {
+        groups.future_email.push(b);
+      }
+    }
   });
 
- getEl("bookings").innerHTML =
-  renderTable("📅 Today's Bookings", groups.today) +
-  renderTable("⏳ Future Bookings", groups.future) +
-  renderTable("⛔ Cancelled", groups.rejected) +
-  renderTable("📊 History", groups.done) +
-  renderTable("🗑️ Trash", groups.deleted);  // 
-}
+  getEl("bookings").innerHTML =
+    renderTable("📱 Today's WhatsApp", groups.today_whatsapp) +
+    renderTable("📧 Today's Email", groups.today_email) +
+
+    renderTable("📱 Future WhatsApp", groups.future_whatsapp) +
+    renderTable("📧 Future Email", groups.future_email) +
+
+    renderTable("⛔ Cancelled", groups.rejected) +
+    renderTable("📊 History", groups.done) +
+    renderTable("🗑️ Trash", groups.deleted);
+} 
 
 function renderTable(title, list) {
   if (!list.length) {
