@@ -211,29 +211,38 @@ function renderRow(item) {
 }
 
 function renderActions(id, status) {
-  if (status === "new") {
-    return `
-      <button class="accept" onclick="acceptBooking('${id}')">Accept</button>
-      <button class="reject" onclick="updateStatus('${id}','rejected')">Reject</button>
-    `;
-  }
+ let buttons = `
+  <button class="secondary" onclick="editBooking('${id}')">Edit</button>
+  <button class="reject" onclick="deleteBooking('${id}')">Delete</button>
+`;
 
-  if (status === "accepted") {
-    return `
-      <button class="complete" onclick="updateStatus('${id}','done')">Complete</button>
-      <button class="reject" onclick="updateStatus('${id}','rejected')">Cancel</button>
-    `;
-  }
+if (status === "new") {
+  buttons += `
+    <button class="accept" onclick="acceptBooking('${id}')">Accept</button>
+    <button class="reject" onclick="updateStatus('${id}','rejected')">Reject</button>
+  `;
+}
 
-  if (status === "done") {
-    return `<button class="secondary" onclick="updateStatus('${id}','accepted')">Reopen</button>`;
-  }
+if (status === "accepted") {
+  buttons += `
+    <button class="complete" onclick="updateStatus('${id}','done')">Complete</button>
+    <button class="reject" onclick="updateStatus('${id}','rejected')">Cancel</button>
+  `;
+}
 
-  if (status === "rejected") {
-    return `<button class="secondary" onclick="updateStatus('${id}','new')">Restore</button>`;
-  }
+if (status === "done") {
+  buttons += `
+    <button class="secondary" onclick="updateStatus('${id}','accepted')">Reopen</button>
+  `;
+}
 
-  return "";
+if (status === "rejected") {
+  buttons += `
+    <button class="secondary" onclick="updateStatus('${id}','new')">Restore</button>
+  `;
+}
+
+return buttons;
 }
 
 function updateStatus(id, status) {
@@ -247,7 +256,47 @@ function acceptBooking(id) {
     status: "accepted"
   });
 }
+function deleteBooking(id) {
+  if (confirm("Are you sure you want to delete this booking?")) {
+    db.collection("bookings").doc(id).delete();
+  }
+}
 
+function editBooking(id) {
+  const newName = prompt("Enter new name:");
+  if (newName === null) return;
+
+  const newPhone = prompt("Enter new phone:");
+  const newFare = prompt("Enter new fare:");
+
+  db.collection("bookings").doc(id).update({
+    name: newName,
+    phone: newPhone,
+    fare: newFare
+  });
+}
+  function deleteBooking(id) {
+  if (confirm("Delete this booking?")) {
+    db.collection("bookings").doc(id).delete();
+  }
+}
+
+function editBooking(id) {
+  const newName = prompt("New name:");
+  if (newName === null) return;
+
+  const newPhone = prompt("New phone:");
+  if (newPhone === null) return;
+
+  const newFare = prompt("New fare:");
+  if (newFare === null) return;
+
+  db.collection("bookings").doc(id).update({
+    name: newName,
+    phone: newPhone,
+    fare: newFare
+  });
+}
 db.collection("bookings").onSnapshot(snapshot => {
   allBookings = [];
 
