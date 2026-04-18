@@ -6,19 +6,133 @@
 <title>BD Taxi Dashboard</title>
 
 <style>
-body { font-family: Arial; background:#f4f6f9; padding:20px; }
-.table-wrap { background:#fff; border-radius:10px; overflow:auto; }
-table { width:100%; border-collapse:collapse; }
-th,td { padding:10px; border-bottom:1px solid #eee; }
-thead { background:#4d4dff; color:#fff; }
+body {
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: #f1f5f9;
+  margin: 0;
+  padding: 20px;
+  color: #1e293b;
+}
 
-button { padding:6px 10px; border:none; border-radius:6px; cursor:pointer; margin:2px; }
-.accept { background:#16a34a; color:white; }
-.complete { background:#0ea5e9; color:white; }
-.reject { background:#dc2626; color:white; }
-.secondary { background:#64748b; color:white; }
+/* HEADINGS */
+h1 {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
 
-input { width:100%; padding:8px; margin-bottom:8px; }
+h3 {
+  margin: 20px 0 10px;
+}
+
+/* TABLE CARD */
+.table-wrap {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+  margin-bottom: 25px;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* HEADER */
+thead {
+  background: #4d4dff;
+  color: white;
+}
+
+th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* CELLS */
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+}
+
+/* ROW HOVER */
+tr:hover {
+  background: #f8faff;
+  transition: 0.2s;
+}
+
+/* BUTTONS */
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  margin: 2px;
+  transition: 0.2s;
+}
+
+/* BUTTON COLORS */
+.accept {
+  background: #22c55e;
+  color: white;
+}
+
+.complete {
+  background: #0ea5e9;
+  color: white;
+}
+
+.reject {
+  background: #ef4444;
+  color: white;
+}
+
+.secondary {
+  background: #64748b;
+  color: white;
+}
+
+/* BUTTON HOVER */
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* INPUTS */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  outline: none;
+}
+
+/* MODAL */
+#editModal div {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* LOGIN BOX */
+#loginScreen {
+  max-width: 300px;
+  margin: 100px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* LOGOUT BUTTON */
+#app button {
+  float: right;
+  margin-bottom: 10px;
+}
 </style>
 </head>
 
