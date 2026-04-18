@@ -13,59 +13,29 @@ body {
   padding: 20px;
   color: #1e293b;
 }
+h1 { margin-bottom: 20px; }
+h3 { margin: 20px 0 10px; }
 
-/* HEADINGS */
-h1 {
-  margin-bottom: 20px;
-  font-weight: 600;
-}
-
-h3 {
-  margin: 20px 0 10px;
-}
-
-/* TABLE CARD */
 .table-wrap {
-  background: #ffffff;
+  background: #fff;
   border-radius: 14px;
   overflow-x: auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.06);
   margin-bottom: 25px;
 }
 
-/* TABLE */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
+table { width: 100%; border-collapse: collapse; }
 
-/* HEADER */
-thead {
-  background: #4d4dff;
-  color: white;
-}
+thead { background: #4d4dff; color: white; }
 
-th {
-  padding: 12px;
-  text-align: left;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-/* CELLS */
-td {
+th, td {
   padding: 12px;
   border-bottom: 1px solid #e2e8f0;
   font-size: 14px;
 }
 
-/* ROW HOVER */
-tr:hover {
-  background: #f8faff;
-  transition: 0.2s;
-}
+tr:hover { background: #f8faff; }
 
-/* BUTTONS */
 button {
   padding: 6px 10px;
   border: none;
@@ -73,72 +43,32 @@ button {
   cursor: pointer;
   font-size: 13px;
   margin: 2px;
-  transition: 0.2s;
 }
 
-/* BUTTON COLORS */
-.accept {
-  background: #22c55e;
-  color: white;
-}
+.accept { background: #22c55e; color: white; }
+.reject { background: #ef4444; color: white; }
+.secondary { background: #64748b; color: white; }
 
-.complete {
-  background: #0ea5e9;
-  color: white;
-}
-
-.reject {
-  background: #ef4444;
-  color: white;
-}
-
-.secondary {
-  background: #64748b;
-  color: white;
-}
-
-/* BUTTON HOVER */
-button:hover {
-  transform: translateY(-1px);
-  opacity: 0.9;
-}
-
-/* INPUTS */
 input {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
-  outline: none;
 }
 
-/* MODAL */
-#editModal div {
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-}
-
-/* LOGIN BOX */
 #loginScreen {
   max-width: 300px;
   margin: 100px auto;
   background: white;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-}
-
-/* LOGOUT BUTTON */
-#app button {
-  float: right;
-  margin-bottom: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
 <div id="loginScreen">
   <h2>Login</h2>
   <input id="email" placeholder="Email"><br><br>
@@ -146,7 +76,6 @@ input {
   <button onclick="login()">Login</button>
 </div>
 
-<!-- APP -->
 <div id="app" style="display:none;">
   <h1>🚕 BD Taxi Dashboard</h1>
   <button onclick="logout()">Logout</button>
@@ -158,13 +87,11 @@ input {
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 
 <script>
-const firebaseConfig = {
+firebase.initializeApp({
   apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
   projectId: "taxi-bookings-69cff",
-};
-
-firebase.initializeApp(firebaseConfig);
+});
 
 const db = firebase.firestore();
 const auth = firebase.auth();
@@ -172,175 +99,52 @@ const auth = firebase.auth();
 let allBookings = [];
 let currentEditId = null;
 
-/* ELEMENTS */
-const loginScreen = document.getElementById("loginScreen");
-const app = document.getElementById("app");
-const bookingsEl = document.getElementById("bookings");
-
-const emailEl = document.getElementById("email");
-const passwordEl = document.getElementById("password");
-
-const editModal = document.getElementById("editModal");
-const editName = document.getElementById("editName");
-const editPhone = document.getElementById("editPhone");
-const editPickup = document.getElementById("editPickup");
-const editDropoff = document.getElementById("editDropoff");
-const editDate = document.getElementById("editDate");
-const editTime = document.getElementById("editTime");
-const editFare = document.getElementById("editFare");
+/* FORCE AUTH PERSISTENCE */
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
 /* LOGIN */
 async function login() {
   try {
-    await auth.signInWithEmailAndPassword(emailEl.value, passwordEl.value);
+    await auth.signInWithEmailAndPassword(
+      document.getElementById("email").value,
+      document.getElementById("password").value
+    );
   } catch (e) {
     alert(e.message);
   }
 }
 
-async function logout() {
-  await auth.signOut();
-}
-
-/* HELPERS */
-function formatMoney(v) {
-  return "£" + Number(v || 0).toFixed(2);
-}
-
-function formatPhone(phone) {
-  if (!phone) return "";
-  let p = String(phone).replace(/\D/g, "");
-  if (p.startsWith("0")) p = "44" + p.substring(1);
-  return p;
-}
-
-function openWhatsApp(phone, msg) {
-  const p = formatPhone(phone);
-  if (!p) return alert("No phone number");
-  window.open(`https://wa.me/${p}?text=${encodeURIComponent(msg)}`, "_blank");
+function logout() {
+  auth.signOut();
 }
 
 /* RENDER */
 function renderBookings() {
-  const today = new Date().toISOString().split("T")[0];
-
-  const groups = {
-    today: [],
-    future: [],
-    rejected: [],
-    done: []
-  };
+  let html = `<div class="table-wrap"><table>
+  <thead>
+  <tr><th>Name</th><th>Phone</th><th>Pickup</th><th>Dropoff</th><th>Actions</th></tr>
+  </thead><tbody>`;
 
   allBookings.forEach(b => {
     const d = b.data;
-    const status = (d.status || "").toLowerCase();
-
-    if (status === "rejected" || status === "cancelled") {
-      groups.rejected.push(b);
-    } else if (status === "done") {
-      groups.done.push(b);
-    } else if (d.date === today) {
-      groups.today.push(b);
-    } else {
-      groups.future.push(b);
-    }
-  });
-
-  bookingsEl.innerHTML =
-    renderTable("📅 Today's Bookings", groups.today) +
-    renderTable("⏳ Future Bookings", groups.future) +
-    renderTable("⛔ Cancelled", groups.rejected) +
-    renderTable("📊 History", groups.done);
-}
-
-function renderTable(title, list) {
-  if (!list.length) {
-    return `<h3>${title}</h3><p>No bookings</p>`;
-  }
-
-  let html = `
-  <h3>${title}</h3>
-  <div class="table-wrap">
-  <table>
-  <thead>
-    <tr>
-      <th>Date</th><th>Name</th><th>Phone</th>
-      <th>Pickup</th><th>Dropoff</th>
-      <th>Fare</th><th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-  `;
-
-  list.forEach(b => {
-    const d = b.data;
-
     html += `
     <tr>
-      <td>${d.date || ""} ${d.time || ""}</td>
       <td>${d.name || ""}</td>
       <td>${d.phone || ""}</td>
       <td>${d.pickup || ""}</td>
       <td>${d.dropoff || ""}</td>
-      <td>${d.fare ? "£"+Number(d.fare).toFixed(2) : "-"}</td>
       <td>
         <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
         <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
-        <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
-        <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
       </td>
     </tr>`;
   });
 
   html += "</tbody></table></div>";
-  return html;
+  document.getElementById("bookings").innerHTML = html;
 }
 
-/* ACTIONS */
-
-async function acceptBooking(id) {
-  try {
-    const b = allBookings.find(x => x.id === id)?.data;
-    if (!b) return;
-
-    const msg = `Hi ${b.name||""},
-
-Your taxi booking is CONFIRMED 🚕
-
-Pickup: ${b.pickup||"-"}
-Destination: ${b.dropoff||"-"}
-Date: ${b.date||"-"} ${b.time||""}
-Fare: ${formatMoney(b.fare)}
-
-Thank you for choosing BD Taxi.`;
-
-    openWhatsApp(b.phone, msg);
-
-    await db.collection("bookings").doc(id).update({ status: "accepted" });
-  } catch (e) {
-    alert("Accept failed: " + e.message);
-  }
-}
-
-async function rejectBooking(id) {
-  try {
-    const b = allBookings.find(x => x.id === id)?.data;
-    if (!b) return;
-
-    const msg = `Hi ${b.name||""},
-
-Unfortunately we cannot fulfil your booking.
-
-– BD Taxi`;
-
-    openWhatsApp(b.phone, msg);
-
-    await db.collection("bookings").doc(id).update({ status: "rejected" });
-  } catch (e) {
-    alert("Reject failed: " + e.message);
-  }
-}
-
+/* DELETE */
 async function deleteBooking(id) {
   if (!confirm("Delete booking?")) return;
 
@@ -348,55 +152,53 @@ async function deleteBooking(id) {
     await db.collection("bookings").doc(id).delete();
     alert("Deleted");
   } catch (e) {
-    alert("Delete failed: " + e.message);
+    alert(e.message);
   }
 }
 
+/* EDIT */
 function editBooking(id) {
   const b = allBookings.find(x => x.id === id)?.data;
-  if (!b) return;
+  if (!b) return alert("Not found");
 
   currentEditId = id;
 
-  editName.value = b.name || "";
-  editPhone.value = b.phone || "";
-  editPickup.value = b.pickup || "";
-  editDropoff.value = b.dropoff || "";
-  editDate.value = b.date || "";
-  editTime.value = b.time || "";
-  editFare.value = b.fare || "";
+  document.getElementById("editName").value = b.name || "";
+  document.getElementById("editPhone").value = b.phone || "";
+  document.getElementById("editPickup").value = b.pickup || "";
+  document.getElementById("editDropoff").value = b.dropoff || "";
 
-  editModal.style.display = "flex";
+  document.getElementById("editModal").style.display = "flex";
 }
 
+/* SAVE */
 async function saveEdit() {
   if (!currentEditId) return alert("No booking selected");
 
+  if (!auth.currentUser) {
+    return alert("Not logged in");
+  }
+
   try {
     await db.collection("bookings").doc(currentEditId).update({
-      name: editName.value.trim(),
-      phone: editPhone.value.trim(),
-      pickup: editPickup.value.trim(),
-      dropoff: editDropoff.value.trim(),
-      date: editDate.value,
-      time: editTime.value,
-      fare: Number(editFare.value || 0)
+      name: document.getElementById("editName").value,
+      phone: document.getElementById("editPhone").value,
+      pickup: document.getElementById("editPickup").value,
+      dropoff: document.getElementById("editDropoff").value
     });
 
-    editModal.style.display = "none";
-    currentEditId = null;
-
-    alert("Saved successfully");
+    document.getElementById("editModal").style.display = "none";
+    alert("Saved");
   } catch (e) {
-    alert("Save failed: " + e.message);
+    alert("ERROR: " + e.message);
   }
 }
 
-/* AUTH */
+/* AUTH LISTENER */
 auth.onAuthStateChanged(user => {
   if (user) {
-    loginScreen.style.display = "none";
-    app.style.display = "block";
+    document.getElementById("loginScreen").style.display = "none";
+    document.getElementById("app").style.display = "block";
 
     db.collection("bookings").onSnapshot(s => {
       allBookings = [];
@@ -405,8 +207,8 @@ auth.onAuthStateChanged(user => {
     });
 
   } else {
-    loginScreen.style.display = "block";
-    app.style.display = "none";
+    document.getElementById("loginScreen").style.display = "block";
+    document.getElementById("app").style.display = "none";
   }
 });
 </script>
@@ -416,16 +218,13 @@ auth.onAuthStateChanged(user => {
 <div style="background:white;padding:20px;border-radius:10px;width:300px;">
 <h3>Edit Booking</h3>
 
-<input id="editName" placeholder="Name">
-<input id="editPhone" placeholder="Phone">
-<input id="editPickup" placeholder="Pickup">
-<input id="editDropoff" placeholder="Dropoff">
-<input id="editDate" type="date">
-<input id="editTime" type="time">
-<input id="editFare" placeholder="Fare">
+<input id="editName">
+<input id="editPhone">
+<input id="editPickup">
+<input id="editDropoff">
 
 <button onclick="saveEdit()">Save</button>
-<button onclick="editModal.style.display='none'">Cancel</button>
+<button onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
 </div>
 </div>
 
