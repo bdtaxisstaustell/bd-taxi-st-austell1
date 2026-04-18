@@ -80,8 +80,52 @@ function openWhatsApp(phone, msg){
 }
 
 /* RENDER */
-function renderBookings(){
+
+  function renderBookings(){
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const groups = {
+    today: [],
+    future: [],
+    rejected: [],
+    done: []
+  };
+
+  allBookings.forEach(b=>{
+    const d = b.data;
+    const status = (d.status || "").toLowerCase();
+
+    if(status === "rejected" || status === "cancelled"){
+      groups.rejected.push(b);
+    }
+    else if(status === "done"){
+      groups.done.push(b);
+    }
+    else if(d.date === today){
+      groups.today.push(b);
+    }
+    else{
+      groups.future.push(b);
+    }
+  });
+
+  bookings.innerHTML =
+    renderTable("📅 Today's Bookings", groups.today) +
+    renderTable("⏳ Future Bookings", groups.future) +
+    renderTable("⛔ Cancelled", groups.rejected) +
+    renderTable("📊 History", groups.done);
+}
+
+
+ function renderTable(title, list){
+
+  if(!list.length){
+    return `<h3>${title}</h3><p>No bookings</p>`;
+  }
+
   let html = `
+  <h3>${title}</h3>
   <div class="table-wrap">
   <table>
   <thead>
@@ -90,20 +134,21 @@ function renderBookings(){
       <th>Pickup</th><th>Dropoff</th>
       <th>Fare</th><th>Actions</th>
     </tr>
-  </thead><tbody>
+  </thead>
+  <tbody>
   `;
 
-  allBookings.forEach(b=>{
+  list.forEach(b=>{
     const d = b.data;
 
     html += `
     <tr>
-      <td>${d.date||""} ${d.time||""}</td>
-      <td>${d.name||""}</td>
-      <td>${d.phone||""}</td>
-      <td>${d.pickup||""}</td>
-      <td>${d.dropoff||""}</td>
-      <td>${d.fare?formatMoney(d.fare):"-"}</td>
+      <td>${d.date || ""} ${d.time || ""}</td>
+      <td>${d.name || ""}</td>
+      <td>${d.phone || ""}</td>
+      <td>${d.pickup || ""}</td>
+      <td>${d.dropoff || ""}</td>
+      <td>${d.fare ? "£"+Number(d.fare).toFixed(2) : "-"}</td>
       <td>
         <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
         <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
@@ -114,8 +159,9 @@ function renderBookings(){
   });
 
   html += "</tbody></table></div>";
-  bookings.innerHTML = html;
-}
+
+  return html;
+} 
 
 /* ACTIONS */
 function acceptBooking(id){
