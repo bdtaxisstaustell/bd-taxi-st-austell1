@@ -172,31 +172,60 @@ const auth = firebase.auth();
 let allBookings = [];
 let currentEditId = null;
 
+/* ELEMENTS */
+const loginScreen = document.getElementById("loginScreen");
+const app = document.getElementById("app");
+const bookingsEl = document.getElementById("bookings");
+
+const emailEl = document.getElementById("email");
+const passwordEl = document.getElementById("password");
+
+const editModal = document.getElementById("editModal");
+const editName = document.getElementById("editName");
+const editPhone = document.getElementById("editPhone");
+const editPickup = document.getElementById("editPickup");
+const editDropoff = document.getElementById("editDropoff");
+const editDate = document.getElementById("editDate");
+const editTime = document.getElementById("editTime");
+const editFare = document.getElementById("editFare");
+
 /* LOGIN */
-function login() {
-  auth.signInWithEmailAndPassword(email.value, password.value)
-    .catch(e => alert(e.message));
+async function login() {
+  try {
+    await auth.signInWithEmailAndPassword(emailEl.value, passwordEl.value);
+  } catch (e) {
+    alert(e.message);
+    console.error("Login error:", e);
+  }
 }
-function logout() { auth.signOut(); }
+
+async function logout() {
+  await auth.signOut();
+}
 
 /* HELPERS */
-function formatMoney(v) { return "£" + Number(v||0).toFixed(2); }
+function formatMoney(v) {
+  return "£" + Number(v || 0).toFixed(2);
+}
 
-function formatPhone(phone){
-  let p = phone.replace(/\D/g,'');
-  if(p.startsWith("0")) p = "44" + p.substring(1); // UK fix
+function formatPhone(phone) {
+  if (!phone) return "";
+  let p = String(phone).replace(/\D/g, "");
+  if (p.startsWith("0")) p = "44" + p.substring(1);
   return p;
 }
 
-function openWhatsApp(phone, msg){
-  if(!phone) return alert("No phone");
-  window.open(`https://wa.me/${formatPhone(phone)}?text=${encodeURIComponent(msg)}`);
+function openWhatsApp(phone, msg) {
+  const formatted = formatPhone(phone);
+  if (!formatted) {
+    alert("No phone number");
+    return;
+  }
+  window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
 /* RENDER */
-
-  function renderBookings(){
-
+function renderBookings() {
   const today = new Date().toISOString().split("T")[0];
 
   const groups = {
@@ -206,100 +235,116 @@ function openWhatsApp(phone, msg){
     done: []
   };
 
-  allBookings.forEach(b=>{
+  allBookings.forEach(b => {
     const d = b.data;
     const status = (d.status || "").toLowerCase();
 
-    if(status === "rejected" || status === "cancelled"){
+    if (status === "rejected" || status === "cancelled") {
       groups.rejected.push(b);
-    }
-    else if(status === "done"){
+    } else if (status === "done") {
       groups.done.push(b);
-    }
-    else if(d.date === today){
+    } else if (d.date === today) {
       groups.today.push(b);
-    }
-    else{
+    } else {
       groups.future.push(b);
     }
   });
 
-  bookings.innerHTML =
+  bookingsEl.innerHTML =
     renderTable("📅 Today's Bookings", groups.today) +
     renderTable("⏳ Future Bookings", groups.future) +
     renderTable("⛔ Cancelled", groups.rejected) +
     renderTable("📊 History", groups.done);
 }
 
-
- function renderTable(title, list){
-
-  if(!list.length){
+function renderTable(title, list) {
+  if (!list.length) {
     return `<h3>${title}</h3><p>No bookings</p>`;
   }
 
   let html = `
-  <h3>${title}</h3>
-  <div class="table-wrap">
-  <table>
-  <thead>
-    <tr>
-      <th>Date</th><th>Name</th><th>Phone</th>
-      <th>Pickup</th><th>Dropoff</th>
-      <th>Fare</th><th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
+    <h3>${title}</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Pickup</th>
+            <th>Dropoff</th>
+            <th>Fare</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
   `;
 
-  list.forEach(b=>{
+  list.forEach(b => {
     const d = b.data;
 
     html += `
-    <tr>
-      <td>${d.date || ""} ${d.time || ""}</td>
-      <td>${d.name || ""}</td>
-      <td>${d.phone || ""}</td>
-      <td>${d.pickup || ""}</td>
-      <td>${d.dropoff || ""}</td>
-      <td>${d.fare ? "£"+Number(d.fare).toFixed(2) : "-"}</td>
-      <td>
-        <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
-        <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
-        <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
-        <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
-      </td>
-    </tr>`;
+      <tr>
+        <td>${d.date || ""} ${d.time || ""}</td>
+        <td>${d.name || ""}</td>
+        <td>${d.phone || ""}</td>
+        <td>${d.pickup || ""}</td>
+        <td>${d.dropoff || ""}</td>
+        <td>${d.fare ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
+        <td>
+          <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
+          <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
+          <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
+          <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+        </td>
+      </tr>
+    `;
   });
 
-  html += "</tbody></table></div>";
+  html += `
+        </tbody>
+      </table>
+    </div>
+  `;
 
   return html;
-} 
+}
 
 /* ACTIONS */
-function acceptBooking(id){
-  const b = allBookings.find(x=>x.id===id).data;
+async function acceptBooking(id) {
+  try {
+    const booking = allBookings.find(x => x.id === id);
+    if (!booking) return alert("Booking not found");
 
-  const msg = `Hi ${b.name||""},
+    const b = booking.data;
+
+    const msg = `Hi ${b.name || ""},
 
 Your taxi booking is CONFIRMED 🚕
 
-Pickup: ${b.pickup||"-"}
-Destination: ${b.dropoff||"-"}
-Date: ${b.date||"-"} ${b.time||""}
+Pickup: ${b.pickup || "-"}
+Destination: ${b.dropoff || "-"}
+Date: ${b.date || "-"} ${b.time || ""}
 Fare: ${formatMoney(b.fare)}
 
 Thank you for choosing BD Taxi.`;
 
-  openWhatsApp(b.phone, msg);
-  db.collection("bookings").doc(id).update({status:"accepted"});
+    openWhatsApp(b.phone, msg);
+    await db.collection("bookings").doc(id).update({ status: "accepted" });
+  } catch (e) {
+    console.error("Accept error:", e);
+    alert("Failed to accept booking: " + e.message);
+  }
 }
 
-function rejectBooking(id){
-  const b = allBookings.find(x=>x.id===id).data;
+async function rejectBooking(id) {
+  try {
+    const booking = allBookings.find(x => x.id === id);
+    if (!booking) return alert("Booking not found");
 
-  const msg = `Hi ${b.name||""},
+    const b = booking.data;
+
+    const msg = `Hi ${b.name || ""},
 
 Unfortunately we cannot fulfil your booking at the requested time.
 
@@ -307,58 +352,93 @@ Please contact us to reschedule.
 
 – BD Taxi`;
 
-  openWhatsApp(b.phone, msg);
-  db.collection("bookings").doc(id).update({status:"rejected"});
+    openWhatsApp(b.phone, msg);
+    await db.collection("bookings").doc(id).update({ status: "rejected" });
+  } catch (e) {
+    console.error("Reject error:", e);
+    alert("Failed to reject booking: " + e.message);
+  }
 }
 
-function deleteBooking(id){
-  if(confirm("Delete booking?"))
-    db.collection("bookings").doc(id).delete();
+async function deleteBooking(id) {
+  if (!confirm("Delete booking?")) return;
+
+  try {
+    await db.collection("bookings").doc(id).delete();
+    alert("Booking deleted");
+  } catch (e) {
+    console.error("Delete error:", e);
+    alert("Failed to delete booking: " + e.message);
+  }
 }
 
-function editBooking(id){
+function editBooking(id) {
+  const booking = allBookings.find(x => x.id === id);
+  if (!booking) {
+    alert("Booking not found");
+    return;
+  }
+
   currentEditId = id;
-  const b = allBookings.find(x=>x.id===id).data;
+  const b = booking.data;
 
-  editName.value = b.name||"";
-  editPhone.value = b.phone||"";
-  editPickup.value = b.pickup||"";
-  editDropoff.value = b.dropoff||"";
-  editDate.value = b.date||"";
-  editTime.value = b.time||"";
-  editFare.value = b.fare||"";
+  editName.value = b.name || "";
+  editPhone.value = b.phone || "";
+  editPickup.value = b.pickup || "";
+  editDropoff.value = b.dropoff || "";
+  editDate.value = b.date || "";
+  editTime.value = b.time || "";
+  editFare.value = b.fare || "";
 
-  editModal.style.display="flex";
+  editModal.style.display = "flex";
 }
 
-function saveEdit(){
-  db.collection("bookings").doc(currentEditId).update({
-    name:editName.value,
-    phone:editPhone.value,
-    pickup:editPickup.value,
-    dropoff:editDropoff.value,
-    date:editDate.value,
-    time:editTime.value,
-    fare:editFare.value
-  });
-  editModal.style.display="none";
+async function saveEdit() {
+  if (!currentEditId) {
+    alert("No booking selected");
+    return;
+  }
+
+  try {
+    await db.collection("bookings").doc(currentEditId).update({
+      name: editName.value.trim(),
+      phone: editPhone.value.trim(),
+      pickup: editPickup.value.trim(),
+      dropoff: editDropoff.value.trim(),
+      date: editDate.value,
+      time: editTime.value,
+      fare: Number(editFare.value || 0)
+    });
+
+    editModal.style.display = "none";
+    currentEditId = null;
+    alert("Booking updated");
+  } catch (e) {
+    console.error("Save error:", e);
+    alert("Failed to save booking: " + e.message);
+  }
 }
 
 /* AUTH */
-auth.onAuthStateChanged(user=>{
-  if(user){
-    loginScreen.style.display="none";
-    app.style.display="block";
+auth.onAuthStateChanged(user => {
+  if (user) {
+    loginScreen.style.display = "none";
+    app.style.display = "block";
 
-    db.collection("bookings").onSnapshot(s=>{
-      allBookings=[];
-      s.forEach(doc=>allBookings.push({id:doc.id,data:doc.data()}));
-      renderBookings();
-    });
-
+    db.collection("bookings").onSnapshot(
+      s => {
+        allBookings = [];
+        s.forEach(doc => allBookings.push({ id: doc.id, data: doc.data() }));
+        renderBookings();
+      },
+      e => {
+        console.error("Snapshot error:", e);
+        alert("Failed to load bookings: " + e.message);
+      }
+    );
   } else {
-    loginScreen.style.display="block";
-    app.style.display="none";
+    loginScreen.style.display = "block";
+    app.style.display = "none";
   }
 });
 </script>
