@@ -6,64 +6,14 @@
 <title>BD Taxi Dashboard</title>
 
 <style>
-body {
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: #f1f5f9;
-  margin: 0;
-  padding: 20px;
-  color: #1e293b;
-}
-h1 { margin-bottom: 20px; }
-h3 { margin: 20px 0 10px; }
-
-.table-wrap {
-  background: #fff;
-  border-radius: 14px;
-  overflow-x: auto;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.06);
-  margin-bottom: 25px;
-}
-
-table { width: 100%; border-collapse: collapse; }
-
-thead { background: #4d4dff; color: white; }
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  font-size: 14px;
-}
-
-tr:hover { background: #f8faff; }
-
-button {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  margin: 2px;
-}
-
-.accept { background: #22c55e; color: white; }
-.reject { background: #ef4444; color: white; }
-.secondary { background: #64748b; color: white; }
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-#loginScreen {
-  max-width: 300px;
-  margin: 100px auto;
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-}
+body { font-family: Arial; background:#f1f5f9; padding:20px; }
+.table-wrap { background:white; border-radius:12px; overflow:auto; }
+table { width:100%; border-collapse:collapse; }
+th, td { padding:10px; border-bottom:1px solid #ddd; }
+button { padding:6px 10px; border:none; border-radius:6px; cursor:pointer; }
+.accept{background:#22c55e;color:white;}
+.reject{background:#ef4444;color:white;}
+.secondary{background:#64748b;color:white;}
 </style>
 </head>
 
@@ -82,137 +32,6 @@ input {
   <div id="bookings"></div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
-
-<script>
-firebase.initializeApp({
-  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
-  authDomain: "taxi-bookings-69cff.firebaseapp.com",
-  projectId: "taxi-bookings-69cff",
-});
-
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-let allBookings = [];
-let currentEditId = null;
-
-/* FORCE AUTH PERSISTENCE */
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-
-/* LOGIN */
-async function login() {
-  try {
-    await auth.signInWithEmailAndPassword(
-      document.getElementById("email").value,
-      document.getElementById("password").value
-    );
-  } catch (e) {
-    alert(e.message);
-  }
-}
-
-function logout() {
-  auth.signOut();
-}
-
-/* RENDER */
-function renderBookings() {
-  let html = `<div class="table-wrap"><table>
-  <thead>
-  <tr><th>Name</th><th>Phone</th><th>Pickup</th><th>Dropoff</th><th>Actions</th></tr>
-  </thead><tbody>`;
-
-  allBookings.forEach(b => {
-    const d = b.data;
-    html += `
-    <tr>
-      <td>${d.name || ""}</td>
-      <td>${d.phone || ""}</td>
-      <td>${d.pickup || ""}</td>
-      <td>${d.dropoff || ""}</td>
-      <td>
-        <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
-        <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
-      </td>
-    </tr>`;
-  });
-
-  html += "</tbody></table></div>";
-  document.getElementById("bookings").innerHTML = html;
-}
-
-/* DELETE */
-async function deleteBooking(id) {
-  if (!confirm("Delete booking?")) return;
-
-  try {
-    await db.collection("bookings").doc(id).delete();
-    alert("Deleted");
-  } catch (e) {
-    alert(e.message);
-  }
-}
-
-/* EDIT */
-function editBooking(id) {
-  const b = allBookings.find(x => x.id === id)?.data;
-  if (!b) return alert("Not found");
-
-  currentEditId = id;
-
-  document.getElementById("editName").value = b.name || "";
-  document.getElementById("editPhone").value = b.phone || "";
-  document.getElementById("editPickup").value = b.pickup || "";
-  document.getElementById("editDropoff").value = b.dropoff || "";
-
-  document.getElementById("editModal").style.display = "flex";
-}
-
-/* SAVE */
-async function saveEdit() {
-  if (!currentEditId) return alert("No booking selected");
-
-  if (!auth.currentUser) {
-    return alert("Not logged in");
-  }
-
-  try {
-    await db.collection("bookings").doc(currentEditId).update({
-      name: document.getElementById("editName").value,
-      phone: document.getElementById("editPhone").value,
-      pickup: document.getElementById("editPickup").value,
-      dropoff: document.getElementById("editDropoff").value
-    });
-
-    document.getElementById("editModal").style.display = "none";
-    alert("Saved");
-  } catch (e) {
-    alert("ERROR: " + e.message);
-  }
-}
-
-/* AUTH LISTENER */
-auth.onAuthStateChanged(user => {
-  if (user) {
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("app").style.display = "block";
-
-    db.collection("bookings").onSnapshot(s => {
-      allBookings = [];
-      s.forEach(doc => allBookings.push({ id: doc.id, data: doc.data() }));
-      renderBookings();
-    });
-
-  } else {
-    document.getElementById("loginScreen").style.display = "block";
-    document.getElementById("app").style.display = "none";
-  }
-});
-</script>
-
 <!-- MODAL -->
 <div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
 <div style="background:white;padding:20px;border-radius:10px;width:300px;">
@@ -222,11 +41,151 @@ auth.onAuthStateChanged(user => {
 <input id="editPhone">
 <input id="editPickup">
 <input id="editDropoff">
+<input id="editDate" type="date">
+<input id="editTime" type="time">
+<input id="editFare">
 
 <button onclick="saveEdit()">Save</button>
-<button onclick="document.getElementById('editModal').style.display='none'">Cancel</button>
+<button onclick="closeModal()">Cancel</button>
 </div>
 </div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+  authDomain: "taxi-bookings-69cff.firebaseapp.com",
+  projectId: "taxi-bookings-69cff",
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.firestore();
+const auth = firebase.auth();
+
+let allBookings = [];
+let currentEditId = null;
+
+/* LOGIN */
+async function login(){
+  try{
+    await auth.signInWithEmailAndPassword(
+      document.getElementById("email").value,
+      document.getElementById("password").value
+    );
+  }catch(e){
+    alert(e.message);
+  }
+}
+async function logout(){ await auth.signOut(); }
+
+/* RENDER */
+function render(){
+  let html = `<div class="table-wrap"><table>
+  <tr><th>Name</th><th>Pickup</th><th>Actions</th></tr>`;
+
+  allBookings.forEach(b=>{
+    const d = b.data;
+    html += `
+    <tr>
+      <td>${d.name||""}</td>
+      <td>${d.pickup||""}</td>
+      <td>
+        <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
+        <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
+      </td>
+    </tr>`;
+  });
+
+  html += "</table></div>";
+  document.getElementById("bookings").innerHTML = html;
+}
+
+/* EDIT */
+function editBooking(id){
+  const b = allBookings.find(x=>x.id===id);
+  if(!b) return;
+
+  currentEditId = id;
+
+  document.getElementById("editName").value = b.data.name||"";
+  document.getElementById("editPhone").value = b.data.phone||"";
+  document.getElementById("editPickup").value = b.data.pickup||"";
+  document.getElementById("editDropoff").value = b.data.dropoff||"";
+  document.getElementById("editDate").value = b.data.date||"";
+  document.getElementById("editTime").value = b.data.time||"";
+  document.getElementById("editFare").value = b.data.fare||"";
+
+  document.getElementById("editModal").style.display="flex";
+}
+
+async function saveEdit(){
+  if(!currentEditId) return alert("No booking selected");
+
+  try{
+    await db.collection("bookings").doc(currentEditId).update({
+      name: document.getElementById("editName").value,
+      phone: document.getElementById("editPhone").value,
+      pickup: document.getElementById("editPickup").value,
+      dropoff: document.getElementById("editDropoff").value,
+      date: document.getElementById("editDate").value,
+      time: document.getElementById("editTime").value,
+      fare: Number(document.getElementById("editFare").value||0)
+    });
+
+    alert("Saved");
+    closeModal();
+  }catch(e){
+    alert("Error: "+e.message);
+  }
+}
+
+function closeModal(){
+  document.getElementById("editModal").style.display="none";
+  currentEditId = null;
+}
+
+/* DELETE */
+async function deleteBooking(id){
+  if(!confirm("Delete?")) return;
+
+  try{
+    await db.collection("bookings").doc(id).delete();
+    alert("Deleted");
+  }catch(e){
+    alert(e.message);
+  }
+}
+
+/* AUTH */
+auth.onAuthStateChanged(user=>{
+  if(user){
+    document.getElementById("loginScreen").style.display="none";
+    document.getElementById("app").style.display="block";
+
+    db.collection("bookings").onSnapshot(s=>{
+      allBookings=[];
+      s.forEach(doc=>allBookings.push({id:doc.id,data:doc.data()}));
+      render();
+    });
+
+  }else{
+    document.getElementById("loginScreen").style.display="block";
+    document.getElementById("app").style.display="none";
+  }
+});
+
+/* make global */
+window.editBooking = editBooking;
+window.saveEdit = saveEdit;
+window.deleteBooking = deleteBooking;
+window.closeModal = closeModal;
+window.login = login;
+window.logout = logout;
+</script>
 
 </body>
 </html>
