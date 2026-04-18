@@ -195,7 +195,6 @@ async function login() {
     await auth.signInWithEmailAndPassword(emailEl.value, passwordEl.value);
   } catch (e) {
     alert(e.message);
-    console.error("Login error:", e);
   }
 }
 
@@ -216,12 +215,9 @@ function formatPhone(phone) {
 }
 
 function openWhatsApp(phone, msg) {
-  const formatted = formatPhone(phone);
-  if (!formatted) {
-    alert("No phone number");
-    return;
-  }
-  window.open(`https://wa.me/${formatted}?text=${encodeURIComponent(msg)}`, "_blank");
+  const p = formatPhone(phone);
+  if (!p) return alert("No phone number");
+  window.open(`https://wa.me/${p}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
 /* RENDER */
@@ -263,100 +259,85 @@ function renderTable(title, list) {
   }
 
   let html = `
-    <h3>${title}</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Pickup</th>
-            <th>Dropoff</th>
-            <th>Fare</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+  <h3>${title}</h3>
+  <div class="table-wrap">
+  <table>
+  <thead>
+    <tr>
+      <th>Date</th><th>Name</th><th>Phone</th>
+      <th>Pickup</th><th>Dropoff</th>
+      <th>Fare</th><th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
   `;
 
   list.forEach(b => {
     const d = b.data;
 
     html += `
-      <tr>
-        <td>${d.date || ""} ${d.time || ""}</td>
-        <td>${d.name || ""}</td>
-        <td>${d.phone || ""}</td>
-        <td>${d.pickup || ""}</td>
-        <td>${d.dropoff || ""}</td>
-        <td>${d.fare ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
-        <td>
-          <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
-          <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
-          <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
-          <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
-        </td>
-      </tr>
-    `;
+    <tr>
+      <td>${d.date || ""} ${d.time || ""}</td>
+      <td>${d.name || ""}</td>
+      <td>${d.phone || ""}</td>
+      <td>${d.pickup || ""}</td>
+      <td>${d.dropoff || ""}</td>
+      <td>${d.fare ? "£"+Number(d.fare).toFixed(2) : "-"}</td>
+      <td>
+        <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
+        <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
+        <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
+        <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+      </td>
+    </tr>`;
   });
 
-  html += `
-        </tbody>
-      </table>
-    </div>
-  `;
-
+  html += "</tbody></table></div>";
   return html;
 }
 
 /* ACTIONS */
+
 async function acceptBooking(id) {
   try {
-    const booking = allBookings.find(x => x.id === id);
-    if (!booking) return alert("Booking not found");
+    const b = allBookings.find(x => x.id === id)?.data;
+    if (!b) return;
 
-    const b = booking.data;
-
-    const msg = `Hi ${b.name || ""},
+    const msg = `Hi ${b.name||""},
 
 Your taxi booking is CONFIRMED 🚕
 
-Pickup: ${b.pickup || "-"}
-Destination: ${b.dropoff || "-"}
-Date: ${b.date || "-"} ${b.time || ""}
+Pickup: ${b.pickup||"-"}
+Destination: ${b.dropoff||"-"}
+Date: ${b.date||"-"} ${b.time||""}
 Fare: ${formatMoney(b.fare)}
 
 Thank you for choosing BD Taxi.`;
 
     openWhatsApp(b.phone, msg);
+
     await db.collection("bookings").doc(id).update({ status: "accepted" });
   } catch (e) {
-    console.error("Accept error:", e);
-    alert("Failed to accept booking: " + e.message);
+    alert("Accept failed: " + e.message);
   }
 }
 
 async function rejectBooking(id) {
   try {
-    const booking = allBookings.find(x => x.id === id);
-    if (!booking) return alert("Booking not found");
+    const b = allBookings.find(x => x.id === id)?.data;
+    if (!b) return;
 
-    const b = booking.data;
+    const msg = `Hi ${b.name||""},
 
-    const msg = `Hi ${b.name || ""},
-
-Unfortunately we cannot fulfil your booking at the requested time.
-
-Please contact us to reschedule.
+Unfortunately we cannot fulfil your booking.
 
 – BD Taxi`;
 
     openWhatsApp(b.phone, msg);
+
     await db.collection("bookings").doc(id).update({ status: "rejected" });
   } catch (e) {
-    console.error("Reject error:", e);
-    alert("Failed to reject booking: " + e.message);
+    alert("Reject failed: " + e.message);
   }
 }
 
@@ -365,22 +346,17 @@ async function deleteBooking(id) {
 
   try {
     await db.collection("bookings").doc(id).delete();
-    alert("Booking deleted");
+    alert("Deleted");
   } catch (e) {
-    console.error("Delete error:", e);
-    alert("Failed to delete booking: " + e.message);
+    alert("Delete failed: " + e.message);
   }
 }
 
 function editBooking(id) {
-  const booking = allBookings.find(x => x.id === id);
-  if (!booking) {
-    alert("Booking not found");
-    return;
-  }
+  const b = allBookings.find(x => x.id === id)?.data;
+  if (!b) return;
 
   currentEditId = id;
-  const b = booking.data;
 
   editName.value = b.name || "";
   editPhone.value = b.phone || "";
@@ -394,10 +370,7 @@ function editBooking(id) {
 }
 
 async function saveEdit() {
-  if (!currentEditId) {
-    alert("No booking selected");
-    return;
-  }
+  if (!currentEditId) return alert("No booking selected");
 
   try {
     await db.collection("bookings").doc(currentEditId).update({
@@ -412,10 +385,10 @@ async function saveEdit() {
 
     editModal.style.display = "none";
     currentEditId = null;
-    alert("Booking updated");
+
+    alert("Saved successfully");
   } catch (e) {
-    console.error("Save error:", e);
-    alert("Failed to save booking: " + e.message);
+    alert("Save failed: " + e.message);
   }
 }
 
@@ -425,17 +398,12 @@ auth.onAuthStateChanged(user => {
     loginScreen.style.display = "none";
     app.style.display = "block";
 
-    db.collection("bookings").onSnapshot(
-      s => {
-        allBookings = [];
-        s.forEach(doc => allBookings.push({ id: doc.id, data: doc.data() }));
-        renderBookings();
-      },
-      e => {
-        console.error("Snapshot error:", e);
-        alert("Failed to load bookings: " + e.message);
-      }
-    );
+    db.collection("bookings").onSnapshot(s => {
+      allBookings = [];
+      s.forEach(doc => allBookings.push({ id: doc.id, data: doc.data() }));
+      renderBookings();
+    });
+
   } else {
     loginScreen.style.display = "block";
     app.style.display = "none";
