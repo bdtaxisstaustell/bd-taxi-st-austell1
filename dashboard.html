@@ -6,62 +6,19 @@
 <title>BD Taxi Dashboard</title>
 
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#f4f6f9;
-  margin:0;
-  padding:20px;
-}
+body { font-family: Arial; background:#f4f6f9; padding:20px; }
+.table-wrap { background:#fff; border-radius:10px; overflow:auto; }
+table { width:100%; border-collapse:collapse; }
+th,td { padding:10px; border-bottom:1px solid #eee; }
+thead { background:#0f172a; color:#fff; }
 
-h1 { margin-bottom:20px; }
-
-.table-section { margin-bottom:40px; }
-
-.table-wrap {
-  overflow-x:auto;
-  background:#fff;
-  border-radius:10px;
-  box-shadow:0 5px 20px rgba(0,0,0,0.05);
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-  min-width:900px;
-}
-
-thead {
-  background:#0f172a;
-  color:white;
-}
-
-th, td {
-  padding:10px;
-  border-bottom:1px solid #e2e8f0;
-  font-size:14px;
-}
-
-tr:hover { background:#f8fafc; }
-
-button {
-  padding:6px 10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-  font-size:13px;
-  margin:2px;
-}
-
+button { padding:6px 10px; border:none; border-radius:6px; cursor:pointer; margin:2px; }
 .accept { background:#16a34a; color:white; }
 .complete { background:#0ea5e9; color:white; }
 .reject { background:#dc2626; color:white; }
 .secondary { background:#64748b; color:white; }
 
-input {
-  width:100%;
-  padding:8px;
-  margin-bottom:8px;
-}
+input { width:100%; padding:8px; margin-bottom:8px; }
 </style>
 </head>
 
@@ -78,7 +35,7 @@ input {
 <!-- APP -->
 <div id="app" style="display:none;">
   <h1>🚕 BD Taxi Dashboard</h1>
-  <button onclick="logout()" style="float:right;">Logout</button>
+  <button onclick="logout()">Logout</button>
   <div id="bookings"></div>
 </div>
 
@@ -88,7 +45,7 @@ input {
 
 <script>
 const firebaseConfig = {
-  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+  apiKey: "",
   authDomain: "taxi-bookings-69cff.firebaseapp.com",
   projectId: "taxi-bookings-69cff",
 };
@@ -101,203 +58,167 @@ const auth = firebase.auth();
 let allBookings = [];
 let currentEditId = null;
 
-/* ---------- LOGIN ---------- */
+/* LOGIN */
 function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  auth.signInWithEmailAndPassword(email.value, password.value)
+    .catch(e => alert(e.message));
+}
+function logout() { auth.signOut(); }
 
-  auth.signInWithEmailAndPassword(email, password)
-    .catch(err => alert(err.message));
+/* HELPERS */
+function formatMoney(v) { return "£" + Number(v||0).toFixed(2); }
+
+function formatPhone(phone){
+  let p = phone.replace(/\D/g,'');
+  if(p.startsWith("0")) p = "44" + p.substring(1); // UK fix
+  return p;
 }
 
-function logout() {
-  auth.signOut();
+function openWhatsApp(phone, msg){
+  if(!phone) return alert("No phone");
+  window.open(`https://wa.me/${formatPhone(phone)}?text=${encodeURIComponent(msg)}`);
 }
 
-/* ---------- HELPERS ---------- */
-function todayYMD() {
-  return new Date().toISOString().split("T")[0];
-}
-
-function normaliseStatus(s) {
-  s = (s || "").toLowerCase();
-  if (["done","completed"].includes(s)) return "done";
-  if (["accepted"].includes(s)) return "accepted";
-  if (["rejected","cancelled"].includes(s)) return "rejected";
-  return "new";
-}
-
-function formatMoney(v) {
-  return "£" + Number(v || 0).toFixed(2);
-}
-
-/* ---------- RENDER ---------- */
-function groupBookings() {
-  const today = todayYMD();
-  const groups = { today: [], future: [], rejected: [], done: [] };
-
-  allBookings.forEach(item => {
-    const d = item.data;
-    const status = normaliseStatus(d.status);
-
-    if (status === "rejected") groups.rejected.push(item);
-    else if (status === "done") groups.done.push(item);
-    else if (d.date === today) groups.today.push(item);
-    else groups.future.push(item);
-  });
-
-  return groups;
-}
-
-function renderBookings() {
-  const g = groupBookings();
-
-  document.getElementById("bookings").innerHTML =
-    renderTable("📅 Today", g.today) +
-    renderTable("⏳ Future", g.future) +
-    renderTable("⛔ Cancelled", g.rejected) +
-    renderTable("📊 History", g.done);
-}
-
-function renderTable(title, list) {
-  if (!list.length) return `<h3>${title}</h3><p>No bookings</p>`;
-
-  return `
-  <div class="table-section">
-    <h3>${title}</h3>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th><th>Name</th><th>Phone</th>
-            <th>Email</th><th>Pickup</th><th>Dropoff</th>
-            <th>Fare</th><th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>${list.map(renderRow).join("")}</tbody>
-      </table>
-    </div>
-  </div>`;
-}
-
-function renderRow(item) {
-  const { id, data } = item;
-  const status = normaliseStatus(data.status);
-
-  return `
-  <tr>
-    <td>${data.date || ""} ${data.time || ""}</td>
-    <td>${data.name || ""}</td>
-    <td>${data.phone || ""}</td>
-    <td>${data.email || ""}</td>
-    <td>${data.pickup || ""}</td>
-    <td>${data.dropoff || ""}</td>
-    <td>${data.fare ? formatMoney(data.fare) : "-"}</td>
-    <td>${renderActions(id, status)}</td>
-  </tr>`;
-}
-
-function renderActions(id, status) {
-  let b = `
-    <button class="secondary" onclick="editBooking('${id}')">Edit</button>
-    <button class="reject" onclick="deleteBooking('${id}')">Delete</button>
+/* RENDER */
+function renderBookings(){
+  let html = `
+  <div class="table-wrap">
+  <table>
+  <thead>
+    <tr>
+      <th>Date</th><th>Name</th><th>Phone</th>
+      <th>Pickup</th><th>Dropoff</th>
+      <th>Fare</th><th>Actions</th>
+    </tr>
+  </thead><tbody>
   `;
 
-  if (status === "new") b += `<button class="accept" onclick="acceptBooking('${id}')">Accept</button>`;
-  if (status === "accepted") b += `<button class="complete" onclick="updateStatus('${id}','done')">Done</button>`;
+  allBookings.forEach(b=>{
+    const d = b.data;
 
-  return b;
-}
-
-/* ---------- ACTIONS ---------- */
-function updateStatus(id, status) {
-  db.collection("bookings").doc(id).update({ status });
-}
-
-function acceptBooking(id) {
-  updateStatus(id, "accepted");
-}
-
-function deleteBooking(id) {
-  if (confirm("Delete booking?")) {
-    db.collection("bookings").doc(id).delete();
-  }
-}
-
-function editBooking(id) {
-  currentEditId = id;
-  const b = allBookings.find(x => x.id === id).data;
-
-  editName.value = b.name || "";
-  editPhone.value = b.phone || "";
-  editEmail.value = b.email || "";
-  editPickup.value = b.pickup || "";
-  editDropoff.value = b.dropoff || "";
-  editDate.value = b.date || "";
-  editTime.value = b.time || "";
-  editFare.value = b.fare || "";
-
-  editModal.style.display = "flex";
-}
-
-function saveEdit() {
-  db.collection("bookings").doc(currentEditId).update({
-    name: editName.value,
-    phone: editPhone.value,
-    email: editEmail.value,
-    pickup: editPickup.value,
-    dropoff: editDropoff.value,
-    date: editDate.value,
-    time: editTime.value,
-    fare: editFare.value
+    html += `
+    <tr>
+      <td>${d.date||""} ${d.time||""}</td>
+      <td>${d.name||""}</td>
+      <td>${d.phone||""}</td>
+      <td>${d.pickup||""}</td>
+      <td>${d.dropoff||""}</td>
+      <td>${d.fare?formatMoney(d.fare):"-"}</td>
+      <td>
+        <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
+        <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
+        <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
+        <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+      </td>
+    </tr>`;
   });
 
-  editModal.style.display = "none";
+  html += "</tbody></table></div>";
+  bookings.innerHTML = html;
 }
 
-/* ---------- AUTH PROTECTION ---------- */
-auth.onAuthStateChanged(user => {
-  if (user) {
-    loginScreen.style.display = "none";
-    app.style.display = "block";
+/* ACTIONS */
+function acceptBooking(id){
+  const b = allBookings.find(x=>x.id===id).data;
 
-    db.collection("bookings").onSnapshot(snapshot => {
-      allBookings = [];
+  const msg = `Hi ${b.name||""},
 
-      snapshot.forEach(doc => {
-        allBookings.push({
-          id: doc.id,
-          data: doc.data()
-        });
-      });
+Your taxi booking is CONFIRMED 🚕
 
+Pickup: ${b.pickup||"-"}
+Destination: ${b.dropoff||"-"}
+Date: ${b.date||"-"} ${b.time||""}
+Fare: ${formatMoney(b.fare)}
+
+Thank you for choosing BD Taxi.`;
+
+  openWhatsApp(b.phone, msg);
+  db.collection("bookings").doc(id).update({status:"accepted"});
+}
+
+function rejectBooking(id){
+  const b = allBookings.find(x=>x.id===id).data;
+
+  const msg = `Hi ${b.name||""},
+
+Unfortunately we cannot fulfil your booking at the requested time.
+
+Please contact us to reschedule.
+
+– BD Taxi`;
+
+  openWhatsApp(b.phone, msg);
+  db.collection("bookings").doc(id).update({status:"rejected"});
+}
+
+function deleteBooking(id){
+  if(confirm("Delete booking?"))
+    db.collection("bookings").doc(id).delete();
+}
+
+function editBooking(id){
+  currentEditId = id;
+  const b = allBookings.find(x=>x.id===id).data;
+
+  editName.value = b.name||"";
+  editPhone.value = b.phone||"";
+  editPickup.value = b.pickup||"";
+  editDropoff.value = b.dropoff||"";
+  editDate.value = b.date||"";
+  editTime.value = b.time||"";
+  editFare.value = b.fare||"";
+
+  editModal.style.display="flex";
+}
+
+function saveEdit(){
+  db.collection("bookings").doc(currentEditId).update({
+    name:editName.value,
+    phone:editPhone.value,
+    pickup:editPickup.value,
+    dropoff:editDropoff.value,
+    date:editDate.value,
+    time:editTime.value,
+    fare:editFare.value
+  });
+  editModal.style.display="none";
+}
+
+/* AUTH */
+auth.onAuthStateChanged(user=>{
+  if(user){
+    loginScreen.style.display="none";
+    app.style.display="block";
+
+    db.collection("bookings").onSnapshot(s=>{
+      allBookings=[];
+      s.forEach(doc=>allBookings.push({id:doc.id,data:doc.data()}));
       renderBookings();
     });
 
   } else {
-    loginScreen.style.display = "block";
-    app.style.display = "none";
+    loginScreen.style.display="block";
+    app.style.display="none";
   }
 });
 </script>
 
 <!-- MODAL -->
-<div id="editModal" style="display:none; position:fixed; top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
-  <div style="background:white;padding:20px;border-radius:10px;width:300px;">
-    <h3>Edit Booking</h3>
+<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;">
+<div style="background:white;padding:20px;border-radius:10px;width:300px;">
+<h3>Edit Booking</h3>
 
-    <input id="editName" placeholder="Name">
-    <input id="editPhone" placeholder="Phone">
-    <input id="editEmail" placeholder="Email">
-    <input id="editPickup" placeholder="Pickup">
-    <input id="editDropoff" placeholder="Dropoff">
-    <input id="editDate" type="date">
-    <input id="editTime" type="time">
-    <input id="editFare" placeholder="Fare">
+<input id="editName" placeholder="Name">
+<input id="editPhone" placeholder="Phone">
+<input id="editPickup" placeholder="Pickup">
+<input id="editDropoff" placeholder="Dropoff">
+<input id="editDate" type="date">
+<input id="editTime" type="time">
+<input id="editFare" placeholder="Fare">
 
-    <button onclick="saveEdit()">Save</button>
-    <button onclick="editModal.style.display='none'">Cancel</button>
-  </div>
+<button onclick="saveEdit()">Save</button>
+<button onclick="editModal.style.display='none'">Cancel</button>
+</div>
 </div>
 
 </body>
