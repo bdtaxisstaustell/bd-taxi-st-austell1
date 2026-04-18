@@ -259,32 +259,41 @@ function renderBookings() {
   const today = new Date().toISOString().split("T")[0];
 
   const groups = {
-    today: [],
-    future: [],
-    rejected: [],
-    done: []
-  };
+  today: [],
+  future: [],
+  rejected: [],
+  done: [],
+  deleted: []   // 
+};
 
   allBookings.forEach(b => {
     const d = b.data || {};
     const status = (d.status || "").toLowerCase();
 
-    if (status === "rejected" || status === "cancelled") {
-      groups.rejected.push(b);
-    } else if (status === "done") {
-      groups.done.push(b);
-    } else if (d.date === today) {
-      groups.today.push(b);
-    } else {
-      groups.future.push(b);
-    }
+    if (status === "deleted") {
+  groups.deleted.push(b);
+}
+else if (status === "rejected" || status === "cancelled") {
+  groups.rejected.push(b);
+}
+else if (status === "done") {
+  groups.done.push(b);
+}
+else if (d.date === today) {
+  groups.today.push(b);
+}
+else {
+  groups.future.push(b);
+}
+   
   });
 
-  getEl("bookings").innerHTML =
-    renderTable("📅 Today's Bookings", groups.today) +
-    renderTable("⏳ Future Bookings", groups.future) +
-    renderTable("⛔ Cancelled", groups.rejected) +
-    renderTable("📊 History", groups.done);
+ getEl("bookings").innerHTML =
+  renderTable("📅 Today's Bookings", groups.today) +
+  renderTable("⏳ Future Bookings", groups.future) +
+  renderTable("⛔ Cancelled", groups.rejected) +
+  renderTable("📊 History", groups.done) +
+  renderTable("🗑️ Trash", groups.deleted);  // 
 }
 
 function renderTable(title, list) {
@@ -321,10 +330,18 @@ function renderTable(title, list) {
         <td>${d.dropoff || ""}</td>
         <td>${d.fare !== undefined && d.fare !== null && d.fare !== "" ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
         <td class="action-cell">
-          <button type="button" class="secondary" onclick="editBooking('${b.id}')">Edit</button>
-          <button type="button" class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
-          <button type="button" class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
-          <button type="button" class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+        ${
+  title.includes("Trash")
+    ? `
+      <button class="accept" onclick="restoreBooking('${b.id}')">Restore</button>
+    `
+    : `
+      <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
+      <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
+      <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
+      <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+    `
+}
         </td>
       </tr>
     `;
@@ -391,14 +408,27 @@ async function deleteBooking(id) {
   if (!confirm("Delete booking?")) return;
 
   try {
-    await db.collection("bookings").doc(id).delete();
+await db.collection("bookings").doc(id).update({
+  status: "deleted",
+  deletedAt: new Date().toISOString()
+});
     alert("Deleted");
   } catch (e) {
     alert("Delete failed: " + e.message);
     console.error("Delete failed:", e);
   }
 }
+async function restoreBooking(id) {
+  try {
+    await db.collection("bookings").doc(id).update({
+      status: "pending"
+    });
 
+    alert("Restored");
+  } catch (e) {
+    alert("Restore failed: " + e.message);
+  }
+}
 async function acceptBooking(id) {
   try {
     const booking = allBookings.find(x => x.id === id);
@@ -497,6 +527,7 @@ window.closeModal = closeModal;
 window.deleteBooking = deleteBooking;
 window.acceptBooking = acceptBooking;
 window.rejectBooking = rejectBooking;
+window.restoreBooking = restoreBooking;
 </script>
 
 </body>
