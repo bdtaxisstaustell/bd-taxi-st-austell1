@@ -141,6 +141,79 @@ input {
 .action-cell {
   min-width: 210px;
 }
+  /* MOBILE VIEW */
+@media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* TABLE → CARD STYLE */
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    background: white;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
+
+  td {
+    border: none;
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+
+  td::before {
+    font-weight: 600;
+    color: #64748b;
+  }
+
+  td:nth-child(1)::before { content: "Date"; }
+  td:nth-child(2)::before { content: "Name"; }
+  td:nth-child(3)::before { content: "Phone"; }
+  td:nth-child(4)::before { content: "Pickup"; }
+  td:nth-child(5)::before { content: "Dropoff"; }
+  td:nth-child(6)::before { content: "Fare"; }
+
+  .action-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .action-cell button {
+    flex: 1 1 48%;
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* BIGGER TAP TARGET */
+  button {
+    min-height: 40px;
+  }
+}
 </style>
 </head>
 
