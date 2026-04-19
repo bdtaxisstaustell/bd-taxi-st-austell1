@@ -159,9 +159,13 @@ input {
 <!-- APP -->
 <div id="app" style="display:none;">
   <div class="topbar">
-    <h1>🚕 BD Taxi Dashboard</h1>
-    <button type="button" onclick="logout()">Logout</button>
+  <h1>🚕 BD Taxi Dashboard</h1>
+
+  <div>
+    <button onclick="clearTrash()">🗑️ Clear Trash</button>
+    <button onclick="logout()">Logout</button>
   </div>
+</div>
   <div id="bookings"></div>
 </div>
 
@@ -433,6 +437,26 @@ await db.collection("bookings").doc(id).update({
     console.error("Delete failed:", e);
   }
 }
+  async function clearTrash() {
+  if (!confirm("Delete ALL trash permanently?")) return;
+
+  try {
+    const snapshot = await db.collection("bookings")
+      .where("status", "==", "deleted")
+      .get();
+
+    const batch = db.batch();
+
+    snapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+    alert("Trash cleared");
+  } catch (e) {
+    alert("Error: " + e.message);
+  }
+}
 async function restoreBooking(id) {
   try {
     await db.collection("bookings").doc(id).update({
@@ -543,6 +567,7 @@ window.deleteBooking = deleteBooking;
 window.acceptBooking = acceptBooking;
 window.rejectBooking = rejectBooking;
 window.restoreBooking = restoreBooking;
+window.clearTrash = clearTrash;
 </script>
 
 </body>
