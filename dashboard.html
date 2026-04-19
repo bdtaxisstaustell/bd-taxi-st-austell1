@@ -349,8 +349,8 @@ function renderTable(title, list) {
         <td>${d.dropoff || ""}</td>
         <td>${d.fare !== undefined && d.fare !== null && d.fare !== "" ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
         <td class="action-cell">
-        ${
-  title.includes("Trash")
+ ${
+  title === "🗑️ Trash"
     ? `
       <button class="accept" onclick="restoreBooking('${b.id}')">Restore</button>
     `
