@@ -189,12 +189,13 @@ input {
     color: #64748b;
   }
 
-  td:nth-child(1)::before { content: "Date"; }
-  td:nth-child(2)::before { content: "Name"; }
-  td:nth-child(3)::before { content: "Phone"; }
-  td:nth-child(4)::before { content: "Pickup"; }
-  td:nth-child(5)::before { content: "Dropoff"; }
-  td:nth-child(6)::before { content: "Fare"; }
+td:nth-child(1)::before { content: "Date"; }
+td:nth-child(2)::before { content: "Name"; }
+td:nth-child(3)::before { content: "Phone"; }
+td:nth-child(4)::before { content: "Email"; } 
+td:nth-child(5)::before { content: "Pickup"; }
+td:nth-child(6)::before { content: "Dropoff"; }
+td:nth-child(7)::before { content: "Fare"; }
 
   .action-cell {
     display: flex;
@@ -399,13 +400,14 @@ function renderTable(title, list) {
       <table>
         <thead>
           <tr>
-            <th>Date</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Pickup</th>
-            <th>Dropoff</th>
-            <th>Fare</th>
-            <th>Actions</th>
+<th>Date</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Email</th> 
+<th>Pickup</th>
+<th>Dropoff</th>
+<th>Fare</th>
+<th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -418,6 +420,7 @@ function renderTable(title, list) {
         <td>${d.date || ""} ${d.time || ""}</td>
         <td>${d.name || ""}</td>
         <td>${d.phone || ""}</td>
+        <td>${d.email || ""}</td>
         <td>${d.pickup || ""}</td>
         <td>${d.dropoff || ""}</td>
         <td>${d.fare !== undefined && d.fare !== null && d.fare !== "" ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
