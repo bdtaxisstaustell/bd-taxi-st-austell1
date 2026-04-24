@@ -14,110 +14,250 @@ body {
   color: #1e293b;
 }
 
-h1 { margin-bottom: 20px; font-weight: 600; }
-h3 { margin: 20px 0 10px; }
+/* HEADINGS */
+h1 {
+  margin-bottom: 20px;
+  font-weight: 600;
+}
 
+h3 {
+  margin: 20px 0 10px;
+}
+
+/* TABLE CARD */
 .table-wrap {
-  background: #fff;
+  background: #ffffff;
   border-radius: 14px;
   overflow-x: auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.06);
   margin-bottom: 25px;
 }
 
-table { width: 100%; border-collapse: collapse; }
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-thead { background: #4d4dff; color: white; }
+/* HEADER */
+thead {
+  background: #4d4dff;
+  color: white;
+}
 
-th, td {
+th {
   padding: 12px;
   text-align: left;
+  font-weight: 500;
   font-size: 14px;
 }
 
+/* CELLS */
 td {
+  padding: 12px;
   border-bottom: 1px solid #e2e8f0;
+  font-size: 14px;
+  vertical-align: top;
 }
 
-tr:hover { background: #f8faff; }
+/* ROW HOVER */
+tr:hover {
+  background: #f8faff;
+  transition: 0.2s;
+}
 
+/* BUTTONS */
 button {
-  padding: 7px 10px;
+  padding: 6px 10px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
+  margin: 2px;
+  transition: 0.2s;
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+/* BUTTON COLORS */
+.accept {
+  background: #22c55e;
+  color: white;
 }
 
-.accept { background: #22c55e; color: white; }
-.complete { background: #0ea5e9; color: white; }
-.reject { background: #ef4444; color: white; }
-.secondary { background: #64748b; color: white; }
+.complete {
+  background: #0ea5e9;
+  color: white;
+}
 
+.reject {
+  background: #ef4444;
+  color: white;
+}
+
+.secondary {
+  background: #64748b;
+  color: white;
+}
+
+/* BUTTON HOVER */
+button:hover {
+  transform: translateY(-1px);
+  opacity: 0.9;
+}
+
+/* INPUTS */
 input {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 8px;
   border: 1px solid #d1d5db;
+  outline: none;
+  box-sizing: border-box;
 }
 
+/* MODAL */
+#editModal > div {
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* LOGIN BOX */
 #loginScreen {
-  max-width: 320px;
+  max-width: 300px;
   margin: 100px auto;
   background: white;
   padding: 20px;
   border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
+/* LOGOUT BUTTON */
 .topbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
+}
+
+.action-cell {
+  min-width: 210px;
+}
+  /* MOBILE VIEW */
+@media (max-width: 768px) {
+
+  body {
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  /* TABLE → CARD STYLE */
+  table, thead, tbody, th, td, tr {
+    display: block;
+    width: 100%;
+  }
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    background: white;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  }
+
+  td {
+    border: none;
+    padding: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+  }
+
+  td::before {
+    font-weight: 600;
+    color: #64748b;
+  }
+
+td:nth-child(1)::before { content: "Date"; }
+td:nth-child(2)::before { content: "Name"; }
+td:nth-child(3)::before { content: "Phone"; }
+td:nth-child(4)::before { content: "Email"; } 
+td:nth-child(5)::before { content: "Pickup"; }
+td:nth-child(6)::before { content: "Dropoff"; }
+td:nth-child(7)::before { content: "Fare"; }
+
+  .action-cell {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+  }
+
+  .action-cell button {
+    flex: 1 1 48%;
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  /* BIGGER TAP TARGET */
+  button {
+    min-height: 40px;
+  }
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div id="loginScreen">
   <h2>Login</h2>
   <input id="email" placeholder="Email">
+  <br><br>
   <input id="password" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
+  <br><br>
+  <button type="button" onclick="login()">Login</button>
 </div>
 
+<!-- APP -->
 <div id="app" style="display:none;">
   <div class="topbar">
-    <h1>🚕 BD Taxi Dashboard</h1>
-    <div>
-      <button onclick="clearTrash()">🗑️ Clear Trash</button>
-      <button onclick="logout()">Logout</button>
-    </div>
+  <h1>🚕 BD Taxi Dashboard</h1>
+
+  <div>
+    <button onclick="clearTrash()">🗑️ Clear Trash</button>
+    <button onclick="logout()">Logout</button>
   </div>
+</div>
   <div id="bookings"></div>
 </div>
 
 <!-- MODAL -->
-<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:flex;justify-content:center;align-items:center;">
+<div id="editModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;z-index:999;">
   <div style="background:white;padding:20px;border-radius:10px;width:320px;">
     <h3>Edit Booking</h3>
 
     <input id="editName" placeholder="Name">
-    <input id="editPhone" placeholder="Phone (+44...)">
+    <input id="editPhone" placeholder="Phone">
     <input id="editPickup" placeholder="Pickup">
     <input id="editDropoff" placeholder="Dropoff">
     <input id="editDate" type="date">
     <input id="editTime" type="time">
     <input id="editFare" placeholder="Fare">
 
-    <button onclick="saveEdit()">Save</button>
-    <button onclick="closeModal()">Cancel</button>
+    <button type="button" onclick="saveEdit()">Save</button>
+    <button type="button" onclick="closeModal()">Cancel</button>
   </div>
 </div>
 
@@ -127,9 +267,9 @@ input {
 
 <script>
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_PROJECT",
+  apiKey: "AIzaSyB3j9VvJK0ELt1ILjSvNjpoy2AZMS8Sr2Q",
+  authDomain: "taxi-bookings-69cff.firebaseapp.com",
+  projectId: "taxi-bookings-69cff",
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -140,105 +280,186 @@ const auth = firebase.auth();
 let allBookings = [];
 let currentEditId = null;
 
-/* ---------- HELPERS ---------- */
+/* HELPERS */
+function getEl(id) {
+  return document.getElementById(id);
+}
 
-const getEl = id => document.getElementById(id);
+function formatMoney(v) {
+  return "£" + Number(v || 0).toFixed(2);
+}
 
-const formatMoney = v => "£" + Number(v || 0).toFixed(2);
-
-/* 🔥 PROPER INTERNATIONAL PHONE FORMAT */
 function formatPhone(phone) {
-  if (!phone) return null;
-
-  let p = phone.replace(/[^\d+]/g, "");
-
-  // If starts with 0 → UK
-  if (p.startsWith("0")) {
-    p = "+44" + p.slice(1);
-  }
-
-  // If no + → assume UK
-  if (!p.startsWith("+")) {
-    p = "+44" + p;
-  }
-
-  // Remove +
-  return p.replace("+", "");
+  if (!phone) return "";
+  let p = String(phone).replace(/\D/g, "");
+  if (p.startsWith("0")) p = "44" + p.substring(1); // UK format
+  return p;
 }
 
 function openWhatsApp(phone, msg) {
   const p = formatPhone(phone);
-
-  if (!p || p.length < 10) {
-    alert("Invalid phone number");
+  if (!p) {
+    alert("No phone number");
     return;
   }
-
   window.open(`https://wa.me/${p}?text=${encodeURIComponent(msg)}`, "_blank");
 }
 
-/* ---------- LOGIN ---------- */
+function closeModal() {
+  getEl("editModal").style.display = "none";
+  currentEditId = null;
+}
 
+/* LOGIN */
 async function login() {
-  await auth.signInWithEmailAndPassword(
-    getEl("email").value.trim(),
-    getEl("password").value
-  );
+  try {
+    await auth.signInWithEmailAndPassword(
+      getEl("email").value.trim(),
+      getEl("password").value
+    );
+  } catch (e) {
+    alert("Login failed: " + e.message);
+    console.error(e);
+  }
 }
 
-function logout() {
-  auth.signOut();
+async function logout() {
+  try {
+    await auth.signOut();
+  } catch (e) {
+    alert("Logout failed: " + e.message);
+    console.error(e);
+  }
 }
 
-/* ---------- RENDER ---------- */
+/* RENDER */
 
-function renderBookings() {
-  let html = `
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Name</th>
-          <th>Phone</th>
-          <th>Pickup</th>
-          <th>Dropoff</th>
-          <th>Fare</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
+ function renderBookings() {
+  const today = new Date().toISOString().split("T")[0];
+
+  const groups = {
+    today_whatsapp: [],
+    today_email: [],
+    future_whatsapp: [],
+    future_email: [],
+    rejected: [],
+    done: [],
+    deleted: []
+  };
 
   allBookings.forEach(b => {
-    const d = b.data;
+    const d = b.data || {};
+    const status = (d.status || "").toLowerCase();
+    const source = (d.source || "email").toLowerCase(); // 👈 NEW
 
+    if (status === "deleted") {
+      groups.deleted.push(b);
+    }
+    else if (status === "rejected" || status === "cancelled") {
+      groups.rejected.push(b);
+    }
+    else if (status === "done") {
+      groups.done.push(b);
+    }
+    else if (d.date === today) {
+      if (source === "whatsapp") {
+        groups.today_whatsapp.push(b);
+      } else {
+        groups.today_email.push(b);
+      }
+    }
+    else {
+      if (source === "whatsapp") {
+        groups.future_whatsapp.push(b);
+      } else {
+        groups.future_email.push(b);
+      }
+    }
+  });
+
+  getEl("bookings").innerHTML =
+    renderTable("📱 Today's WhatsApp", groups.today_whatsapp) +
+    renderTable("📧 Today's Email", groups.today_email) +
+
+    renderTable("📱 Future WhatsApp", groups.future_whatsapp) +
+    renderTable("📧 Future Email", groups.future_email) +
+
+    renderTable("⛔ Cancelled", groups.rejected) +
+    renderTable("📊 History", groups.done) +
+    renderTable("🗑️ Trash", groups.deleted);
+} 
+
+function renderTable(title, list) {
+  if (!list.length) {
+    return `<h3>${title}</h3><p>No bookings</p>`;
+  }
+
+  let html = `
+    <h3>${title}</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+<th>Date</th>
+<th>Name</th>
+<th>Phone</th>
+<th>Email</th> 
+<th>Pickup</th>
+<th>Dropoff</th>
+<th>Fare</th>
+<th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+  `;
+
+  list.forEach(b => {
+    const d = b.data || {};
     html += `
       <tr>
         <td>${d.date || ""} ${d.time || ""}</td>
         <td>${d.name || ""}</td>
         <td>${d.phone || ""}</td>
+        <td>${d.email || ""}</td>
         <td>${d.pickup || ""}</td>
         <td>${d.dropoff || ""}</td>
-        <td>${formatMoney(d.fare)}</td>
-        <td>
-          <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
-          <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
-          <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+        <td>${d.fare !== undefined && d.fare !== null && d.fare !== "" ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
+        <td class="action-cell">
+ ${
+  title === "🗑️ Trash"
+    ? `
+      <button class="accept" onclick="restoreBooking('${b.id}')">Restore</button>
+    `
+    : `
+      <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
+      <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
+      <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
+      <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+    `
+}
         </td>
       </tr>
     `;
   });
 
-  html += `</tbody></table></div>`;
-  getEl("bookings").innerHTML = html;
+  html += `
+        </tbody>
+      </table>
+    </div>
+  `;
+
+  return html;
 }
 
-/* ---------- EDIT ---------- */
-
+/* ACTIONS */
 function editBooking(id) {
-  const b = allBookings.find(x => x.id === id).data;
+  const booking = allBookings.find(x => x.id === id);
+  if (!booking) {
+    alert("Booking not found");
+    return;
+  }
 
+  const b = booking.data || {};
   currentEditId = id;
 
   getEl("editName").value = b.name || "";
@@ -253,84 +474,176 @@ function editBooking(id) {
 }
 
 async function saveEdit() {
-  const phone = getEl("editPhone").value.trim();
-
-  if (!phone) {
-    alert("Phone required");
+  if (!currentEditId) {
+    alert("No booking selected");
     return;
   }
 
-  await db.collection("bookings").doc(currentEditId).update({
-    name: getEl("editName").value.trim(),
-    phone,
-    pickup: getEl("editPickup").value.trim(),
-    dropoff: getEl("editDropoff").value.trim(),
-    date: getEl("editDate").value,
-    time: getEl("editTime").value,
-    fare: Number(getEl("editFare").value || 0)
-  });
+  try {
+    await db.collection("bookings").doc(currentEditId).update({
+      name: getEl("editName").value.trim(),
+      phone: getEl("editPhone").value.trim(),
+      pickup: getEl("editPickup").value.trim(),
+      dropoff: getEl("editDropoff").value.trim(),
+      date: getEl("editDate").value,
+      time: getEl("editTime").value,
+      fare: Number(getEl("editFare").value || 0)
+    });
 
-  closeModal();
+    getEl("editModal").style.display = "none";
+    currentEditId = null;
+    alert("Saved successfully");
+  } catch (e) {
+    alert("Save failed: " + e.message);
+    console.error("Save failed:", e);
+  }
 }
 
-function closeModal() {
-  getEl("editModal").style.display = "none";
+async function deleteBooking(id) {
+  if (!confirm("Delete booking?")) return;
+
+  try {
+await db.collection("bookings").doc(id).update({
+  status: "deleted",
+  deletedAt: new Date().toISOString()
+});
+    alert("Deleted");
+  } catch (e) {
+    alert("Delete failed: " + e.message);
+    console.error("Delete failed:", e);
+  }
 }
+  async function clearTrash() {
+  if (!confirm("Delete ALL trash permanently?")) return;
 
-/* ---------- ACTIONS ---------- */
+  try {
+    const snapshot = await db.collection("bookings")
+      .where("status", "==", "deleted")
+      .get();
 
+    const batch = db.batch();
+
+    snapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+
+    await batch.commit();
+    alert("Trash cleared");
+  } catch (e) {
+    alert("Error: " + e.message);
+  }
+}
+async function restoreBooking(id) {
+  try {
+    await db.collection("bookings").doc(id).update({
+      status: "pending"
+    });
+
+    alert("Restored");
+  } catch (e) {
+    alert("Restore failed: " + e.message);
+  }
+}
 async function acceptBooking(id) {
-  const b = allBookings.find(x => x.id === id).data;
+  try {
+    const booking = allBookings.find(x => x.id === id);
+    if (!booking) {
+      alert("Booking not found");
+      return;
+    }
 
-  const msg = `Hi ${b.name},
+    const b = booking.data || {};
 
-Your booking is CONFIRMED 🚕
+    const msg = `Hi ${b.name || ""},
 
-Pickup: ${b.pickup}
-Dropoff: ${b.dropoff}
-Date: ${b.date} ${b.time}
+Your taxi booking is CONFIRMED 🚕
+
+Pickup: ${b.pickup || "-"}
+Destination: ${b.dropoff || "-"}
+Date: ${b.date || "-"} ${b.time || ""}
 Fare: ${formatMoney(b.fare)}
 
-Thank you`;
+Thank you for choosing BD Taxi.`;
 
-  openWhatsApp(b.phone, msg);
+    openWhatsApp(b.phone, msg);
 
-  await db.collection("bookings").doc(id).update({ status: "accepted" });
+    await db.collection("bookings").doc(id).update({
+      status: "accepted"
+    });
+  } catch (e) {
+    alert("Accept failed: " + e.message);
+    console.error("Accept failed:", e);
+  }
 }
 
 async function rejectBooking(id) {
-  const b = allBookings.find(x => x.id === id).data;
+  try {
+    const booking = allBookings.find(x => x.id === id);
+    if (!booking) {
+      alert("Booking not found");
+      return;
+    }
 
-  const msg = `Hi ${b.name},
+    const b = booking.data || {};
 
-Sorry, we cannot take this booking.
+    const msg = `Hi ${b.name || ""},
 
-Please contact us again.`;
+Unfortunately we cannot fulfil your booking at the requested time.
 
-  openWhatsApp(b.phone, msg);
+Please contact us to reschedule.
 
-  await db.collection("bookings").doc(id).update({ status: "rejected" });
+– BD Taxi`;
+
+    openWhatsApp(b.phone, msg);
+
+    await db.collection("bookings").doc(id).update({
+      status: "rejected"
+    });
+  } catch (e) {
+    alert("Reject failed: " + e.message);
+    console.error("Reject failed:", e);
+  }
 }
 
-/* ---------- FIREBASE ---------- */
-
+/* AUTH */
 auth.onAuthStateChanged(user => {
   if (user) {
     getEl("loginScreen").style.display = "none";
     getEl("app").style.display = "block";
 
-    db.collection("bookings").onSnapshot(snap => {
-      allBookings = snap.docs.map(doc => ({
-        id: doc.id,
-        data: doc.data()
-      }));
-      renderBookings();
-    });
+    db.collection("bookings").onSnapshot(
+      snapshot => {
+        allBookings = [];
+        snapshot.forEach(doc => {
+          allBookings.push({
+            id: doc.id,
+            data: doc.data()
+          });
+        });
+        renderBookings();
+      },
+      error => {
+        alert("Failed to load bookings: " + error.message);
+        console.error("Snapshot error:", error);
+      }
+    );
   } else {
     getEl("loginScreen").style.display = "block";
     getEl("app").style.display = "none";
   }
 });
+
+/* expose functions for onclick */
+window.login = login;
+window.logout = logout;
+window.editBooking = editBooking;
+window.saveEdit = saveEdit;
+window.closeModal = closeModal;
+window.deleteBooking = deleteBooking;
+window.acceptBooking = acceptBooking;
+window.rejectBooking = rejectBooking;
+window.restoreBooking = restoreBooking;
+window.clearTrash = clearTrash;
 </script>
 
 </body>
