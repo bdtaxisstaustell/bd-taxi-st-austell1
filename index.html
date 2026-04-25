@@ -1402,13 +1402,57 @@ service.getDistanceMatrix(
     }
 /* WHATSAPP BOOKING */
 
+function formatPhoneNumber(input) {
+  if (!input) return null;
+
+  let number = input.replace(/\s+/g, "").replace(/[^0-9+]/g, "");
+
+  // UK local → international
+  if (number.startsWith("07")) {
+    number = "+44" + number.substring(1);
+  }
+
+  if (number.startsWith("0044")) {
+    number = "+44" + number.substring(4);
+  }
+
+  // Must start with +
+  if (!number.startsWith("+")) return null;
+
+  // Must be valid length (8–15 digits total)
+  const digitsOnly = number.replace(/\D/g, "");
+
+  if (digitsOnly.length < 10 || digitsOnly.length > 15) {
+    return null;
+  }
+
+  return number;
+}
  
 function sendWhatsApp() {
 
-  const name = document.getElementById("name")?.value || "";
-  const phoneInput = document.getElementById("phone")?.value || "";
-  const pickup = document.getElementById("pickupAddress")?.value || "";
-  const dropoff = document.getElementById("dropoffAddress")?.value || "";
+ const name = document.getElementById("name")?.value.trim() || "";
+
+const rawPhone = document.getElementById("phone")?.value || "";
+const formattedPhone = formatPhoneNumber(rawPhone);
+
+const phoneField = document.getElementById("phone");
+
+if (!formattedPhone) {
+  alert("Please enter a valid UK or international phone number (e.g. +447123456789)");
+  if (phoneField) phoneField.focus();
+  return;
+}
+
+// update field so user sees correct format
+document.getElementById("phone").value = formattedPhone;
+
+if (!name) {
+  alert("Please enter your name");
+  return;
+}
+  const pickup = document.getElementById("pickupAddress")?.value.trim() || "";
+  const dropoff = document.getElementById("dropoffAddress")?.value.trim() || "";
   const date = document.getElementById("date")?.value || "";
   const time = document.getElementById("time")?.value || "";
   const passengers = document.getElementById("passengers")?.value || "";
@@ -1419,14 +1463,20 @@ function sendWhatsApp() {
     alert("Please enter pickup and drop-off locations");
     return;
   }
-
+if (date && time) {
+  const selected = new Date(date + "T" + time);
+  if (selected < new Date()) {
+    alert("Please select a future time");
+    return;
+  }
+}
   const phoneNumber = "441726806556"; // your WhatsApp number
 
  const message =
 `Taxi Booking Request
 
 Name: ${name}
-Phone: ${phoneInput}
+Phone: ${formattedPhone}
 From: ${pickup}
 To: ${dropoff}
 Date: ${date} at ${time}
@@ -1609,6 +1659,20 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
   }
+ const emailPhoneField = document.getElementById("emailPhone");
+if (emailPhoneField) {
+  emailPhoneField.addEventListener("blur", function() {
+    if (typeof formatPhoneNumber !== "function") return;
+
+    const formatted = formatPhoneNumber(this.value);
+
+    if (formatted) {
+      this.value = formatted;
+    } else if (this.value.trim() !== "") {
+      this.style.borderColor = "red"; // visual warning
+    }
+  });
+}
 
   /* DROPDOWN */
   const dropdownBtn = document.querySelector(".dropdown button");
@@ -1630,14 +1694,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
   if (form) {
     form.addEventListener("submit", async function(e) {
-      e.preventDefault();
+    e.preventDefault();
 
-      console.log("Submitting booking...");
+const phoneInput = document.getElementById("emailPhone");
+const rawPhone = phoneInput ? phoneInput.value.trim() : "";
+
+const phone = formatPhoneNumber(rawPhone);
+
+if (!phone) {
+  alert("Enter a valid UK or international phone number (e.g. +447123456789)");
+  if (phoneInput) phoneInput.focus(); // 👈 UX improvement
+  return;
+}
+
+console.log("Submitting booking...");
 
       try {
         await db.collection("bookings").add({
           name: document.getElementById("emailName").value,
-          phone: document.getElementById("emailPhone").value,
+          phone: phone,
           email: document.getElementById("emailEmail").value,
           pickup: document.getElementById("pickupAddressEmail").value,
           dropoff: document.getElementById("dropoffAddressEmail").value,
