@@ -843,7 +843,7 @@ gtag('config', 'G-0T3NNG0DZX');
   <label>Phone</label>
   <div style="display:flex; gap:8px; align-items:stretch;">
 
-    <select id="countryCode"
+    <select id="emailCountryCode">
       style="
         flex:0 0 140px;
         padding:16px;
@@ -891,7 +891,7 @@ gtag('config', 'G-0T3NNG0DZX');
       <option value="">🌍 Other</option>
     </select>
 
-    <input id="phone"
+    <input id="emailPhone"
       type="tel"
       placeholder="7123 456789"
       required
@@ -1605,22 +1605,21 @@ const countryCode = document.getElementById("countryCode")?.value || "+44";
 
 let rawPhone = phoneField?.value.trim() || "";
 
-// remove spaces
-rawPhone = rawPhone.replace(/\s+/g, "");
+// remove spaces and non-digits
+rawPhone = rawPhone.replace(/\D/g, "");
 
-// remove leading 0 ONLY for UK numbers
+// remove leading 0 for UK only
 if (countryCode === "+44" && rawPhone.startsWith("0")) {
   rawPhone = rawPhone.substring(1);
 }
 
-// validate digits only
-if (!/^\d+$/.test(rawPhone) || rawPhone.length < 9) {
+// basic validation (international length)
+if (rawPhone.length < 9 || rawPhone.length > 15) {
   alert("Please enter a valid phone number");
   phoneField?.focus();
   return;
 }
 
-// ✅ final number (ONLY used internally)
 const formattedPhone = countryCode + rawPhone;
 
 // name validation
@@ -1671,7 +1670,7 @@ Please confirm availability 👍`;
 if (db) {
   db.collection("bookings").add({
     name,
-    phone: phoneInput,
+    phone: formattedPhone,
     pickup,
     dropoff,
     date,
