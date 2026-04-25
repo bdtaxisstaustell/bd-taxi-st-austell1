@@ -841,70 +841,70 @@ gtag('config', 'G-0T3NNG0DZX');
 
   <!-- PHONE -->
   <label>Phone</label>
-  <div style="display:flex; gap:8px; align-items:stretch;">
 
-    <select id="emailCountryCode">
-      style="
-        flex:0 0 140px;
-        padding:16px;
-        border-radius:10px;
-        border:1px solid #e2e8f0;
-        font-size:14px;
-      ">
+    <div style="display:flex; gap:8px; align-items:stretch; width:100%;">
 
-      <option value="+44" selected>🇬🇧 UK +44</option>
-      <option value="+353">🇮🇪 Ireland +353</option>
+  <!-- COUNTRY CODE -->
+  <select id="emailCountryCode"
+    style="
+      flex:0 0 140px;
+      padding:16px;
+      border-radius:10px;
+      border:1px solid #e2e8f0;
+      font-size:14px;
+      background:#fff;
+    ">
 
-      <!-- EU -->
-      <option value="+33">🇫🇷 France +33</option>
-      <option value="+49">🇩🇪 Germany +49</option>
-      <option value="+34">🇪🇸 Spain +34</option>
-      <option value="+39">🇮🇹 Italy +39</option>
-      <option value="+31">🇳🇱 Netherlands +31</option>
-      <option value="+32">🇧🇪 Belgium +32</option>
-      <option value="+46">🇸🇪 Sweden +46</option>
-      <option value="+45">🇩🇰 Denmark +45</option>
-      <option value="+358">🇫🇮 Finland +358</option>
-      <option value="+47">🇳🇴 Norway +47</option>
-      <option value="+41">🇨🇭 Switzerland +41</option>
-      <option value="+43">🇦🇹 Austria +43</option>
-      <option value="+48">🇵🇱 Poland +48</option>
-      <option value="+351">🇵🇹 Portugal +351</option>
-      <option value="+420">🇨🇿 Czech Republic +420</option>
-      <option value="+30">🇬🇷 Greece +30</option>
+    <!-- UK DEFAULT -->
+    <option value="+44" selected>🇬🇧 United Kingdom +44</option>
 
-      <!-- North America -->
-      <option value="+1">🇺🇸 USA +1</option>
-      <option value="+1">🇨🇦 Canada +1</option>
+    <!-- A-Z ORDER -->
+    <option value="+43">🇦🇹 Austria +43</option>
+    <option value="+32">🇧🇪 Belgium +32</option>
+    <option value="+1">🇨🇦 Canada +1</option>
+    <option value="+86">🇨🇳 China +86</option>
+    <option value="+420">🇨🇿 Czech Republic +420</option>
+    <option value="+45">🇩🇰 Denmark +45</option>
+    <option value="+358">🇫🇮 Finland +358</option>
+    <option value="+33">🇫🇷 France +33</option>
+    <option value="+49">🇩🇪 Germany +49</option>
+    <option value="+30">🇬🇷 Greece +30</option>
+    <option value="+353">🇮🇪 Ireland +353</option>
+    <option value="+39">🇮🇹 Italy +39</option>
+    <option value="+81">🇯🇵 Japan +81</option>
+    <option value="+31">🇳🇱 Netherlands +31</option>
+    <option value="+64">🇳🇿 New Zealand +64</option>
+    <option value="+47">🇳🇴 Norway +47</option>
+    <option value="+48">🇵🇱 Poland +48</option>
+    <option value="+351">🇵🇹 Portugal +351</option>
+    <option value="+65">🇸🇬 Singapore +65</option>
+    <option value="+34">🇪🇸 Spain +34</option>
+    <option value="+46">🇸🇪 Sweden +46</option>
+    <option value="+41">🇨🇭 Switzerland +41</option>
+    <option value="+971">🇦🇪 UAE +971</option>
+    <option value="+1">🇺🇸 USA +1</option>
 
-      <!-- Oceania -->
-      <option value="+61">🇦🇺 Australia +61</option>
-      <option value="+64">🇳🇿 New Zealand +64</option>
+    <option value="">🌍 Other</option>
 
-      <!-- Asia -->
-      <option value="+81">🇯🇵 Japan +81</option>
-      <option value="+86">🇨🇳 China +86</option>
-      <option value="+91">🇮🇳 India +91</option>
-      <option value="+65">🇸🇬 Singapore +65</option>
-      <option value="+971">🇦🇪 UAE +971</option>
+  </select>
 
-      <option value="">🌍 Other</option>
-    </select>
+  <!-- PHONE INPUT -->
+  <input id="emailPhone"
+    type="tel"
+    inputmode="numeric"
+    placeholder="7123 456789"
+    required
+    style="
+      flex:1;
+      min-width:0;
+      padding:16px;
+      border-radius:10px;
+      border:1px solid #e2e8f0;
+      font-size:16px;
+      width:100%;
+    ">
 
-    <input id="emailPhone"
-      type="tel"
-      placeholder="7123 456789"
-      required
-      style="
-        flex:1;
-        min-width:0;
-        padding:16px;
-        border-radius:10px;
-        border:1px solid #e2e8f0;
-        font-size:16px;
-      ">
-
-  </div>
+</div>
 
   <!-- EMAIL -->
   <label>Email</label>
@@ -1880,7 +1880,8 @@ if (emailPhoneField) {
 const phoneInput = document.getElementById("emailPhone");
 const rawPhone = phoneInput ? phoneInput.value.trim() : "";
 
-const phone = formatPhoneNumber(rawPhone);
+const countryCode = document.getElementById("emailCountryCode")?.value || "+44";
+const phone = formatPhoneNumber(rawPhone, countryCode);
 
 if (!phone) {
   alert("Enter a valid UK or international phone number (e.g. +447123456789)");
