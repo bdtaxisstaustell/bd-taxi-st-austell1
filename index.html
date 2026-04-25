@@ -1597,7 +1597,8 @@ function formatPhoneNumber(input) {
 }
  
 function sendWhatsApp() {
-const name = document.getElementById("name")?.value.trim() || "";
+
+ const name = document.getElementById("name")?.value.trim() || "";
 
 const phoneField = document.getElementById("phone");
 const countryCode = document.getElementById("countryCode")?.value || "+44";
@@ -1612,27 +1613,22 @@ if (countryCode === "+44" && rawPhone.startsWith("0")) {
   rawPhone = rawPhone.substring(1);
 }
 
-// validate
-if (!/^\d+$/.test(rawPhone) || rawPhone.length < 8) {
+// validate digits only
+if (!/^\d+$/.test(rawPhone) || rawPhone.length < 9) {
   alert("Please enter a valid phone number");
-  if (phoneField) phoneField.focus();
+  phoneField?.focus();
   return;
 }
 
-// final number
+// ✅ final number (ONLY used internally)
 const formattedPhone = countryCode + rawPhone;
 
-// show formatted number
-if (phoneField) phoneField.value = formattedPhone;
-
 // name validation
-const nameField = document.getElementById("name");
-
 if (!name) {
   alert("Please enter your name");
-  if (nameField) nameField.focus();
+  document.getElementById("name")?.focus();
   return;
-}
+} 
 
 // pickup & dropoff
 const pickup = document.getElementById("pickupAddress")?.value.trim() || "";
