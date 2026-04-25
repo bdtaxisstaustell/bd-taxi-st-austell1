@@ -1408,13 +1408,17 @@ const useDeadMileageRule = pickupValid && dropValid;
 
 // helper to finish fare calculation
 function renderFare(totalMiles, totalDurationText, extraNote = "") {
+
+  const pickupText = (document.getElementById("pickupAddress")?.value || "").toLowerCase();
   const dropoffText = (document.getElementById("dropoffAddress")?.value || "").toLowerCase();
+
   const selectedTime = document.getElementById("time")?.value;
+
   let hour = selectedTime
     ? parseInt(selectedTime.split(":")[0], 10)
     : new Date().getHours();
 
-  let ratePerMile = 2.70;
+  let ratePerMile = 2.90;
   let minimumFare = 5.5;
 
   if (hour < 7) {
@@ -1422,8 +1426,31 @@ function renderFare(totalMiles, totalDurationText, extraNote = "") {
     minimumFare = 7.5;
   }
 
-  let fare = totalMiles * ratePerMile;
+let fare = totalMiles * ratePerMile;
 
+// ✅ Better Eden detection (avoids false matches)
+const isPickupEden =
+  pickupText.includes("eden project") || pickupText.includes("bodelva");
+
+const isDropEden =
+  dropoffText.includes("eden project") || dropoffText.includes("bodelva");
+
+// ✅ PL25 detection
+const isPickupPL25 =
+  pickupText.includes("pl25") || pickupText.includes("austell");
+
+const isDropPL25 =
+  dropoffText.includes("pl25") || dropoffText.includes("austell");
+
+// ✅ Eden ↔ PL25 rule
+const edenToPL25 =
+  (isPickupEden && isDropPL25) ||
+  (isDropEden && isPickupPL25);
+
+// ✅ Apply minimum £15
+if (edenToPL25 && fare < 15) {
+  fare = 15;
+}
   const specialPlaces = [
     "eden",
     "heligan",
