@@ -735,7 +735,20 @@ gtag('config', 'G-0T3NNG0DZX');
     <label>👤 Your Name</label>
     <input id="name" placeholder="Your name">
     <label>📞 Phone</label>
-<input id="phone" placeholder="Your phone number">
+<div style="display:flex; gap:8px;">
+
+  <select id="countryCode" style="padding:16px;border-radius:10px;border:1px solid #e2e8f0;">
+    <option value="+44" selected>🇬🇧 +44</option>
+    <option value="+353">🇮🇪 +353</option>
+    <option value="+1">🇺🇸 +1</option>
+    <option value="+33">🇫🇷 +33</option>
+    <option value="+49">🇩🇪 +49</option>
+    <option value="+34">🇪🇸 +34</option>
+  </select>
+
+  <input id="phone" type="tel" placeholder="7123 456789" style="flex:1;" required>
+
+</div>
   </div>
 
   <!-- PRICE -->
@@ -770,8 +783,20 @@ gtag('config', 'G-0T3NNG0DZX');
   <input id="emailName" placeholder="Your full name" required>
 
   <label>Phone</label>
-  <input id="emailPhone" placeholder="Mobile number" required>
+   <div style="display:flex; gap:8px;">
 
+  <select id="countryCode" style="padding:16px;border-radius:10px;border:1px solid #e2e8f0;">
+    <option value="+44" selected>🇬🇧 +44</option>
+    <option value="+353">🇮🇪 +353</option>
+    <option value="+1">🇺🇸 +1</option>
+    <option value="+33">🇫🇷 +33</option>
+    <option value="+49">🇩🇪 +49</option>
+    <option value="+34">🇪🇸 +34</option>
+  </select>
+
+  <input id="phone" type="tel" placeholder="7123 456789" style="flex:1;" required>
+
+</div>
   <label>Email</label>
   <input id="emailEmail" type="email" placeholder="Email address (optional)">
 
@@ -1430,39 +1455,58 @@ function formatPhoneNumber(input) {
 }
  
 function sendWhatsApp() {
-
- const name = document.getElementById("name")?.value.trim() || "";
-
-const rawPhone = document.getElementById("phone")?.value || "";
-const formattedPhone = formatPhoneNumber(rawPhone);
+const name = document.getElementById("name")?.value.trim() || "";
 
 const phoneField = document.getElementById("phone");
+const countryCode = document.getElementById("countryCode")?.value || "+44";
 
-if (!formattedPhone) {
-  alert("Please enter a valid UK or international phone number (e.g. +447123456789)");
+let rawPhone = phoneField?.value.trim() || "";
+
+// remove spaces
+rawPhone = rawPhone.replace(/\s+/g, "");
+
+// remove leading 0 ONLY for UK numbers
+if (countryCode === "+44" && rawPhone.startsWith("0")) {
+  rawPhone = rawPhone.substring(1);
+}
+
+// validate
+if (!/^\d+$/.test(rawPhone) || rawPhone.length < 8) {
+  alert("Please enter a valid phone number");
   if (phoneField) phoneField.focus();
   return;
 }
 
-// update field so user sees correct format
-document.getElementById("phone").value = formattedPhone;
+// final number
+const formattedPhone = countryCode + rawPhone;
+
+// show formatted number
+if (phoneField) phoneField.value = formattedPhone;
+
+// name validation
+const nameField = document.getElementById("name");
 
 if (!name) {
   alert("Please enter your name");
+  if (nameField) nameField.focus();
   return;
 }
-  const pickup = document.getElementById("pickupAddress")?.value.trim() || "";
-  const dropoff = document.getElementById("dropoffAddress")?.value.trim() || "";
-  const date = document.getElementById("date")?.value || "";
-  const time = document.getElementById("time")?.value || "";
-  const passengers = document.getElementById("passengers")?.value || "";
 
-  const fareText = document.getElementById("liveFarePreview")?.innerText || "";
+// pickup & dropoff
+const pickup = document.getElementById("pickupAddress")?.value.trim() || "";
+const dropoff = document.getElementById("dropoffAddress")?.value.trim() || "";
 
-  if (!pickup || !dropoff) {
-    alert("Please enter pickup and drop-off locations");
-    return;
-  }
+const date = document.getElementById("date")?.value || "";
+const time = document.getElementById("time")?.value || "";
+const passengers = document.getElementById("passengers")?.value || "";
+const fareText = document.getElementById("liveFarePreview")?.innerText || "";
+
+// validate locations
+if (!pickup || !dropoff) {
+  alert("Please enter pickup and drop-off locations");
+  return;
+}
+  
 if (date && time) {
   const selected = new Date(date + "T" + time);
   if (selected < new Date()) {
