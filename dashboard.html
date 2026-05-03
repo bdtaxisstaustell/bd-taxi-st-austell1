@@ -365,6 +365,7 @@ async function logout() {
     today_email: [],
     future_whatsapp: [],
     future_email: [],
+    accepted: [],
     rejected: [],
     done: [],
     deleted: []
@@ -384,6 +385,9 @@ async function logout() {
     else if (status === "done") {
       groups.done.push(b);
     }
+      else if (status === "accepted") {
+  groups.accepted.push(b);
+}
     else if (d.date === today) {
       if (source === "whatsapp") {
         groups.today_whatsapp.push(b);
@@ -403,6 +407,7 @@ async function logout() {
   getEl("bookings").innerHTML =
     renderTable("📱 Today's WhatsApp", groups.today_whatsapp) +
     renderTable("📧 Today's Email", groups.today_email) +
+    renderTable("✅ Accepted Bookings", groups.accepted) +
 
     renderTable("📱 Future WhatsApp", groups.future_whatsapp) +
     renderTable("📧 Future Email", groups.future_email) +
