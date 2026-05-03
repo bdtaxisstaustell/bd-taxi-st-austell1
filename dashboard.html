@@ -6,12 +6,28 @@
 <title>BD Taxi Dashboard</title>
 
 <style>
+:root {
+  --primary: #4f46e5;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e5e7eb;
+
+  --success: #22c55e;
+  --danger: #ef4444;
+  --info: #0ea5e9;
+
+  --radius: 12px;
+  --shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
 body {
   font-family: "Segoe UI", Arial, sans-serif;
-  background: #f1f5f9;
+  background: var(--bg);
   margin: 0;
   padding: 20px;
-  color: #1e293b;
+  color: var(--text);
 }
 
 /* HEADINGS */
@@ -68,13 +84,14 @@ tr:hover {
 
 /* BUTTONS */
 button {
-  padding: 6px 10px;
+  padding: 8px 12px;             
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 13px;
+  font-weight: 500;       
   margin: 2px;
-  transition: 0.2s;
+  transition: all 0.2s ease;   
 }
 
 /* BUTTON COLORS */
@@ -94,8 +111,8 @@ button {
 }
 
 .secondary {
-  background: #64748b;
-  color: white;
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 /* BUTTON HOVER */
@@ -135,7 +152,13 @@ input {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+
+  background: var(--card);       
+  padding: 15px 20px;            
+  border-radius: var(--radius);  
+  box-shadow: var(--shadow); 
+
+  margin-bottom: 15px;
 }
 
 .action-cell {
@@ -431,10 +454,10 @@ function renderTable(title, list) {
       <button class="accept" onclick="restoreBooking('${b.id}')">Restore</button>
     `
     : `
-      <button class="secondary" onclick="editBooking('${b.id}')">Edit</button>
-      <button class="reject" onclick="deleteBooking('${b.id}')">Delete</button>
-      <button class="accept" onclick="acceptBooking('${b.id}')">Accept</button>
-      <button class="reject" onclick="rejectBooking('${b.id}')">Reject</button>
+<button class="secondary" onclick="editBooking('${b.id}')">✏ Edit</button>
+<button class="reject" onclick="deleteBooking('${b.id}')">🗑 Delete</button>
+<button class="accept" onclick="acceptBooking('${b.id}')">✔ Accept</button>
+<button class="reject" onclick="rejectBooking('${b.id}')">✖ Reject</button>
     `
 }
         </td>
