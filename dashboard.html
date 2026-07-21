@@ -452,10 +452,6 @@ else if (bookingDate > todayDate) {
     <p>${groups.future_whatsapp.length}</p>
 </div>
 
-<div class="summary-card accepted">
-    <h4>✅ Accepted</h4>
-    <p>${groups.accepted.length}</p>
-</div>
 
 <div class="summary-card cancelled">
     <h4>⛔ Cancelled</h4>
@@ -470,7 +466,6 @@ else if (bookingDate > todayDate) {
   getEl("bookings").innerHTML =
     renderTable("🚕 Today's Bookings", groups.today_whatsapp) +
     renderTable("📅 Upcoming Bookings", groups.future_whatsapp) +
-    renderTable("✅ Accepted Bookings", groups.accepted) +
     renderTable("⛔ Cancelled", groups.rejected) +
     renderTable("🗑️ Trash", groups.deleted);
 }
