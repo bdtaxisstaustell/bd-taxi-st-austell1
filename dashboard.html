@@ -411,7 +411,6 @@ function renderBookings() {
   const groups = {
     today_whatsapp: [],
     future_whatsapp: [],
-    accepted: [],
     rejected: [],
     deleted: []
   };
@@ -426,20 +425,19 @@ function renderBookings() {
     else if (status === "rejected" || status === "cancelled") {
       groups.rejected.push(b);
     }
-    else if (status === "accepted") {
-      groups.accepted.push(b);
-    }
-   const bookingDate = new Date(d.date + "T00:00:00");
-const todayDate = new Date();
-todayDate.setHours(0, 0, 0, 0);
+    else {
+    const bookingDate = new Date(d.date + "T00:00:00");
+    const todayDate = new Date();
+    todayDate.setHours(0,0,0,0);
 
-if (bookingDate.getTime() === todayDate.getTime()) {
-  groups.today_whatsapp.push(b);
+    if (bookingDate.getTime() === todayDate.getTime()) {
+        groups.today_whatsapp.push(b);
+    }
+    else if (bookingDate > todayDate) {
+        groups.future_whatsapp.push(b);
+    }
 }
-else if (bookingDate > todayDate) {
-  groups.future_whatsapp.push(b);
-}
-  });
+ });
 
   getEl("summaryCards").innerHTML = `
 <div class="summary-card today">
