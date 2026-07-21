@@ -429,12 +429,16 @@ function renderBookings() {
     else if (status === "accepted") {
       groups.accepted.push(b);
     }
-    else if (d.date === today) {
-      groups.today_whatsapp.push(b);
-    }
-    else {
-      groups.future_whatsapp.push(b);
-    }
+   const bookingDate = new Date(d.date + "T00:00:00");
+const todayDate = new Date();
+todayDate.setHours(0, 0, 0, 0);
+
+if (bookingDate.getTime() === todayDate.getTime()) {
+  groups.today_whatsapp.push(b);
+}
+else if (bookingDate > todayDate) {
+  groups.future_whatsapp.push(b);
+}
   });
 
   getEl("summaryCards").innerHTML = `
