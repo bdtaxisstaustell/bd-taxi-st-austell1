@@ -31,9 +31,12 @@ body {
 }
 
 /* HEADINGS */
+
 h1 {
-  margin-bottom: 20px;
-  font-weight: 600;
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e293b;
 }
 
 h3 {
@@ -162,7 +165,15 @@ input {
 }
 
 .action-cell {
-  min-width: 210px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  min-width: 180px;
+}
+
+.action-cell button {
+  margin: 0;
+  width: 100%;
 }
   /* MOBILE VIEW */
 @media (max-width: 768px) {
@@ -215,29 +226,62 @@ input {
 td:nth-child(1)::before { content: "Date"; }
 td:nth-child(2)::before { content: "Name"; }
 td:nth-child(3)::before { content: "Phone"; }
-td:nth-child(4)::before { content: "Email"; } 
-td:nth-child(5)::before { content: "Pickup"; }
-td:nth-child(6)::before { content: "Dropoff"; }
-td:nth-child(7)::before { content: "Fare"; }
+td:nth-child(4)::before { content: "Pickup"; }
+td:nth-child(5)::before { content: "Dropoff"; }
+td:nth-child(6)::before { content: "Fare"; }
+td:nth-child(7)::before { content: "Actions"; }
 
-  .action-cell {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 8px;
-  }
+ .action-cell {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
 
-  .action-cell button {
-    flex: 1 1 48%;
-    font-size: 12px;
-    padding: 8px;
-  }
+.action-cell button {
+  width: 100%;
+  font-size: 12px;
+  padding: 8px;
+}
 
   /* BIGGER TAP TARGET */
   button {
     min-height: 40px;
   }
 }
+
+.summary-cards{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:15px;
+  margin-bottom:25px;
+}
+
+.summary-card{
+  background:white;
+  border-radius:14px;
+  padding:18px;
+  box-shadow:0 8px 25px rgba(0,0,0,.06);
+}
+
+.summary-card h4{
+  margin:0;
+  color:#64748b;
+  font-size:14px;
+  font-weight:600;
+}
+
+.summary-card p{
+  margin:12px 0 0;
+  font-size:34px;
+  font-weight:700;
+}
+
+.today p{color:#2563eb;}
+.upcoming p{color:#9333ea;}
+.accepted p{color:#16a34a;}
+.cancelled p{color:#dc2626;}
+.trash p{color:#64748b;}
 </style>
 </head>
 
@@ -256,14 +300,18 @@ td:nth-child(7)::before { content: "Fare"; }
 <!-- APP -->
 <div id="app" style="display:none;">
   <div class="topbar">
-  <h1>🚕 BD Taxi Dashboard</h1>
 
-  <div>
-    <button onclick="clearTrash()">🗑️ Clear Trash</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+  <h1>BD Taxi Dashboard</h1>
+
+<div style="display:flex;gap:10px;">
+  <button class="secondary" onclick="clearTrash()">🧹 Clear Trash</button>
+  <button class="reject" onclick="logout()">🚪 Logout</button>
 </div>
-  <div id="bookings"></div>
+    
+</div>
+  <div id="summaryCards" class="summary-cards"></div>
+
+<div id="bookings"></div>
 </div>
 
 <!-- MODAL -->
@@ -389,6 +437,32 @@ function renderBookings() {
     }
   });
 
+  getEl("summaryCards").innerHTML = `
+<div class="summary-card today">
+    <h4>🚕 Today's</h4>
+    <p>${groups.today_whatsapp.length}</p>
+</div>
+
+<div class="summary-card upcoming">
+    <h4>📅 Upcoming</h4>
+    <p>${groups.future_whatsapp.length}</p>
+</div>
+
+<div class="summary-card accepted">
+    <h4>✅ Accepted</h4>
+    <p>${groups.accepted.length}</p>
+</div>
+
+<div class="summary-card cancelled">
+    <h4>⛔ Cancelled</h4>
+    <p>${groups.rejected.length}</p>
+</div>
+
+<div class="summary-card trash">
+    <h4>🗑️ Trash</h4>
+    <p>${groups.deleted.length}</p>
+</div>
+`;
   getEl("bookings").innerHTML =
     renderTable("🚕 Today's Bookings", groups.today_whatsapp) +
     renderTable("📅 Upcoming Bookings", groups.future_whatsapp) +
@@ -398,12 +472,28 @@ function renderBookings() {
 }
 
 function renderTable(title, list) {
+
   if (!list.length) {
-    return `<h3>${title}</h3><p>No bookings</p>`;
-  }
+  return `
+    <h3 style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px;">
+      <span>${title}</span>
+      <span style="background:#4f46e5;color:white;padding:4px 10px;border-radius:20px;font-size:13px;font-weight:600;min-width:28px;text-align:center;">
+        0
+      </span>
+    </h3>
+    <p style="color:#64748b;margin-top:0;">No bookings</p>
+  `;
+}
 
   let html = `
-    <h3>${title}</h3>
+
+<h3 style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 10px;">
+  <span>${title}</span>
+  <span style="background:#4f46e5;color:white;padding:4px 10px;border-radius:20px;font-size:13px;font-weight:600;min-width:28px;text-align:center;">
+    ${list.length}
+  </span>
+</h3>
+    
     <div class="table-wrap">
       <table>
         <thead>
@@ -411,7 +501,6 @@ function renderTable(title, list) {
 <th>Date</th>
 <th>Name</th>
 <th>Phone</th>
-<th>Email</th> 
 <th>Pickup</th>
 <th>Dropoff</th>
 <th>Fare</th>
@@ -428,7 +517,6 @@ function renderTable(title, list) {
         <td>${d.date || ""} ${d.time || ""}</td>
         <td>${d.name || ""}</td>
         <td>${d.phone || ""}</td>
-        <td>${d.email || ""}</td>
         <td>${d.pickup || ""}</td>
         <td>${d.dropoff || ""}</td>
         <td>${d.fare !== undefined && d.fare !== null && d.fare !== "" ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
