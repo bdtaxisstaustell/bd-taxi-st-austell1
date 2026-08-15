@@ -657,7 +657,7 @@ Pickup: ${b.pickup || "-"}
 Destination: ${b.dropoff || "-"}
 Date: ${b.date || "-"} ${b.time || ""}
 Passengers: ${b.passengers || "-"}
-Estimated Fare: ${b.fare || "-"}
+Estimated Fare: ${(b.fare || "-").replace("Instant quote:", "").split("•")[0].trim()}
 
 Please note: This is an estimated fare for up to 4 passengers only. The final fare may vary depending on the actual journey.
 
