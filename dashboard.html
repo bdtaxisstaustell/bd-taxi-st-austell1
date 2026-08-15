@@ -518,7 +518,7 @@ function renderTable(title, list) {
 <td>${d.pickup || ""}</td>
 <td>${d.dropoff || ""}</td>
 <td>${d.passengers || "-"}</td>
-<td>${d.fare || "-"}</td>
+<td>${(d.fare || "-").replace("Instant quote:", "").trim()}</td>
 <td class="action-cell">
  ${
   title === "🗑️ Trash"
