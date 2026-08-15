@@ -656,7 +656,7 @@ Your taxi booking is CONFIRMED 🚕
 Pickup: ${b.pickup || "-"}
 Destination: ${b.dropoff || "-"}
 Date: ${b.date || "-"} ${b.time || ""}
-Fare: ${formatMoney(b.fare)}
+Estimated Fare: ${b.fare || "-"}
 
 Please note: This is an estimated fare for up to 4 passengers only. The final fare may vary depending on the actual journey.
 
