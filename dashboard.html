@@ -518,9 +518,7 @@ function renderTable(title, list) {
 <td>${d.pickup || ""}</td>
 <td>${d.dropoff || ""}</td>
 <td>${d.passengers || "-"}</td>
-<td>${d.fare !== undefined && d.fare !== null && d.fare !== ""
-  ? "£" + Number(d.fare).toFixed(2)
-  : "-"}</td>
+<td>${d.fare || "-"}</td>
 <td class="action-cell">
  ${
   title === "🗑️ Trash"
