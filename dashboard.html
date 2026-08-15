@@ -500,6 +500,7 @@ function renderTable(title, list) {
 <th>Phone</th>
 <th>Pickup</th>
 <th>Dropoff</th>
+<th>People</th>
 <th>Fare</th>
 <th>Actions</th>
           </tr>
@@ -511,13 +512,16 @@ function renderTable(title, list) {
     const d = b.data || {};
     html += `
       <tr>
-        <td>${d.date || ""} ${d.time || ""}</td>
-        <td>${d.name || ""}</td>
-        <td>${d.phone || ""}</td>
-        <td>${d.pickup || ""}</td>
-        <td>${d.dropoff || ""}</td>
-        <td>${d.fare !== undefined && d.fare !== null && d.fare !== "" ? "£" + Number(d.fare).toFixed(2) : "-"}</td>
-        <td class="action-cell">
+       <td>${d.date || ""} ${d.time || ""}</td>
+<td>${d.name || ""}</td>
+<td>${d.phone || ""}</td>
+<td>${d.pickup || ""}</td>
+<td>${d.dropoff || ""}</td>
+<td>${d.passengers || "-"}</td>
+<td>${d.fare !== undefined && d.fare !== null && d.fare !== ""
+  ? "£" + Number(d.fare).toFixed(2)
+  : "-"}</td>
+<td class="action-cell">
  ${
   title === "🗑️ Trash"
     ? `
