@@ -431,6 +431,35 @@ section{
   width:100%;
   display:block;
 }
+
+ .via-stop-row {
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:8px;
+  align-items:center;
+}
+
+.via-remove,
+.via-add {
+  border:0;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:700;
+}
+
+.via-remove {
+  background:#fee2e2;
+  color:#991b1b;
+  padding:14px 16px;
+}
+
+.via-add {
+  width:100%;
+  padding:12px;
+  background:#e2e8f0;
+  color:#0f172a;
+  margin-bottom:14px;
+} 
 </style>
   <script type="application/ld+json">
 {
@@ -632,7 +661,23 @@ gtag('config', 'G-0T3NNG0DZX');
 </select>
 
 </div>
-  <!-- DROPOFF -->
+
+<!-- OPTIONAL VIA STOPS -->
+<div class="input-group">
+  <label>➕ Via / Stops (optional)</label>
+
+  <div id="viaStops"></div>
+
+  <button id="addViaStopBtn"
+          class="via-add"
+          type="button"
+          onclick="addViaStop()">
+    + Add a stop
+  </button>
+</div>
+
+<!-- DROPOFF -->
+    
   <div class="input-group">
     <label>🏁 Drop-off</label>
     <input id="dropoffAddress" placeholder="Where are you going?" autocomplete="off">
@@ -1282,7 +1327,84 @@ function initAutocomplete()
   setupAutocomplete("pickupAddressEmail");
   setupAutocomplete("dropoffAddressEmail");
 }
+let viaStopCount = 0;
+const maxViaStops = 3;
 
+function getViaStops() {
+  return Array.from(document.querySelectorAll(".via-stop-input"))
+    .map(input => input.value.trim())
+    .filter(Boolean);
+}
+
+function addViaStop() {
+  const currentStops =
+    document.querySelectorAll(".via-stop-row").length;
+
+  if (currentStops >= maxViaStops) {
+    return;
+  }
+
+  viaStopCount++;
+
+  const row = document.createElement("div");
+  row.className = "via-stop-row";
+
+  row.innerHTML = `
+    <input
+      id="viaStop${viaStopCount}"
+      class="via-stop-input"
+      placeholder="Enter stop ${viaStopCount}"
+      autocomplete="off">
+
+    <button
+      type="button"
+      class="via-remove"
+      aria-label="Remove stop">
+      Remove
+    </button>
+  `;
+
+  const input = row.querySelector("input");
+  const removeButton = row.querySelector("button");
+
+  input.addEventListener("input", getDistanceAndCalculate);
+  input.addEventListener("change", getDistanceAndCalculate);
+
+  removeButton.addEventListener("click", function () {
+    row.remove();
+
+    document.getElementById("addViaStopBtn").style.display =
+      "block";
+
+    getDistanceAndCalculate();
+  });
+
+  document.getElementById("viaStops").appendChild(row);
+
+  // Add Google address autocomplete
+  if (window.google?.maps?.places) {
+    const autocomplete =
+      new google.maps.places.Autocomplete(input, {
+        componentRestrictions: { country: "gb" },
+        fields: ["formatted_address", "geometry", "name"]
+      });
+
+    autocomplete.addListener(
+      "place_changed",
+      getDistanceAndCalculate
+    );
+  }
+
+  if (
+    document.querySelectorAll(".via-stop-row").length >=
+    maxViaStops
+  ) {
+    document.getElementById("addViaStopBtn").style.display =
+      "none";
+  }
+
+  input.focus();
+}
 function getDistanceAndCalculate() {
 
   if (!window.google || !google.maps) {
@@ -1310,7 +1432,7 @@ if (!pickup || !dropoff) {
   return;
 }
 
-const service = new google.maps.DistanceMatrixService();
+const service = new google.maps.DirectionsService();
 function isPL24or26(text) {
   text = text.toLowerCase();
 
@@ -1495,78 +1617,79 @@ btn.innerText = "🚕 Book Taxi – " + priceText;
   btn.innerText = "🚕 Book Taxi – " + priceText;
 }
 
-// ✅ DEAD MILEAGE RULE: PL25 4NB → pickup → dropoff
-if (useDeadMileageRule) {
-  service.getDistanceMatrix(
-    {
-      origins: ["PL25 4NB", pickup],
-      destinations: [pickup, dropoff],
-      travelMode: "DRIVING",
-      unitSystem: google.maps.UnitSystem.IMPERIAL
-    },
-    function (response, status) {
-      if (status !== "OK") {
-        output.innerText = "Unable to calculate distance";
-        return;
-      }
+// COMPLETE ROUTE: pickup → via stops → drop-off
+const viaStops = getViaStops();
 
-      const leg1 = response.rows[0].elements[0]; // PL25 4NB -> pickup
-      const leg2 = response.rows[1].elements[1]; // pickup -> dropoff
+const waypoints = useDeadMileageRule
+  ? [pickup, ...viaStops].map(location => ({
+      location: location,
+      stopover: true
+    }))
+  : viaStops.map(location => ({
+      location: location,
+      stopover: true
+    }));
 
-      if (leg1.status !== "OK" || leg2.status !== "OK") {
-        output.innerText = "Please select valid addresses from the list";
-        return;
-      }
-
-      const totalMeters = leg1.distance.value + leg2.distance.value;
-      const totalMiles = totalMeters / 1609;
-
-      const totalSeconds = leg1.duration.value + leg2.duration.value;
-      const totalMinutes = Math.round(totalSeconds / 60);
-      const totalDurationText =
-        totalMinutes < 60
-          ? totalMinutes + " mins"
-          : Math.floor(totalMinutes / 60) + " hr " + (totalMinutes % 60) + " mins";
-
-      renderFare(
-        totalMiles,
-        totalDurationText,
-      );
-    }
-  );
-
-  return;
-}
-
-// ✅ NORMAL RULE: pickup → dropoff
-service.getDistanceMatrix(
+service.route(
   {
-    origins: [pickup],
-    destinations: [dropoff],
-    travelMode: "DRIVING",
+    origin: useDeadMileageRule ? "PL25 4NB" : pickup,
+    destination: dropoff,
+    waypoints: waypoints,
+
+    // Keep stops in the customer's chosen order
+    optimizeWaypoints: false,
+
+    travelMode: google.maps.TravelMode.DRIVING,
     unitSystem: google.maps.UnitSystem.IMPERIAL
   },
+
   function (response, status) {
-    if (status !== "OK") {
-      output.innerText = "Unable to calculate distance";
+    const preview =
+      document.getElementById("liveFarePreview");
+
+    if (status !== "OK" || !response?.routes?.[0]) {
+      if (preview) {
+        preview.innerText =
+          "Please check all journey addresses";
+      }
+
+      const button = document.getElementById("bookBtn");
+
+      if (button) {
+        button.innerText =
+          "🚕 Get Taxi via WhatsApp";
+      }
+
       return;
     }
 
-    const result = response.rows[0].elements[0];
+    const legs = response.routes[0].legs;
 
-    if (result.status !== "OK") {
-      output.innerText = "Please select valid addresses from the list";
-      return;
-    }
+    const totalMeters = legs.reduce(
+      (total, leg) => total + leg.distance.value,
+      0
+    );
 
-    const totalMiles = result.distance.value / 1609;
-    const totalDurationText = result.duration.text;
+    const totalSeconds = legs.reduce(
+      (total, leg) => total + leg.duration.value,
+      0
+    );
+
+    const totalMiles = totalMeters / 1609.344;
+    const totalMinutes = Math.round(totalSeconds / 60);
+
+    const totalDurationText =
+      totalMinutes < 60
+        ? totalMinutes + " mins"
+        : Math.floor(totalMinutes / 60) +
+          " hr " +
+          (totalMinutes % 60) +
+          " mins";
 
     renderFare(totalMiles, totalDurationText);
   }
 );
-
-    }
+  }
 /* WHATSAPP BOOKING */
 
 function formatPhoneNumber(input) {
@@ -1632,6 +1755,7 @@ if (!name) {
 // pickup & dropoff
 const pickup = document.getElementById("pickupAddress")?.value.trim() || "";
 const dropoff = document.getElementById("dropoffAddress")?.value.trim() || "";
+const viaStops = getViaStops();
 
 const date = document.getElementById("date")?.value || "";
 const time = document.getElementById("time")?.value || "";
@@ -1659,7 +1783,7 @@ if (date && time) {
 Name: ${name}
 Phone: ${formattedPhone}
 From: ${pickup}
-To: ${dropoff}
+${viaStops.length ? "Via: " + viaStops.join(" → ") + "\n" : ""}To: ${dropoff}
 Date: ${date} at ${time}
 Passengers: ${passengers}
 ${fareText}
@@ -1672,6 +1796,7 @@ if (db) {
     name,
     phone: formattedPhone,
     pickup,
+    viaStops,
     dropoff,
     date,
     time,
