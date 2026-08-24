@@ -1761,6 +1761,11 @@ const date = document.getElementById("date")?.value || "";
 const time = document.getElementById("time")?.value || "";
 const passengers = document.getElementById("passengers")?.value || "";
 const fareText = document.getElementById("liveFarePreview")?.innerText || "";
+  if (!fareText.includes("Instant quote:")) {
+  alert("Please wait for the instant fare to calculate before booking.");
+  document.getElementById("pickupAddress")?.focus();
+  return;
+}
 
 // validate locations
 if (!pickup || !dropoff) {
