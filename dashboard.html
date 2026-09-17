@@ -335,19 +335,26 @@ input {
   td:nth-child(7)::before { content: "Fare"; }
   td:nth-child(8)::before { content: "Actions"; }
 
-.action-cell {
+
+ td.action-cell {
   display: grid !important;
   grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 8px !important;
+  width: 100% !important;
+  margin-top: 8px;
   padding-top: 10px;
-  width: 100%;
 }
 
 td.action-cell::before {
-  display: none !important;
-  content: none !important;
-}
+  content: "Actions" !important;
+  display: block !important;
+  grid-column: 1 / -1;
+  width: 100% !important;
+  text-align: left !important;
+  font-weight: 700;
+  color: #64748b;
+  margin-bottom: 2px;
+} 
 
   .action-cell button {
     width: 100%;
