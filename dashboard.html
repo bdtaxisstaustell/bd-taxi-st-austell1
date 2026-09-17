@@ -175,11 +175,48 @@ input {
   margin: 0;
   width: 100%;
 }
-  /* MOBILE VIEW */
+
+  /* SUMMARY CARDS */
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.summary-card {
+  background: white;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 0 8px 25px rgba(0,0,0,.06);
+}
+
+.summary-card h4 {
+  margin: 0;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.summary-card p {
+  margin: 12px 0 0;
+  font-size: 34px;
+  font-weight: 700;
+}
+
+.today p { color: #2563eb; }
+.upcoming p { color: #9333ea; }
+.accepted p { color: #16a34a; }
+.cancelled p { color: #dc2626; }
+.trash p { color: #64748b; }
+
+
+/* MOBILE VIEW */
 @media (max-width: 768px) {
 
   body {
-    padding: 10px;
+    padding: 8px;
+    overflow-x: hidden;
   }
 
   h1 {
@@ -188,14 +225,68 @@ input {
 
   .topbar {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 10px;
+    padding: 12px;
   }
 
-  /* TABLE → CARD STYLE */
-  table, thead, tbody, th, td, tr {
+  .topbar > div {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px !important;
+    width: 100%;
+  }
+
+  .topbar button {
+    width: 100%;
+    min-width: 0;
+    font-size: 12px;
+  }
+
+  /* 2 DASHBOARD BOXES PER ROW */
+  .summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 18px;
+  }
+
+  .summary-card {
+    min-width: 0;
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .summary-card h4 {
+    font-size: 12px;
+  }
+
+  .summary-card p {
+    margin-top: 6px;
+    font-size: 26px;
+  }
+
+  h3 {
+    font-size: 16px;
+    margin: 18px 0 8px;
+  }
+
+  /* BOOKINGS BECOME CARDS */
+  .table-wrap {
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+    width: 100%;
+  }
+
+  table,
+  thead,
+  tbody,
+  th,
+  td,
+  tr {
     display: block;
     width: 100%;
+    box-sizing: border-box;
   }
 
   thead {
@@ -205,76 +296,64 @@ input {
   tr {
     background: white;
     margin-bottom: 12px;
-    border-radius: 10px;
-    padding: 10px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+    overflow: hidden;
   }
 
   td {
     border: none;
-    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+    padding: 7px 0;
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
     font-size: 13px;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  td:last-child {
+    border-bottom: none;
   }
 
   td::before {
-    font-weight: 600;
+    font-weight: 700;
     color: #64748b;
+    flex: 0 0 75px;
+    text-align: left;
   }
 
-td:nth-child(1)::before { content: "Date"; }
-td:nth-child(2)::before { content: "Name"; }
-td:nth-child(3)::before { content: "Phone"; }
-td:nth-child(4)::before { content: "Pickup"; }
-td:nth-child(5)::before { content: "Dropoff"; }
-td:nth-child(6)::before { content: "Fare"; }
-td:nth-child(7)::before { content: "Actions"; }
+  td:nth-child(1)::before { content: "Date"; }
+  td:nth-child(2)::before { content: "Name"; }
+  td:nth-child(3)::before { content: "Phone"; }
+  td:nth-child(4)::before { content: "Pickup"; }
+  td:nth-child(5)::before { content: "Dropoff"; }
+  td:nth-child(6)::before { content: "People"; }
+  td:nth-child(7)::before { content: "Fare"; }
+  td:nth-child(8)::before { content: "Actions"; }
 
- .action-cell {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-  margin-top: 8px;
-}
+  .action-cell {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 8px;
+  }
 
-.action-cell button {
-  width: 100%;
-  font-size: 12px;
-  padding: 8px;
-}
+  .action-cell::before {
+    content: none;
+  }
 
-  /* BIGGER TAP TARGET */
-  button {
+  .action-cell button {
+    width: 100%;
+    min-width: 0;
     min-height: 40px;
+    font-size: 12px;
+    padding: 8px 4px;
+    margin: 0;
   }
-}
-
-.summary-cards{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:15px;
-  margin-bottom:25px;
-}
-
-.summary-card{
-  background:white;
-  border-radius:14px;
-  padding:18px;
-  box-shadow:0 8px 25px rgba(0,0,0,.06);
-}
-
-.summary-card h4{
-  margin:0;
-  color:#64748b;
-  font-size:14px;
-  font-weight:600;
-}
-
-.summary-card p{
-  margin:12px 0 0;
-  font-size:34px;
-  font-weight:700;
 }
 
 .today p{color:#2563eb;}
