@@ -515,13 +515,8 @@ function renderTable(title, list) {
        <td>${d.date || ""} ${d.time || ""}</td>
 <td>
   ${d.name || ""}
-  ${
-    (d.status || "").toLowerCase() === "accepted"
-      ? `<span style="margin-left:6px;background:#dcfce7;color:#166534;padding:3px 7px;border-radius:12px;font-size:11px;font-weight:700;">✓ ACCEPTED</span>`
-      : (d.status || "").toLowerCase() === "rejected"
-      ? `<span style="margin-left:6px;background:#fee2e2;color:#991b1b;padding:3px 7px;border-radius:12px;font-size:11px;font-weight:700;">✕ REJECTED</span>`
-      : `<span style="margin-left:6px;background:#fef3c7;color:#92400e;padding:3px 7px;border-radius:12px;font-size:11px;font-weight:700;">PENDING</span>`
-  }
+  ${(d.status || "").toLowerCase() === "accepted" ? " ✅ ACCEPTED" : ""}
+  ${(d.status || "").toLowerCase() === "rejected" ? " ❌ REJECTED" : ""}
 </td>
 <td>${d.phone || ""}</td>
 <td>${d.pickup || ""}</td>
