@@ -522,6 +522,7 @@ function renderBookings() {
       groups.rejected.push(b);
     }
     else {
+    console.log("BOOKING:", d.name, "DATE:", d.date, "STATUS:", d.status);
     const bookingDate = new Date(d.date + "T00:00:00");
     const todayDate = new Date();
     todayDate.setHours(0,0,0,0);
@@ -532,6 +533,7 @@ function renderBookings() {
     else if (bookingDate > todayDate) {
         groups.future_whatsapp.push(b);
     }
+      
 }
  });
 
@@ -629,7 +631,7 @@ function renderTable(title, list) {
     : `
 <button class="secondary" onclick="editBooking('${b.id}')">✏ Edit</button>
 <button class="reject" onclick="deleteBooking('${b.id}')">🗑 Delete</button>
-<button class="accept" onclick="acceptBooking('${b.id}')">✔ Accept</button>
+${!isAccepted ? `<button class="accept" onclick="acceptBooking('${b.id}')">✔ Accept</button>` : ""}
 <button class="reject" onclick="rejectBooking('${b.id}')">✖ Reject</button>
     `
 }
