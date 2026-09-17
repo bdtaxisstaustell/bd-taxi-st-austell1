@@ -631,7 +631,10 @@ function renderTable(title, list) {
     : `
 <button class="secondary" onclick="editBooking('${b.id}')">✏ Edit</button>
 <button class="reject" onclick="deleteBooking('${b.id}')">🗑 Delete</button>
-${!isAccepted ? `<button class="accept" onclick="acceptBooking('${b.id}')">✔ Accept</button>` : ""}
+${String(d.status || "").toLowerCase() !== "accepted"
+  ? `<button class="accept" onclick="acceptBooking('${b.id}')">✔ Accept</button>`
+  : ""
+}
 <button class="reject" onclick="rejectBooking('${b.id}')">✖ Reject</button>
     `
 }
