@@ -304,6 +304,10 @@ h1 {
     box-shadow: 0 4px 15px rgba(0,0,0,0.07);
     overflow: hidden;
   }
+  tr.accepted-booking {
+  background: #f0fdf4;
+  border: 2px solid #22c55e;
+}
 
   td {
     border: none;
@@ -602,8 +606,9 @@ function renderTable(title, list) {
 
   list.forEach(b => {
     const d = b.data || {};
+    const isAccepted = String(d.status || "").toLowerCase() === "accepted";
     html += `
-      <tr>
+    <tr class="${isAccepted ? 'accepted-booking' : ''}">
        <td>${d.date || ""} ${d.time || ""}</td>
 <td>
   ${d.name || ""}
