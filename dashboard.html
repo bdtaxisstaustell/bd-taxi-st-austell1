@@ -351,6 +351,9 @@ h1 {
   margin-top: 8px;
   padding-top: 10px;
 }
+  td.action-cell.accepted-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
 
 td.action-cell::before {
   content: "Actions" !important;
@@ -622,7 +625,7 @@ function renderTable(title, list) {
 <td>${d.dropoff || ""}</td>
 <td>${d.passengers || "-"}</td>
 <td>${String(d.fare || "-").replace("Instant quote:", "").trim()}</td>
-<td class="action-cell">
+<td class="action-cell ${isAccepted ? 'accepted-actions' : ''}">
  ${
   title === "🗑️ Trash"
     ? `
